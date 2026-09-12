@@ -5,7 +5,7 @@
   "sharePositionLabel": "Ownership Costs (per share)",
   "totalShares": 9,
   "programCost": 544375,
-  "annualProgramFee": 131291,
+  "annualProgramFee": 136178.438,
   "fuel": {
     "label": "JET-A",
     "priceKey": "jet_a",
@@ -29,5 +29,5 @@
     }
   ],
   "availableShares": 8,
-  "_dataVerified": "2026-09-12 \u2014 matches live production block"
+  "_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed."
 }
