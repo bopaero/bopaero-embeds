@@ -1,0 +1,11 @@
+{
+  "name": "sf50-calc",
+  "mount_id": "sf50-calc-mount",
+  "external_scripts": [],
+  "pages": [
+    "sf50-fractional-ownership-program-nonpilots",
+    "sf50-fractional-ownership-program-nonpilots-business",
+    "sf50-fractional-ownership-program-pilots"
+  ],
+  "mode": "loader"
+}

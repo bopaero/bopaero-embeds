@@ -1,0 +1,122 @@
+<!-- Collapsible wrapper (initially collapsed) -->                                                                                                     
+  <details class="calc-accordion" id="sf50-calc">                                                                                                        
+    <summary class="calc-summary">                                                                                                                       
+      <span class="summary-title">Cirrus SF50 Vision Jet Shared Ownership Cost Calculator</span>                                                                  
+      <span class="summary-hint">Open</span>                                                                                                             
+      <span class="summary-caret" aria-hidden="true"></span>
+    </summary>                                                                                                                                           
+                                                            
+    <div class="calculator-container">                                                                                                                   
+      <h2>2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program</h2>       
+                                                                                                                                                         
+      <!-- Two-column layout for desktop/tablet; stacks on mobile -->                                                                                    
+      <div class="calculator-grid">                                                                                                                      
+        <!-- LEFT: Image column (on mobile this appears above the calculator) -->                                                                        
+        <div class="image-panel">                                                                                                                        
+          <img
+            id="aircraft-image"                                                                                                                          
+            src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/52dda135-bca3-4b6b-ad19-6a3b94b81807/DSC00966_croatia-a2a_013.jpeg?content-type=image%2Fjpeg"                                                                                                                              
+            alt="SF50 Vision Jet"                                                                                                                        
+            loading="lazy"                                                                                                                               
+          />                                                
+          <img                                                                                                                                           
+            id="aircraft-image-2"                           
+            src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/4aad4998-5f44-4e12-8170-7356bfd777d3/FL+Keys+Vision+Jet+Lifestyle.jpeg?content-type=image%2Fjpeg"                                                                                                                          
+            alt="SF50 Cockpit"
+            loading="lazy"                                                                                                                               
+            class="second-image-desktop"                    
+          />                                                                                                                                             
+        </div>
+                                                                                                                                                         
+        <!-- RIGHT: Calculator -->                          
+        <div class="calculator">
+
+          <!-- Inputs -->                                                                                                                                
+          <div class="input-section">
+            <label for="ownership-years">                                                                                                                
+              Years of Ownership:                           
+              <input
+                type="number"                                                                                                                            
+                id="ownership-years"
+                name="ownership-years"                                                                                                                   
+                inputmode="numeric"                         
+                placeholder="e.g., 5 yrs."
+                min="1"                                                                                                                                  
+                max="20"
+                step="1"                                                                                                                                 
+                required                                    
+              />
+            </label>
+            <label for="hours-per-year" style="margin-top:12px;">
+              Estimated Flying Hours per Year:
+              <input
+                type="number"
+                id="hours-per-year"
+                name="hours-per-year"
+                inputmode="decimal"
+                placeholder="e.g., 175 hrs."
+                min="1"
+                step="any"
+                required
+              />
+            </label>
+            <p class="input-note">
+              Usage is unlimited. For scheduling purposes, each share may reserve up to 175 flight hours or 35 days at one time.
+            </p>                                                                                                                                     
+          </div>                                            
+
+          <div class="button-section">
+            <button type="button" id="clear-calculator">Clear</button>
+            <button type="button" id="calculate-cost">Calculate</button>                                                                                             
+          </div>
+                                                                                                                                                         
+          <div class="output-section">                      
+            <h3 id="share-position">1 of 8 Shared Ownership Shares</h3>
+
+            <div class="output-item share-usage">
+              <span>Usage:</span>
+              <span id="share-usage">Unlimited</span>
+            </div>
+            <div class="output-item scheduling-limit">
+              <span>Scheduling Limit:</span>
+              <span id="scheduling-limit">175 flight hours or 35 days at one time</span>
+            </div>
+            <div class="output-item">
+              <span>Program Cost:*</span>
+              <span id="program-cost">-</span>
+            </div>
+            <div class="output-item">
+              <span>Annual Program Fee:**</span>
+              <span id="annual-program-fee">-</span>
+            </div>
+            <div class="output-item">
+              <span>Average Fuel/Oil Cost per Hour:***</span>
+              <span id="fuel-cost">-</span>
+            </div>
+
+            <!-- Blended (ownership-only) -->
+            <div class="output-item" id="blended-row">
+              <span>Estimated Ownership Cost per Hour:****</span>
+              <span id="blended-cost-per-hour">-</span>
+            </div>
+                                                                                                                                                         
+            <!-- MOBILE: second image appears below the results -->                                                                                      
+            <div class="second-image-mobile">
+              <img                                                                                                                                       
+                src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/4aad4998-5f44-4e12-8170-7356bfd777d3/FL+Keys+Vision+Jet+Lifestyle.jpeg?content-type=image%2Fjpeg"                                                                                                                      
+                alt="SF50 Cockpit"
+                loading="lazy"                                                                                                                           
+              />                                            
+            </div>                                                                                                                                       
+                                                            
+            <div class="addendum">
+              <p>*The Program Cost purchases one of eight available shared ownership positions. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to 175 flight hours or 35 days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>
+              <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>
+              <p id="fuel-note">***JET-A national avg × 59 gph + oil.</p>
+              <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>

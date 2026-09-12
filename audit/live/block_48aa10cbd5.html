@@ -1,0 +1,207 @@
+
+  
+    <!DOCTYPE html>
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" lang="en-US"  lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aircraft Range Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <style>
+    /* Container for the map and dropdown */
+    .ui-container {
+  position: relative;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: Proxima Nova, sans-serif;
+  box-sizing: border-box;
+}
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+
+    .custom-select {
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .custom-select select {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #map {
+      height: 800px;
+      width: 100%;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+   @media screen and (max-width: 600px) {
+  .ui-container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .desktop-text {
+    display: none;
+  }
+
+  .mobile-text {
+    display: inline;
+  }
+}
+
+@media screen and (min-width: 601px) {
+  .desktop-text {
+    display: inline;
+  }
+
+  .mobile-text {
+    display: none;
+  }
+}
+}
+  </style>
+</head>
+<body>
+  <div class="ui-container">
+    <h1>Aircraft Range Map</h1>
+    <p>
+      <i>Aircraft ranges are the typical maximum "nonstop" ranges based on average loading and maximum fuel.
+      These ranges can vary due to enroute winds and heavier loads.</i>
+    </p>
+    <div class="custom-select">
+      <select id="aircraft" onchange="updateRange()">
+        <option value="800">SR22T (800 miles)</option>
+        <option value="1000">SF50 (1000 miles)</option>
+      </select>
+    </div>
+    <p>Click/Tap on the map to center it on a new location.</p>
+
+   <div id="map-overlay" onclick="activateMap()" style="
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    z-index: 1000;">
+    <span class="desktop-text">Tap or click the map to interact.</span>
+    <span class="mobile-text">Tap or click the map<br>to interact.</span>
+</div>
+    
+    <div id="map"></div>
+  </div>
+
+  <script>
+  function activateMap() {
+    document.getElementById('map-overlay').style.display = 'none';
+    map.scrollWheelZoom.enable();
+    map.on('mouseout', function () {
+    document.getElementById('map-overlay').style.display = 'flex';
+    map.scrollWheelZoom.disable();
+});
+}
+    // Conversion factor: 1 mile = 1609.34 meters
+    const milesToMeters = 1609.34;
+
+    // Coordinates for Cincinnati Northern Kentucky International Airport (CVG)
+    var cvgCoordinates = [39.0489, -84.6677];
+
+    // Initialize the map and set the view to CVG coordinates
+    var map = L.map('map', {
+    scrollWheelZoom: false
+}).setView(cvgCoordinates, 5);
+
+// Allow scroll zoom only after clicking/tapping the map
+map.on('click', function () {
+    map.scrollWheelZoom.enable();
+});
+
+map.on('mouseout', function () {
+    document.getElementById('map-overlay').style.display = 'flex';
+    map.scrollWheelZoom.disable();
+});
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Create the range circle with default radius
+    var rangeCircle = L.circle(cvgCoordinates, {
+      color: 'blue',
+      fillColor: 'lightblue',
+      fillOpacity: 0.25,
+      radius: 800 * milesToMeters // Default radius for 800 miles
+    }).addTo(map);
+
+    // Add a circle marker for CVG
+    var currentCenterMarker = L.circleMarker(cvgCoordinates, {
+      radius: 8,
+      color: 'red',
+      fillColor: 'red',
+      fillOpacity: 0.8
+    }).addTo(map);
+
+    // Update the range based on dropdown selection
+    function updateRange() {
+      var miles = document.getElementById("aircraft").value;
+      rangeCircle.setRadius(miles * milesToMeters);
+    }
+
+    // Handle map clicks to recenter the range
+    map.on('click', function(e) {
+      var newLatLng = e.latlng;
+      rangeCircle.setLatLng(newLatLng);
+
+      if (currentCenterMarker) {
+        map.removeLayer(currentCenterMarker);
+      }
+
+      currentCenterMarker = L.circleMarker(newLatLng, {
+        radius: 8,
+        color: 'red',
+        fillColor: 'red',
+        fillOpacity: 0.8
+      }).addTo(map);
+
+      map.panTo(newLatLng);
+    });
+  </script>
+</body>
+</html>
+
+  
+  
+
+
+

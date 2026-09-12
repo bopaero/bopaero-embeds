@@ -1,0 +1,2778 @@
+
+  
+    <!DOCTYPE html>
+<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml" lang="en-US"  lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Modeler v2.5 - Google Maps</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+
+
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-2: #ffffff;
+      --panel: rgba(255,255,255,0.98);
+      --stroke: rgba(13, 47, 84, 0.10);
+      --stroke-strong: rgba(13, 47, 84, 0.18);
+      --text: #14253d;
+      --muted: #5f7288;
+      --muted-2: #7a8ca0;
+      --navy: #0d5eaf;
+      --navy-2: #0a467f;
+      --sky: #dfeeff;
+      --sky-soft: #f4f8fc;
+      --orange: #ef6a33;
+      --orange-2: #d35a26;
+      --gold: #ef6a33;
+      --gold-2: #d35a26;
+      --shadow: 0 22px 56px rgba(16, 52, 86, 0.10);
+      --cirrus: #0d5eaf;
+      --cirrus-dark: #093d70;
+      --commercial: #ef6a33;
+      --drive: #66768a;
+      --regional-marker: #124d8f;
+      --commercial-marker: #ef6a33;
+      --point-marker: #0d5eaf;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: #ffffff;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body { padding: 18px; }
+
+    .route-intel {
+      width: min(1420px, 100%);
+      margin: 0 auto;
+      padding: 14px;
+      border-radius: 34px;
+      background: #ffffff;
+      border: 1px solid rgba(10,58,102,0.08);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) 410px;
+      gap: 14px;
+      height: min(84vh, 860px);
+      min-height: 720px;
+    }
+
+    .map-stage,
+    .results-panel {
+      position: relative;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid var(--stroke);
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+    }
+
+    #map {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background: #e9edf3;
+    }
+
+    .map-overlay {
+      position: absolute;
+      inset: 14px 14px auto 14px;
+      z-index: 500;
+      display: grid;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toolbar,
+    .route-strip,
+    .map-footer,
+    .hint-chip {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(10, 58, 102, 0.10);
+      box-shadow: 0 14px 30px rgba(13,79,139,0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .toolbar {
+      border-radius: 22px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 230px minmax(260px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .toolbar-title {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 24px;
+      line-height: 1;
+      margin: 0;
+      color: #232117;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .toolbar-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .toolbar-label,
+    .panel-label,
+    .small-label {
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      font-weight: 700;
+    }
+
+    .toolbar-status {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke-strong);
+      background: #fff;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .toolbar-input {
+      width: 100%;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke-strong);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      outline: none;
+    }
+
+    .toolbar-input:focus {
+      border-color: rgba(13,94,175,0.45);
+      box-shadow: 0 0 0 3px rgba(13,94,175,0.10);
+    }
+
+    .toolbar-input::placeholder {
+      color: var(--muted-2);
+      font-weight: 500;
+    }
+
+    .selected-target-meta {
+      min-height: 34px;
+      font-size: 12px;
+      line-height: 1.35;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .toolbar-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    button { font: inherit; }
+
+    .button,
+    .button-ghost,
+    .button-chip,
+    .target-chip {
+      border: none;
+      cursor: pointer;
+      transition: 140ms ease;
+    }
+
+    .button,
+    .button-ghost {
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .button {
+      background: var(--navy);
+      color: #fff;
+      box-shadow: 0 10px 20px rgba(13,79,139,0.16);
+    }
+
+    .button:hover,
+    .button-ghost:hover,
+    .button-chip:hover,
+    .target-chip:hover { transform: translateY(-1px); }
+
+    .button-ghost {
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      border: 1px solid var(--stroke-strong);
+    }
+
+    .route-strip {
+      border-radius: 18px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .route-strip-left,
+    .route-strip-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .target-chip,
+    .button-chip {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .button-chip {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid rgba(10,58,102,0.12);
+    }
+
+    .target-chip {
+      background: rgba(15,111,184,0.08);
+      color: var(--navy);
+      border: 1px solid rgba(13,79,139,0.12);
+    }
+
+    .target-chip.active {
+      border-color: rgba(13,79,139,0.42);
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .target-chip small {
+      color: inherit;
+      opacity: 0.76;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+    }
+
+    .map-footer {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      z-index: 500;
+      border-radius: 16px;
+      padding: 10px 12px;
+      max-width: min(560px, calc(100% - 28px));
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      pointer-events: auto;
+    }
+
+    .hint-chip {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      z-index: 500;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      pointer-events: auto;
+    }
+
+    .results-panel {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow: auto;
+    }
+
+    .results-head {
+      display: grid;
+      gap: 8px;
+      padding: 4px 2px 2px;
+    }
+
+    .results-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .results-title {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .badge {
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(15,111,184,0.08);
+      color: var(--navy);
+      border: 1px solid rgba(13,79,139,0.12);
+    }
+
+    .results-copy {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    .summary-card,
+    .result-card {
+      border-radius: 20px;
+      border: 1px solid rgba(10,58,102,0.10);
+      background: rgba(255,255,255,0.74);
+      padding: 14px;
+    }
+
+    .summary-card {
+      background: rgba(15,111,184,0.06);
+    }
+
+    .summary-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .summary-top strong {
+      font-size: 30px;
+      line-height: 1;
+      letter-spacing: -0.05em;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .mini-stat {
+      border-radius: 14px;
+      padding: 10px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(10,58,102,0.08);
+    }
+
+    .mini-value {
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-top: 6px;
+    }
+
+    .result-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .result-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .result-big {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .result-big strong {
+      font-size: 32px;
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .result-big span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      font-weight: 700;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: baseline;
+      padding-top: 8px;
+      border-top: 1px solid rgba(10,58,102,0.08);
+      font-size: 13px;
+    }
+
+    .list-item span { color: var(--muted-2); }
+    .list-item strong {
+      color: var(--text);
+      text-align: right;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .leg-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .leg-item {
+      border-top: 1px solid rgba(10,58,102,0.08);
+      padding-top: 10px;
+    }
+
+    .leg-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .leg-meta {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .flight-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(10,58,102,0.08);
+    }
+
+    .flight-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) auto auto auto;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.82);
+      border: 1px solid rgba(10,58,102,0.08);
+      font-size: 12px;
+      appearance: none;
+      -webkit-appearance: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .flight-row:hover {
+      transform: translateY(-1px);
+    }
+
+    .flight-row.is-selected {
+      border-color: rgba(13,79,139,0.34);
+      background: rgba(15,111,184,0.10);
+      box-shadow: 0 10px 20px rgba(13,79,139,0.08);
+    }
+
+    .flight-airline {
+      min-width: 0;
+    }
+
+    .flight-airline strong,
+    .flight-time strong {
+      display: block;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .flight-airline span,
+    .flight-time span,
+    .flight-meta span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .flight-meta {
+      text-align: right;
+      color: var(--text);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .flight-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .empty-state {
+      border-radius: 18px;
+      padding: 18px;
+      text-align: center;
+      background: rgba(255,255,255,0.72);
+      border: 1px dashed rgba(10,58,102,0.14);
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .gmap-popup {
+      min-width: 150px;
+    }
+
+    .popup-title {
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .popup-meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .point-marker,
+    .regional-airport-marker,
+    .commercial-airport-marker {
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 8px 18px rgba(68,48,20,0.20);
+      user-select: none;
+    }
+
+    .point-marker {
+      width: 28px;
+      height: 28px;
+      font-size: 10px;
+      background: var(--point-marker);
+      border: 2px solid rgba(255,255,255,0.95);
+    }
+
+    .regional-airport-marker,
+    .commercial-airport-marker {
+      width: 18px;
+      height: 18px;
+      font-size: 9px;
+      border: 2px solid rgba(255,255,255,0.96);
+    }
+
+    .regional-airport-marker {
+      background: var(--regional-marker);
+    }
+
+    .commercial-airport-marker {
+      background: var(--commercial-marker);
+    }
+
+    @media (max-width: 1180px) {
+      .shell {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 0;
+      }
+
+      .map-stage { min-height: 700px; }
+    }
+
+    @media (max-width: 900px) {
+      .toolbar { grid-template-columns: 1fr; }
+      .toolbar-actions { justify-content: flex-start; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .route-strip { align-items: flex-start; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 8px; }
+      .route-intel { padding: 10px; border-radius: 22px; }
+      .map-stage { min-height: 620px; }
+      .toolbar-title { font-size: 22px; }
+      .results-title { font-size: 20px; }
+      .summary-top { flex-direction: column; align-items: flex-start; }
+      .route-strip-left,
+      .route-strip-right,
+      .toolbar-actions { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <section class="route-intel" id="routeIntelComponent">
+    <div class="shell">
+      <div class="map-stage">
+        <div id="map"></div>
+
+        <div class="map-overlay">
+          <div class="toolbar">
+            <div>
+              <h1 class="toolbar-title">Travel Modeler v2.5</h1>
+            </div>
+
+            <div class="toolbar-field">
+              <div class="toolbar-label">Selected target</div>
+              <input class="toolbar-input" id="selectedTargetInput" type="text" placeholder="Search address, city, or airport" autocomplete="off" />
+              <div class="toolbar-status selected-target-meta" id="selectedTargetStatus">Click the map or search to set the selected target.</div>
+            </div>
+
+            <div class="toolbar-actions">
+              <button class="button-ghost" id="addStopButton" type="button">Add stop</button>
+              <button class="button-ghost" id="undoButton" type="button">Undo</button>
+              <button class="button" id="computeButton" type="button">Done</button>
+            </div>
+          </div>
+
+          <div class="route-strip">
+            <div class="route-strip-left" id="targetChips"></div>
+            <div class="route-strip-right">
+              <button class="button-chip" id="resetButton" type="button">Reset</button>
+              <button class="button-chip" id="demoRouteButton" type="button">Demo route</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="hint-chip" id="builderStatus">Click on the map to place the selected target.</div>
+        <div class="map-footer">Blue solid = SR22T airport-to-airport. Blue dashed = SR22T drive access. Orange dashed = passenger-flight path. Orange dotted = passenger airport access. Slate = direct drive route. R = regional airport. C = passenger airport.</div>
+      </div>
+
+      <aside class="results-panel">
+        <div class="results-head">
+          <div class="panel-label">Compare options</div>
+          <div class="results-title-row">
+            <h2 class="results-title">Travel models</h2>
+            <span class="badge" id="resultBadge">Awaiting route</span>
+          </div>
+          <p class="results-copy">Route your travels.</p>
+        </div>
+
+        <div class="summary-card" id="summaryCard">
+          <div class="empty-state">Click the map to create an origin and destination, then add more stops if needed and hit done.</div>
+        </div>
+
+        <div id="cardsMount">
+          <div class="empty-state">No model yet.</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    /* =========================
+       GOOGLE MAPS BOOTSTRAP
+       ========================= */
+
+    window.TRAVEL_MODELER_GOOGLE_KEY = "{{GOOGLE_MAPS_API_KEY}}";
+    window.TRAVEL_MODELER_GOOGLE_MAP_ID = "411981c879f30dcd54fd8976";
+   
+    (g => {
+      let h, a, k;
+      const p = "The Google Maps JavaScript API";
+      const c = "google";
+      const l = "importLibrary";
+      const q = "__ib__";
+      const m = document;
+      const b = window;
+      b[c] = b[c] || {};
+      const d = b[c].maps || (b[c].maps = {});
+      const r = new Set();
+      const e = new URLSearchParams();
+
+      const u = () => h || (h = new Promise(async (f, n) => {
+        a = m.createElement("script");
+        e.set("libraries", [...r] + "");
+        for (k in g) {
+          e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]);
+        }
+        e.set("callback", c + ".maps." + q);
+        a.src = "https://maps." + c + "apis.com/maps/api/js?" + e.toString();
+        d[q] = f;
+        a.onerror = () => h = n(new Error(p + " could not load."));
+        a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+        m.head.append(a);
+      }));
+
+      if (d[l]) {
+        console.warn(p + " only loads once. Ignoring:", g);
+      } else {
+        d[l] = (f, ...n) => {
+          r.add(f);
+          return u().then(() => d[l](f, ...n));
+        };
+      }
+    })({
+      key: window.TRAVEL_MODELER_GOOGLE_KEY,
+      v: "weekly",
+      authReferrerPolicy: "origin"
+    });
+  </script>
+
+  <script>
+    const CIRRUS_SPEED_MPH = 210;
+    const CIRRUS_READY_MINUTES_PER_LEG = 10;
+    const CIRRUS_GROUND_SPEED_MPH = 42;
+    const COMMERCIAL_AIR_SPEED_MPH = 500;
+    const COMMERCIAL_GROUND_SPEED_MPH = 34;
+    const DRIVE_SLEEP_THRESHOLD_HOURS = 14;
+    const DRIVE_SLEEP_BLOCK_HOURS = 8;
+    const DEFAULT_VIEW = { center: { lat: 38.8, lng: -97.6 }, zoom: 4 };
+    const MIN_REGIONAL_RUNWAY_FT = 2500;
+    const LIVE_COMMERCIAL_CANDIDATE_LIMIT = 4;
+    const AIRPORTS_CSV_URL = window.TRAVEL_MODELER_AIRPORTS_CSV_URL || 'https://davidmegginson.github.io/ourairports-data/airports.csv';
+    const RUNWAYS_CSV_URL = window.TRAVEL_MODELER_RUNWAYS_CSV_URL || 'https://davidmegginson.github.io/ourairports-data/runways.csv';
+    const FAA_PUBLIC_CSV_URL = window.TRAVEL_MODELER_FAA_PUBLIC_CSV_URL || 'data/faa_public_use.csv';
+    const FLIGHT_SEARCH_ENDPOINT = window.TRAVEL_MODELER_FLIGHT_SEARCH_ENDPOINT || '';
+    const FLIGHT_LOOKAHEAD_HOURS = 30;
+    const FLIGHT_WINDOW_HOURS = 6;
+    const PAVED_SURFACES = new Set(['paved','asphalt','asp','concrete','con','bituminous','bit','tarmac','macadam','sealed','pem','permanent']);
+    const ACCEPTED_AIRPORT_TYPES = new Set(['small_airport', 'medium_airport', 'large_airport']);
+
+    const EMPTY_ROUTE_POINTS = [null, null];
+    const DEMO_ROUTE_POINTS = [
+      { lat: 32.7157, lng: -117.1611, label: 'San Diego, California' },
+      { lat: 43.8836, lng: -106.3094, label: 'Embar, Wyoming' },
+      { lat: 35.2754, lng: -99.1970, label: 'Marshall, Oklahoma' }
+    ];
+
+    const state = {
+      points: EMPTY_ROUTE_POINTS.map(() => null),
+      activeIndex: 0,
+      result: null,
+      isComputing: false
+    };
+
+    const cache = {
+      reverse: new Map(),
+      directions: new Map(),
+      airports: new Map(),
+      flights: new Map(),
+      flightWindows: new Map(),
+      flightDetails: new Map()
+    };
+
+    const AIRPORT_DB = {
+      ready: false,
+      loading: false,
+      readyPromise: null,
+      loadError: null,
+      airports: [],
+      passengerAirports: [],
+      byCode: new Map(),
+      faaPublicSet: new Set(),
+      runwayMap: new Map()
+    };
+
+    const addStopButton = document.getElementById('addStopButton');
+    const undoButton = document.getElementById('undoButton');
+    const computeButton = document.getElementById('computeButton');
+    const resetButton = document.getElementById('resetButton');
+    const demoRouteButton = document.getElementById('demoRouteButton');
+    const targetChips = document.getElementById('targetChips');
+    const builderStatus = document.getElementById('builderStatus');
+    const selectedTargetInput = document.getElementById('selectedTargetInput');
+    const selectedTargetStatus = document.getElementById('selectedTargetStatus');
+    const resultBadge = document.getElementById('resultBadge');
+    const summaryCard = document.getElementById('summaryCard');
+    const cardsMount = document.getElementById('cardsMount');
+
+    const formatHours = (hours) => {
+      if (!isFinite(hours) || hours <= 0) return '—';
+      const totalMinutes = Math.round(hours * 60);
+      const h = Math.floor(totalMinutes / 60);
+      const m = totalMinutes % 60;
+      if (h === 0) return `${m}m`;
+      if (m === 0) return `${h}h`;
+      return `${h}h ${m}m`;
+    };
+
+    const formatMinutes = (minutes) => formatHours(minutes / 60);
+    const formatMiles = (miles) => `${Math.round(miles).toLocaleString()} mi`;
+    const pointTitle = (point) => point?.label || `${point.lat.toFixed(3)}, ${point.lng.toFixed(3)}`;
+    const pointKey = (point) => `${point.lat.toFixed(3)},${point.lng.toFixed(3)}`;
+
+
+    function makePopupHtml(title, meta) {
+      return `
+        <div class="gmap-popup">
+          <div class="popup-title">${title}</div>
+          <div class="popup-meta">${meta}</div>
+        </div>
+      `;
+    }
+
+    function buildAddressLabelFromResult(result, fallback) {
+      const comps = result?.address_components || [];
+      const getComp = (type) => comps.find((c) => c.types.includes(type))?.long_name || '';
+
+      const primary =
+        getComp('locality') ||
+        getComp('postal_town') ||
+        getComp('administrative_area_level_2') ||
+        getComp('sublocality') ||
+        getComp('neighborhood');
+
+      const secondary =
+        getComp('administrative_area_level_1') ||
+        getComp('country');
+
+      return [primary, secondary].filter(Boolean).join(', ') || result?.formatted_address || fallback;
+    }
+
+    async function reverseGeocode(point) {
+      const key = pointKey(point);
+      if (cache.reverse.has(key)) return cache.reverse.get(key);
+
+      try {
+        if (!geocoder) throw new Error('geocoder unavailable');
+        const response = await geocoder.geocode({ location: point });
+        const best = response?.results?.[0];
+        const fallback = `${point.lat.toFixed(3)}, ${point.lng.toFixed(3)}`;
+        const label = buildAddressLabelFromResult(best, fallback);
+        cache.reverse.set(key, label);
+        return label;
+      } catch (error) {
+        const fallback = `${point.lat.toFixed(3)}, ${point.lng.toFixed(3)}`;
+        cache.reverse.set(key, fallback);
+        return fallback;
+      }
+    }
+
+    function normalizeLatLng(location) {
+      if (!location) return null;
+      if (typeof location.lat === 'function' && typeof location.lng === 'function') {
+        return { lat: location.lat(), lng: location.lng() };
+      }
+      if (typeof location.lat === 'number' && typeof location.lng === 'number') {
+        return { lat: location.lat, lng: location.lng };
+      }
+      return null;
+    }
+
+    async function setActivePoint(nextPoint, options = {}) {
+      const { preferredLabel = '', viewport = null } = options;
+      const activeIndexAtSet = state.activeIndex;
+      state.points[activeIndexAtSet] = {
+        lat: nextPoint.lat,
+        lng: nextPoint.lng,
+        label: preferredLabel || 'Locating…'
+      };
+      state.result = null;
+      await syncUI();
+
+      if (viewport && map) {
+        map.fitBounds(viewport, 100);
+      } else if (map) {
+        map.setCenter(nextPoint);
+        if (map.getZoom() < 10) map.setZoom(10);
+      }
+
+      if (!preferredLabel) {
+        reverseGeocode(nextPoint).then(async (label) => {
+          const current = state.points[activeIndexAtSet];
+          if (!current) return;
+          if (
+            Math.abs(current.lat - nextPoint.lat) < 0.000001 &&
+            Math.abs(current.lng - nextPoint.lng) < 0.000001
+          ) {
+            current.label = label;
+            await syncUI();
+          }
+        });
+      }
+    }
+
+    async function geocodeTextQuery(query) {
+      if (!query || !geocoder) return null;
+      const response = await geocoder.geocode({ address: query });
+      const best = response?.results?.[0];
+      if (!best?.geometry?.location) return null;
+      return {
+        point: normalizeLatLng(best.geometry.location),
+        label: buildAddressLabelFromResult(best, query),
+        viewport: best.geometry.viewport || null
+      };
+    }
+
+    function parseMaybeDate(value) {
+      if (!value) return null;
+      const normalized = typeof value === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(value)
+        ? value.replace(' ', 'T')
+        : value;
+      const parsed = new Date(normalized);
+      return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function formatFlightClock(value) {
+      const parsed = parseMaybeDate(value);
+      if (!parsed) return value || '—';
+      return parsed.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function formatFlightDuration(minutes) {
+      if (!Number.isFinite(minutes) || minutes <= 0) return '—';
+      return formatMinutes(minutes);
+    }
+
+    const usdFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0
+    });
+
+    function formatUsd(value) {
+      if (!Number.isFinite(value)) return '';
+      return usdFormatter.format(value);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function buildFlightOptionId(flight) {
+      const raw = [
+        flight?.departureAirport || '',
+        flight?.arrivalAirport || '',
+        flight?.departureAt || flight?.departureDisplay || '',
+        flight?.flightNumber || flight?.airline || ''
+      ].join('-');
+      return raw.replace(/[^A-Za-z0-9_-]+/g, '_') || `flight_${Date.now()}`;
+    }
+
+    function sortFlightsByDeparture(a, b) {
+      const aTime = parseMaybeDate(a?.departureAt)?.getTime() || Number.MAX_SAFE_INTEGER;
+      const bTime = parseMaybeDate(b?.departureAt)?.getTime() || Number.MAX_SAFE_INTEGER;
+      if (aTime !== bTime) return aTime - bTime;
+      return (a?.totalMinutes || Number.MAX_SAFE_INTEGER) - (b?.totalMinutes || Number.MAX_SAFE_INTEGER);
+    }
+
+    function normalizeFlightPayload(payload, originCodes = [], destinationCodes = []) {
+      const originSet = new Set((Array.isArray(originCodes) ? originCodes : [originCodes]).filter(Boolean).map((code) => String(code).toUpperCase()));
+      const destinationSet = new Set((Array.isArray(destinationCodes) ? destinationCodes : [destinationCodes]).filter(Boolean).map((code) => String(code).toUpperCase()));
+
+      const keepFlight = (flight) => {
+        const dep = String(flight?.departureAirport || '').toUpperCase();
+        const arr = String(flight?.arrivalAirport || '').toUpperCase();
+        if (originSet.size && !originSet.has(dep)) return false;
+        if (destinationSet.size && !destinationSet.has(arr)) return false;
+        return Boolean(dep && arr);
+      };
+
+      if (Array.isArray(payload?.flights)) {
+        const flights = payload.flights
+          .map((flight) => {
+            const price = Number.isFinite(flight?.price) ? flight.price : null;
+            const stops = Number.isFinite(flight?.stops) ? Number(flight.stops) : 0;
+            return {
+              id: flight.id || buildFlightOptionId(flight),
+              airline: flight.airline || 'Unknown airline',
+              flightNumber: flight.flightNumber || '',
+              departureAirport: String(flight.departureAirport || '').toUpperCase(),
+              arrivalAirport: String(flight.arrivalAirport || '').toUpperCase(),
+              departureAt: flight.departureAt || '',
+              arrivalAt: flight.arrivalAt || '',
+              departureDisplay: flight.departureDisplay || formatFlightClock(flight.departureAt),
+              arrivalDisplay: flight.arrivalDisplay || formatFlightClock(flight.arrivalAt),
+              durationMinutes: Number.isFinite(flight.durationMinutes) ? Number(flight.durationMinutes) : null,
+              durationText: flight.durationText || formatFlightDuration(flight.durationMinutes),
+              stops,
+              isNonstop: typeof flight.isNonstop === 'boolean' ? flight.isNonstop : (stops === 0),
+              price,
+              priceText: flight.priceText || formatUsd(price),
+              layoverMinutes: Number.isFinite(flight.layoverMinutes) ? Number(flight.layoverMinutes) : (stops > 0 ? stops * 68 : 0),
+              providerLink: flight.providerLink || payload.providerLink || '',
+              bookingToken: flight.bookingToken || ''
+            };
+          })
+          .filter(keepFlight)
+          .sort(sortFlightsByDeparture);
+
+        return {
+          status: payload.status || 'ok',
+          source: payload.source || 'custom',
+          providerLink: payload.providerLink || '',
+          flights
+        };
+      }
+
+      return {
+        status: 'unsupported',
+        source: 'unknown',
+        providerLink: '',
+        flights: []
+      };
+    }
+
+    function parseDurationTextToMinutes(text) {
+      if (!text) return null;
+      const source = String(text).toLowerCase();
+      const hourMatch = source.match(/(\d+)\s*h/);
+      const minuteMatch = source.match(/(\d+)\s*m/);
+      const hours = hourMatch ? Number(hourMatch[1]) : 0;
+      const minutes = minuteMatch ? Number(minuteMatch[1]) : 0;
+      const total = (hours * 60) + minutes;
+      return total > 0 ? total : null;
+    }
+
+    function buildFlightSearchWindows() {
+      const now = new Date();
+      now.setMinutes(0, 0, 0);
+      const bucketStart = new Date(now);
+      bucketStart.setHours(Math.floor(bucketStart.getHours() / FLIGHT_WINDOW_HOURS) * FLIGHT_WINDOW_HOURS, 0, 0, 0);
+      const windowCount = Math.max(2, Math.ceil(FLIGHT_LOOKAHEAD_HOURS / FLIGHT_WINDOW_HOURS) + 1);
+      const windows = [];
+
+      for (let i = 0; i < windowCount; i++) {
+        const start = new Date(bucketStart.getTime() + (i * FLIGHT_WINDOW_HOURS * 60 * 60 * 1000));
+        windows.push({
+          year: start.getFullYear(),
+          month: start.getMonth() + 1,
+          day: start.getDate(),
+          startHour: start.getHours(),
+          numHours: FLIGHT_WINDOW_HOURS,
+          windowStart: start.toISOString()
+        });
+      }
+
+      return windows;
+    }
+
+    function buildFlightProxyTargets(targetUrl) {
+      const targets = [targetUrl];
+      const customProxy = String(window.TRAVEL_MODELER_PUBLIC_FLIGHT_PROXY_URL || '').trim();
+      if (customProxy) {
+        targets.push(`${customProxy}${encodeURIComponent(targetUrl)}`);
+      }
+      targets.push(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
+      targets.push(`https://corsproxy.io/?${encodeURIComponent(targetUrl)}`);
+      return [...new Set(targets.filter(Boolean))];
+    }
+
+    async function fetchJsonWithProxyFallbacks(targetUrl) {
+      let lastError = null;
+      for (const attemptUrl of buildFlightProxyTargets(targetUrl)) {
+        try {
+          const response = await fetch(attemptUrl, {
+            method: 'GET',
+            headers: {
+              Accept: 'application/json, text/plain, */*'
+            }
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const raw = (await response.text()).trim();
+          if (!raw) throw new Error('Empty response');
+          return JSON.parse(raw);
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error('Unable to reach live flight source.');
+    }
+
+    async function fetchFlightStatsDepartureWindow(originCode, window) {
+      const key = `${originCode}:${window.year}-${window.month}-${window.day}:${window.startHour}:${window.numHours}`;
+      if (cache.flightWindows.has(key)) return cache.flightWindows.get(key);
+
+      const endpoint = `https://www.flightstats.com/v2/api-next/flight-tracker/dep/${encodeURIComponent(originCode)}/${window.year}/${window.month}/${window.day}/${window.startHour}?numHours=${window.numHours}`;
+
+      try {
+        const payload = await fetchJsonWithProxyFallbacks(endpoint);
+        const flights = Array.isArray(payload?.data?.flights) ? payload.data.flights : [];
+        const normalized = { flights };
+        cache.flightWindows.set(key, normalized);
+        return normalized;
+      } catch (error) {
+        const failed = { error: error?.message || 'Departure window failed', flights: [] };
+        cache.flightWindows.set(key, failed);
+        return failed;
+      }
+    }
+
+    function buildFlightStatsOptionId(flight) {
+      return buildFlightOptionId({
+        departureAirport: flight?.departureAirport || '',
+        arrivalAirport: flight?.arrivalAirport || '',
+        departureAt: flight?.departureAt || '',
+        flightNumber: flight?.flightNumber || ''
+      });
+    }
+
+    function normalizeFlightStatsDepartureItem(item, originCode) {
+      const detailUrl = item?.url ? `https://www.flightstats.com${item.url}` : '';
+      const detailQuery = detailUrl ? new URL(detailUrl).searchParams : null;
+      const departureAt = item?.sortTime || '';
+      const arrivalAirport = String(item?.airport?.fs || item?.airport?.iata || '').toUpperCase();
+      const airlineCode = String(item?.carrier?.fs || '').toUpperCase();
+      const flightNumberOnly = String(item?.carrier?.flightNumber || '').trim();
+      const departureDate = parseMaybeDate(departureAt) || new Date();
+
+      return {
+        id: buildFlightStatsOptionId({
+          departureAirport: originCode,
+          arrivalAirport,
+          departureAt,
+          flightNumber: `${airlineCode}${flightNumberOnly}`
+        }),
+        airline: item?.carrier?.name || 'Unknown airline',
+        airlineCode,
+        flightNumberOnly,
+        flightNumber: [airlineCode, flightNumberOnly].filter(Boolean).join(' '),
+        departureAirport: originCode,
+        arrivalAirport,
+        departureAt,
+        arrivalAt: '',
+        departureDisplay: item?.departureTime?.timeAMPM || item?.departureTime?.time24 || formatFlightClock(departureAt),
+        arrivalDisplay: item?.arrivalTime?.timeAMPM || item?.arrivalTime?.time24 || '—',
+        durationMinutes: null,
+        durationText: '—',
+        stops: 0,
+        isNonstop: true,
+        layoverMinutes: 0,
+        providerLink: detailUrl,
+        detailYear: Number(detailQuery?.get('year')) || departureDate.getUTCFullYear(),
+        detailMonth: Number(detailQuery?.get('month')) || (departureDate.getUTCMonth() + 1),
+        detailDay: Number(detailQuery?.get('date')) || departureDate.getUTCDate(),
+        liveStatus: ''
+      };
+    }
+
+    async function enrichFlightStatsFlight(flight) {
+      const detailKey = `${flight.airlineCode}:${flight.flightNumberOnly}:${flight.detailYear}:${flight.detailMonth}:${flight.detailDay}`;
+      if (cache.flightDetails.has(detailKey)) {
+        return { ...flight, ...cache.flightDetails.get(detailKey) };
+      }
+
+      if (!flight.airlineCode || !flight.flightNumberOnly) return flight;
+
+      const endpoint = `https://www.flightstats.com/v2/api-next/flight-tracker/${encodeURIComponent(flight.airlineCode)}/${encodeURIComponent(flight.flightNumberOnly)}/${flight.detailYear}/${flight.detailMonth}/${flight.detailDay}`;
+
+      try {
+        const payload = await fetchJsonWithProxyFallbacks(endpoint);
+        const detail = payload?.data || {};
+        const durationText = detail?.additionalFlightInfo?.flightDuration || flight.durationText || '—';
+        const durationMinutes = parseDurationTextToMinutes(durationText)
+          ?? (parseMaybeDate(detail?.schedule?.scheduledDepartureUTC) && parseMaybeDate(detail?.schedule?.scheduledArrivalUTC)
+            ? Math.max(0, Math.round((parseMaybeDate(detail.schedule.scheduledArrivalUTC).getTime() - parseMaybeDate(detail.schedule.scheduledDepartureUTC).getTime()) / 60000))
+            : null);
+
+        const normalized = {
+          departureAt: detail?.schedule?.estimatedActualDepartureUTC || detail?.schedule?.scheduledDepartureUTC || flight.departureAt,
+          arrivalAt: detail?.schedule?.estimatedActualArrivalUTC || detail?.schedule?.scheduledArrivalUTC || flight.arrivalAt,
+          departureDisplay: flight.departureDisplay || formatFlightClock(detail?.schedule?.scheduledDepartureUTC),
+          arrivalDisplay: flight.arrivalDisplay || formatFlightClock(detail?.schedule?.scheduledArrivalUTC),
+          durationMinutes,
+          durationText: durationText !== '—' ? durationText : formatFlightDuration(durationMinutes),
+          liveStatus: detail?.status?.statusDescription || detail?.resultHeader?.statusDescription || '',
+          providerLink: flight.providerLink || ''
+        };
+
+        cache.flightDetails.set(detailKey, normalized);
+        return { ...flight, ...normalized };
+      } catch (error) {
+        return flight;
+      }
+    }
+
+    async function fetchBuiltInLiveCommercialFlights(originAirports, destinationAirports) {
+      const originList = (originAirports || []).filter(Boolean);
+      const destinationList = (destinationAirports || []).filter(Boolean);
+      const destinationRank = new Map(destinationList.map((airport, index) => [airport.code, index]));
+      const now = Date.now() - (5 * 60 * 1000);
+      const windows = buildFlightSearchWindows();
+
+      for (const originAirport of originList) {
+        const flightPool = [];
+        const windowResponses = await Promise.all(windows.map((window) => fetchFlightStatsDepartureWindow(originAirport.code, window)));
+
+        for (const response of windowResponses) {
+          for (const item of response?.flights || []) {
+            const normalized = normalizeFlightStatsDepartureItem(item, originAirport.code);
+            if (!destinationRank.has(normalized.arrivalAirport)) continue;
+            const departureTime = parseMaybeDate(normalized.departureAt)?.getTime() || 0;
+            if (departureTime && departureTime < now) continue;
+            flightPool.push(normalized);
+          }
+        }
+
+        const deduped = [];
+        const seen = new Set();
+        for (const flight of flightPool.sort((a, b) => {
+          const aRank = destinationRank.get(a.arrivalAirport) ?? Number.MAX_SAFE_INTEGER;
+          const bRank = destinationRank.get(b.arrivalAirport) ?? Number.MAX_SAFE_INTEGER;
+          if (aRank !== bRank) return aRank - bRank;
+          return sortFlightsByDeparture(a, b);
+        })) {
+          if (seen.has(flight.id)) continue;
+          seen.add(flight.id);
+          deduped.push(flight);
+        }
+
+        if (!deduped.length) continue;
+
+        const enriched = await Promise.all(deduped.slice(0, 8).map(enrichFlightStatsFlight));
+        return {
+          status: 'ok',
+          source: 'flightstats-browser-proxy',
+          providerLink: '',
+          flights: enriched.sort((a, b) => {
+            const aRank = destinationRank.get(a.arrivalAirport) ?? Number.MAX_SAFE_INTEGER;
+            const bRank = destinationRank.get(b.arrivalAirport) ?? Number.MAX_SAFE_INTEGER;
+            if (aRank !== bRank) return aRank - bRank;
+            return sortFlightsByDeparture(a, b);
+          })
+        };
+      }
+
+      return {
+        status: 'ok',
+        source: 'flightstats-browser-proxy',
+        providerLink: '',
+        flights: []
+      };
+    }
+
+    async function fetchLiveCommercialFlights(originAirports, destinationAirports) {
+      const originCodes = [...new Set((originAirports || []).map((airport) => airport?.code).filter(Boolean))];
+      const destinationCodes = [...new Set((destinationAirports || []).map((airport) => airport?.code).filter(Boolean))];
+      const key = `${originCodes.join(',')}=>${destinationCodes.join(',')}`;
+      if (cache.flights.has(key)) return cache.flights.get(key);
+
+      try {
+        let normalized;
+
+        if (FLIGHT_SEARCH_ENDPOINT) {
+          const url = new URL(FLIGHT_SEARCH_ENDPOINT, window.location.href);
+          url.searchParams.set('origins', originCodes.join(','));
+          url.searchParams.set('destinations', destinationCodes.join(','));
+          url.searchParams.set('limit', '8');
+
+          const response = await fetch(url.toString(), {
+            method: 'GET',
+            headers: { Accept: 'application/json' }
+          });
+          if (!response.ok) throw new Error(`Flight API HTTP ${response.status}`);
+          const payload = await response.json();
+          normalized = normalizeFlightPayload(payload, originCodes, destinationCodes);
+        } else {
+          normalized = await fetchBuiltInLiveCommercialFlights(originAirports, destinationAirports);
+        }
+
+        cache.flights.set(key, normalized);
+        return normalized;
+      } catch (error) {
+        const failed = {
+          status: 'error',
+          source: FLIGHT_SEARCH_ENDPOINT ? 'custom' : 'flightstats-browser-proxy',
+          providerLink: '',
+          error: error?.message || 'Flight API unavailable',
+          flights: []
+        };
+        cache.flights.set(key, failed);
+        return failed;
+      }
+    }
+
+    function buildCommercialOptionKey(flight, fromAirport, toAirport) {
+      return buildFlightOptionId({
+        departureAirport: fromAirport?.code || flight?.departureAirport || '',
+        arrivalAirport: toAirport?.code || flight?.arrivalAirport || '',
+        departureAt: flight?.departureAt || '',
+        flightNumber: flight?.flightNumber || flight?.airline || ''
+      });
+    }
+
+    async function buildCommercialOptionModel({
+      fromPoint,
+      toPoint,
+      fromAirport,
+      toAirport,
+      cirrusLegMinutes,
+      selectedFlight = null,
+      fallbackConnections = 0,
+      fallbackAirMiles = null
+    }) {
+      const accessOutDrive = await getDriveLeg(fromPoint, fromAirport);
+      const accessInDrive = await getDriveLeg(toAirport, toPoint);
+      const accessOutMinutes = Math.round(accessOutDrive.minutes);
+      const accessInMinutes = Math.round(accessInDrive.minutes);
+      const connections = selectedFlight && Number.isFinite(selectedFlight.stops)
+        ? Number(selectedFlight.stops)
+        : Number(fallbackConnections || 0);
+      const airMiles = Number.isFinite(fallbackAirMiles)
+        ? fallbackAirMiles
+        : haversineMiles(fromAirport, toAirport);
+      const heuristicInAirMinutes = Math.max(28, Math.round((airMiles / COMMERCIAL_AIR_SPEED_MPH) * 60) + 18);
+      const heuristicNextFlightWindowMinutes = 38 + (fromAirport.hubTier <= 2 ? 0 : 12) + (connections * 18);
+      const liveDepartureDate = parseMaybeDate(selectedFlight?.departureAt);
+      const liveNextFlightWaitMinutes = liveDepartureDate
+        ? Math.max(0, Math.round((liveDepartureDate.getTime() - Date.now()) / 60000))
+        : null;
+      const nextFlightWindowMinutes = Number.isFinite(liveNextFlightWaitMinutes)
+        ? liveNextFlightWaitMinutes
+        : heuristicNextFlightWindowMinutes;
+      const tsaMinutes = fromAirport.tsa || 18;
+      const boardingTaxiMinutes = 22 + (connections * 8);
+      const layoverMinutes = Number.isFinite(selectedFlight?.layoverMinutes)
+        ? Number(selectedFlight.layoverMinutes)
+        : (connections * 68);
+      const delayBufferMinutes = 12 + (connections * 18);
+      const inAirMinutes = Number.isFinite(selectedFlight?.durationMinutes)
+        ? Number(selectedFlight.durationMinutes)
+        : heuristicInAirMinutes;
+      const rawCommercialMinutes = accessOutMinutes + accessInMinutes + nextFlightWindowMinutes + tsaMinutes + boardingTaxiMinutes + layoverMinutes + delayBufferMinutes + inAirMinutes;
+      const minimumCommercialDelta = 35 + (connections * 45) + Math.round((accessOutMinutes + accessInMinutes) * 0.15);
+      const totalMinutes = Math.max(rawCommercialMinutes, cirrusLegMinutes + minimumCommercialDelta);
+      const scheduleSlackMinutes = Math.max(0, totalMinutes - rawCommercialMinutes);
+      const totalDoorMinutes = accessOutMinutes + accessInMinutes + inAirMinutes + nextFlightWindowMinutes;
+      const optionId = buildCommercialOptionKey(selectedFlight, fromAirport, toAirport);
+
+      return {
+        optionId,
+        source: selectedFlight ? 'live' : 'heuristic',
+        selectedFlight,
+        fromAirport,
+        toAirport,
+        accessOutDrive,
+        accessInDrive,
+        accessOutMinutes,
+        accessInMinutes,
+        inAirMinutes,
+        nextFlightWindowMinutes,
+        tsaMinutes,
+        boardingTaxiMinutes,
+        layoverMinutes,
+        delayBufferMinutes,
+        scheduleSlackMinutes,
+        connections,
+        airMiles,
+        totalMinutes,
+        totalDoorMinutes,
+        airline: selectedFlight?.airline || '',
+        flightNumber: selectedFlight?.flightNumber || '',
+        departureAt: selectedFlight?.departureAt || '',
+        arrivalAt: selectedFlight?.arrivalAt || '',
+        departureDisplay: selectedFlight?.departureDisplay || '',
+        arrivalDisplay: selectedFlight?.arrivalDisplay || '',
+        durationMinutes: selectedFlight?.durationMinutes || inAirMinutes,
+        durationText: selectedFlight?.durationText || formatFlightDuration(inAirMinutes),
+        isNonstop: typeof selectedFlight?.isNonstop === 'boolean' ? selectedFlight.isNonstop : (connections === 0),
+        price: selectedFlight?.price ?? null,
+        priceText: selectedFlight?.priceText || '',
+        providerLink: selectedFlight?.providerLink || '',
+        bookingToken: selectedFlight?.bookingToken || ''
+      };
+    }
+
+    function applyCommercialOptionToLeg(leg, option) {
+      const liveMeta = {
+        liveStatus: leg.commercial.liveStatus,
+        liveSource: leg.commercial.liveSource,
+        liveOptions: leg.commercial.liveOptions,
+        fallbackOption: leg.commercial.fallbackOption,
+        selectedOptionId: option.optionId
+      };
+      leg.commercial = {
+        ...option,
+        ...liveMeta
+      };
+    }
+
+    function recalculateResultAggregates(result) {
+      const legs = result.legs || [];
+      result.totalDriveMiles = legs.reduce((sum, leg) => sum + leg.driveMiles, 0);
+      result.totalDriveMinutes = legs.reduce((sum, leg) => sum + leg.driveLegMinutes, 0);
+      result.totalCirrusMinutes = legs.reduce((sum, leg) => sum + leg.cirrus.totalMinutes, 0);
+      result.totalCommercialMinutes = legs.reduce((sum, leg) => sum + leg.commercial.totalMinutes, 0);
+      result.totalOvernightStops = legs.reduce((sum, leg) => sum + leg.overnightStops, 0);
+      result.totalSleepMinutes = legs.reduce((sum, leg) => sum + leg.sleepLayoverMinutes, 0);
+      result.totalCommercialConnections = legs.reduce((sum, leg) => sum + (leg.commercial.connections || 0), 0);
+      result.totalCommercialGapMinutes = result.totalCommercialMinutes - result.totalCirrusMinutes;
+      result.totalFallbackDriveSegments = legs.reduce((sum, leg) => {
+        const segments = [
+          leg.driveRoute,
+          leg.cirrus.accessOutDrive,
+          leg.cirrus.accessInDrive,
+          leg.commercial.accessOutDrive,
+          leg.commercial.accessInDrive
+        ];
+        return sum + segments.filter((segment) => segment?.isFallback).length;
+      }, 0);
+      result.cirrusFirstRegional = legs[0]?.cirrus?.fromAirport || null;
+      result.cirrusLastRegional = legs[legs.length - 1]?.cirrus?.toAirport || null;
+      result.commercialFirstAirport = legs[0]?.commercial?.fromAirport || null;
+      result.commercialLastAirport = legs[legs.length - 1]?.commercial?.toAirport || null;
+      return result;
+    }
+
+    async function buildLiveCommercialOptionsForLeg({ fromPoint, toPoint, originCandidates, destinationCandidates, cirrusLegMinutes }) {
+      const feed = await fetchLiveCommercialFlights(
+        originCandidates.map(({ airport }) => airport),
+        destinationCandidates.map(({ airport }) => airport)
+      );
+
+      const originByCode = new Map(originCandidates.map(({ airport, miles }) => [airport.code, { airport, miles }]));
+      const destinationByCode = new Map(destinationCandidates.map(({ airport, miles }) => [airport.code, { airport, miles }]));
+      const options = [];
+
+      for (const flight of feed.flights || []) {
+        const originMatch = originByCode.get(flight.departureAirport);
+        const destinationMatch = destinationByCode.get(flight.arrivalAirport);
+        if (!originMatch || !destinationMatch) continue;
+        const option = await buildCommercialOptionModel({
+          fromPoint,
+          toPoint,
+          fromAirport: originMatch.airport,
+          toAirport: destinationMatch.airport,
+          cirrusLegMinutes,
+          selectedFlight: flight,
+          fallbackConnections: flight.stops || 0,
+          fallbackAirMiles: haversineMiles(originMatch.airport, destinationMatch.airport)
+        });
+        options.push(option);
+      }
+
+      const originRank = new Map(originCandidates.map(({ airport }, index) => [airport.code, index]));
+      const destinationRank = new Map(destinationCandidates.map(({ airport }, index) => [airport.code, index]));
+
+      options.sort((a, b) => {
+        const aOriginRank = originRank.get(a.fromAirport.code) ?? Number.MAX_SAFE_INTEGER;
+        const bOriginRank = originRank.get(b.fromAirport.code) ?? Number.MAX_SAFE_INTEGER;
+        if (aOriginRank !== bOriginRank) return aOriginRank - bOriginRank;
+
+        const aDestinationRank = destinationRank.get(a.toAirport.code) ?? Number.MAX_SAFE_INTEGER;
+        const bDestinationRank = destinationRank.get(b.toAirport.code) ?? Number.MAX_SAFE_INTEGER;
+        if (aDestinationRank !== bDestinationRank) return aDestinationRank - bDestinationRank;
+
+        const departureDelta = sortFlightsByDeparture(a, b);
+        if (departureDelta !== 0) return departureDelta;
+
+        return (a.accessOutMinutes + a.accessInMinutes) - (b.accessOutMinutes + b.accessInMinutes);
+      });
+
+      return { feed, liveOptions: options };
+    }
+
+    function renderLiveFlights(leg, legIndex = 0) {
+      const live = leg?.commercial?.liveOptions || [];
+      const status = leg?.commercial?.liveStatus || 'unconfigured';
+      const source = leg?.commercial?.liveSource || 'custom';
+      const selectedId = leg?.commercial?.selectedOptionId || '';
+
+      if (live.length) {
+        return `
+          <div class="flight-list">
+            <div class="small-label">Next listed flights</div>
+            ${live.slice(0, 6).map((flight) => `
+              <button class="flight-row ${flight.optionId === selectedId ? 'is-selected' : ''}" type="button" data-select-flight="1" data-leg-index="${legIndex}" data-option-id="${flight.optionId}">
+                <div class="flight-airline">
+                  <strong>${escapeHtml(flight.airline || 'Commercial option')}</strong>
+                  <span>${escapeHtml(flight.flightNumber || `${flight.fromAirport.code} → ${flight.toAirport.code}`)}</span>
+                </div>
+                <div class="flight-time">
+                  <strong>${escapeHtml(flight.departureDisplay || '—')}</strong>
+                  <span>${escapeHtml(flight.fromAirport.code)}</span>
+                </div>
+                <div class="flight-time">
+                  <strong>${escapeHtml(flight.durationText || '—')}</strong>
+                  <span>${flight.isNonstop ? 'Nonstop' : `${flight.connections || 0} stop`}</span>
+                </div>
+                <div class="flight-meta">
+                  <strong>${escapeHtml(flight.arrivalDisplay || '—')}</strong>
+                  <span>${escapeHtml(flight.priceText || `${formatMinutes(flight.totalMinutes)} total`)}</span>
+                </div>
+              </button>
+            `).join('')}
+            <div class="flight-note">Showing the next direct departures from the nearest viable passenger airport pair. Click a row to swap airports and timings for this leg.</div>
+          </div>
+        `;
+      }
+
+
+      if (status === 'error') {
+        return `
+          <div class="flight-list">
+            <div class="small-label">Next listed flights</div>
+            <div class="flight-note">Built-in browser flight lookup failed on this run, so the commercial timing model fallback is being used.</div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="flight-list">
+          <div class="small-label">Next listed flights</div>
+          <div class="flight-note">No direct scheduled departures were returned from ${escapeHtml(source)} for the nearby airport combinations on this leg. Keeping the commercial timing model fallback.</div>
+        </div>
+      `;
+    }
+
+    function stripQ(value) {
+      return (value || '').replace(/^"|"$/g, '').trim();
+    }
+
+    function csvSplit(line) {
+      const res = [];
+      let cur = '';
+      let inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQ && line[i + 1] === '"') {
+            cur += '"';
+            i += 1;
+          } else {
+            inQ = !inQ;
+          }
+        } else if (ch === ',' && !inQ) {
+          res.push(cur);
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      res.push(cur);
+      return res;
+    }
+
+    function abbreviationFromIdent(ident = '') {
+      const clean = String(ident || '').toUpperCase();
+      if (/^K[A-Z0-9]{3}$/.test(clean)) return clean.slice(1);
+      return clean;
+    }
+
+    function displayCodeForAirport(record, preferPassengerCode = false) {
+      const iata = String(record.iataCode || '').toUpperCase();
+      const local = String(record.localCode || '').toUpperCase();
+      const ident = String(record.ident || record.icao || '').toUpperCase();
+      if (preferPassengerCode && /^[A-Z0-9]{3}$/.test(iata)) return iata;
+      if (/^[A-Z0-9]{3}$/.test(iata)) return iata;
+      if (local) return local;
+      return abbreviationFromIdent(ident) || ident || 'AIR';
+    }
+
+    function buildLookupCodes(record) {
+      const ident = String(record.ident || record.icao || '').toUpperCase();
+      const local = String(record.localCode || '').toUpperCase();
+      const iata = String(record.iataCode || '').toUpperCase();
+      const codes = [ident, local, iata];
+      if (ident.startsWith('K') && ident.length === 4) codes.push(ident.slice(1));
+      return [...new Set(codes.filter(Boolean))];
+    }
+
+    function typeRunwayFallbackFt(type) {
+      if (type === 'large_airport') return 9000;
+      if (type === 'medium_airport') return 5000;
+      return 3000;
+    }
+
+    function deriveHubTier(type, scheduledService) {
+      if (type === 'large_airport') return 1;
+      if (type === 'medium_airport') return 2;
+      return scheduledService ? 4 : 5;
+    }
+
+    function deriveTsaMinutes(type) {
+      if (type === 'large_airport') return 30;
+      if (type === 'medium_airport') return 18;
+      return 12;
+    }
+
+    function isPaved(surface = '') {
+      const normalized = String(surface || '').trim().toLowerCase();
+      if (!normalized) return false;
+      for (const paved of PAVED_SURFACES) {
+        if (normalized === paved || normalized.startsWith(paved + '/') || normalized.includes(paved)) return true;
+      }
+      return false;
+    }
+
+    function looksExcludedAirportName(name = '', keywords = '') {
+      const combined = `${name} ${keywords}`.toLowerCase();
+      return /private|pvt|restricted|personal|residential|military|air force|reserve base|naval|seaplane|heliport|helipad|glider|ultralight|test facility|cargo only|freight/.test(combined);
+    }
+
+    function isPassengerAirport(record) {
+      const combined = `${record.name || ''} ${record.keywords || ''}`.toLowerCase();
+      if (/freight|cargo|air force|reserve base|naval|military/.test(combined)) return false;
+      if (record.country === 'US' && AIRPORT_DB.faaPublicSet && AIRPORT_DB.faaPublicSet.size > 0 && !record.publicUse) return false;
+      if (record.scheduledService) return true;
+      if (record.type === 'large_airport') return true;
+      if (record.type === 'medium_airport' && record.iataCode) return true;
+      return false;
+    }
+
+    async function fetchCsvText(url) {
+      if (!url) return '';
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+      return response.text();
+    }
+
+    async function loadFaaPublicUseSet() {
+      try {
+        const csv = await fetchCsvText(FAA_PUBLIC_CSV_URL);
+        const lines = csv.split(/\r?\n/).filter(Boolean);
+        if (!lines.length) throw new Error('FAA CSV empty');
+        const header = csvSplit(lines[0]).map(stripQ);
+        const lidIdx = header.indexOf('LOCATION_ID');
+        const useIdx = header.indexOf('FACILITY_USE_CODE');
+        if (lidIdx < 0 || useIdx < 0) throw new Error('FAA CSV missing LOCATION_ID/FACILITY_USE_CODE');
+        const set = new Set();
+        for (let i = 1; i < lines.length; i++) {
+          const cols = csvSplit(lines[i]);
+          if (!cols || cols.length <= Math.max(lidIdx, useIdx)) continue;
+          const use = stripQ(cols[useIdx]);
+          if (use === 'PU') set.add(stripQ(cols[lidIdx]).toUpperCase());
+        }
+        AIRPORT_DB.faaPublicSet = set;
+        return set;
+      } catch (error) {
+        console.warn('FAA public-use load failed:', error);
+        AIRPORT_DB.faaPublicSet = new Set();
+        return AIRPORT_DB.faaPublicSet;
+      }
+    }
+
+    async function loadRunwayMap() {
+      const csv = await fetchCsvText(RUNWAYS_CSV_URL);
+      const lines = csv.split(/\r?\n/).filter(Boolean);
+      const header = csvSplit(lines[0]).map(stripQ);
+      const identIdx = header.indexOf('airport_ident');
+      const lenIdx = header.indexOf('length_ft');
+      const surfaceIdx = header.indexOf('surface');
+      const closedIdx = header.indexOf('closed');
+      const runwayMap = new Map();
+      for (let i = 1; i < lines.length; i++) {
+        const cols = csvSplit(lines[i]);
+        if (!cols || cols.length <= Math.max(identIdx, lenIdx, surfaceIdx)) continue;
+        const closed = closedIdx >= 0 ? stripQ(cols[closedIdx]) : '0';
+        if (closed === '1') continue;
+        const ident = stripQ(cols[identIdx]).toUpperCase();
+        const lenFt = parseInt(stripQ(cols[lenIdx]), 10);
+        const surface = stripQ(cols[surfaceIdx]).toLowerCase();
+        if (!ident || !lenFt || !isPaved(surface)) continue;
+        const current = runwayMap.get(ident) || 0;
+        if (lenFt > current) runwayMap.set(ident, lenFt);
+      }
+      AIRPORT_DB.runwayMap = runwayMap;
+      return runwayMap;
+    }
+
+    async function loadAirportCatalog() {
+      const csv = await fetchCsvText(AIRPORTS_CSV_URL);
+      const lines = csv.split(/\r?\n/).filter(Boolean);
+      const header = csvSplit(lines[0]).map(stripQ);
+      const identIdx = header.indexOf('ident');
+      const typeIdx = header.indexOf('type');
+      const nameIdx = header.indexOf('name');
+      const latIdx = header.indexOf('latitude_deg');
+      const lngIdx = header.indexOf('longitude_deg');
+      const countryIdx = header.indexOf('iso_country');
+      const muniIdx = header.indexOf('municipality');
+      const regionIdx = header.indexOf('iso_region');
+      const schedIdx = header.indexOf('scheduled_service');
+      const localIdx = header.indexOf('local_code');
+      const keywordsIdx = header.indexOf('keywords');
+      const iataIdx = header.indexOf('iata_code');
+
+      const airports = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = csvSplit(lines[i]);
+        if (!cols || cols.length < 6) continue;
+        const country = stripQ(cols[countryIdx]).toUpperCase();
+        if (country !== 'US' && country !== 'CA') continue;
+
+        const type = stripQ(cols[typeIdx]);
+        if (!ACCEPTED_AIRPORT_TYPES.has(type)) continue;
+
+        const name = stripQ(cols[nameIdx]);
+        const ident = stripQ(cols[identIdx]).toUpperCase();
+        const localCode = localIdx >= 0 ? stripQ(cols[localIdx]).toUpperCase() : '';
+        const iataCode = iataIdx >= 0 ? stripQ(cols[iataIdx]).toUpperCase() : '';
+        const keywords = keywordsIdx >= 0 ? stripQ(cols[keywordsIdx]) : '';
+        if (!ident || !name || looksExcludedAirportName(name, keywords)) continue;
+
+        if (type === 'small_airport') {
+          if (country === 'US' && !localCode && !iataCode) continue;
+          if (country === 'CA' && !/^C[A-Z0-9]{3}$/.test(ident)) continue;
+        }
+
+        const lat = parseFloat(cols[latIdx]);
+        const lng = parseFloat(cols[lngIdx]);
+        if (!isFinite(lat) || !isFinite(lng)) continue;
+
+        const scheduledService = schedIdx >= 0 && stripQ(cols[schedIdx]).toLowerCase() === 'yes';
+        const municipality = muniIdx >= 0 ? stripQ(cols[muniIdx]) : '';
+        const region = regionIdx >= 0 ? stripQ(cols[regionIdx]) : '';
+
+        airports.push({
+          ident,
+          icao: ident,
+          localCode,
+          iataCode,
+          code: displayCodeForAirport({ ident, localCode, iataCode }, scheduledService),
+          name,
+          lat,
+          lng,
+          type,
+          country,
+          municipality,
+          region,
+          keywords,
+          scheduledService,
+          major: type === 'large_airport' || type === 'medium_airport',
+          hubTier: deriveHubTier(type, scheduledService),
+          tsa: deriveTsaMinutes(type),
+          maxPavedRwyFt: typeRunwayFallbackFt(type),
+          publicUse: country !== 'US'
+        });
+      }
+      return airports;
+    }
+
+    function applyRunwayData(airports, runwayMap) {
+      return airports.filter((airport) => {
+        const runwayFt = runwayMap.get(airport.ident) || typeRunwayFallbackFt(airport.type);
+        airport.maxPavedRwyFt = runwayFt;
+        if (airport.type === 'small_airport' && runwayMap.has(airport.ident) && runwayFt <= 0) return false;
+        return runwayFt > 0;
+      });
+    }
+
+    function applyFaaPublicFilter(airports, faaSet) {
+      if (!faaSet || faaSet.size === 0) {
+        airports.forEach((airport) => {
+          airport.publicUse = airport.country !== 'US' ? true : Boolean(airport.localCode || airport.iataCode || airport.type !== 'small_airport');
+        });
+        return airports;
+      }
+      return airports.filter((airport) => {
+        if (airport.country !== 'US') {
+          airport.publicUse = true;
+          return true;
+        }
+        const candidates = buildLookupCodes(airport);
+        const ok = candidates.some((code) => faaSet.has(code));
+        airport.publicUse = ok;
+        return ok;
+      });
+    }
+
+    function finalizeAirportCatalog(airports) {
+      AIRPORT_DB.airports = airports.slice();
+      AIRPORT_DB.passengerAirports = airports.filter(isPassengerAirport).map((airport) => ({
+        ...airport,
+        code: displayCodeForAirport(airport, true),
+        commercialEligible: true,
+        major: airport.type === 'large_airport' || airport.type === 'medium_airport'
+      }));
+
+      AIRPORT_DB.byCode = new Map();
+      AIRPORT_DB.airports.forEach((airport) => {
+        buildLookupCodes(airport).forEach((code) => {
+          if (!AIRPORT_DB.byCode.has(code)) AIRPORT_DB.byCode.set(code, airport);
+        });
+      });
+      AIRPORT_DB.ready = true;
+      AIRPORT_DB.loading = false;
+      AIRPORT_DB.loadError = null;
+      return AIRPORT_DB;
+    }
+
+    async function ensureAirportDataReady() {
+      if (AIRPORT_DB.ready) return AIRPORT_DB;
+      if (AIRPORT_DB.readyPromise) return AIRPORT_DB.readyPromise;
+      AIRPORT_DB.loading = true;
+      AIRPORT_DB.readyPromise = (async () => {
+        try {
+          const [airports, runwayMap, faaSet] = await Promise.all([
+            loadAirportCatalog(),
+            loadRunwayMap(),
+            loadFaaPublicUseSet()
+          ]);
+          let filtered = applyRunwayData(airports, runwayMap);
+          filtered = applyFaaPublicFilter(filtered, faaSet);
+          if (!filtered.length) throw new Error('Airport catalog resolved to zero airports.');
+          return finalizeAirportCatalog(filtered);
+        } catch (error) {
+          AIRPORT_DB.loading = false;
+          AIRPORT_DB.loadError = error;
+          console.error('Airport DB load failed:', error);
+          throw error;
+        }
+      })();
+      return AIRPORT_DB.readyPromise;
+    }
+
+    const toRad = (deg) => deg * Math.PI / 180;
+    const haversineMiles = (a, b) => {
+      const R = 3958.8;
+      const dLat = toRad(b.lat - a.lat);
+      const dLng = toRad(b.lng - a.lng);
+      const lat1 = toRad(a.lat);
+      const lat2 = toRad(b.lat);
+      const sinLat = Math.sin(dLat / 2);
+      const sinLng = Math.sin(dLng / 2);
+      const c = 2 * Math.asin(Math.sqrt(sinLat * sinLat + Math.cos(lat1) * Math.cos(lat2) * sinLng * sinLng));
+      return R * c;
+    };
+
+    const groundTransferMinutes = (miles, mph, minMinutes = 8) => Math.max(minMinutes, Math.round((miles / mph) * 60));
+    const buildValidRoute = () => state.points.filter(Boolean);
+
+    const labelForIndex = (index) => {
+      if (index === 0) return 'Origin';
+      if (index === state.points.length - 1) return state.points.length === 2 ? 'Destination' : 'Final stop';
+      return `Stop ${index}`;
+    };
+
+    function resetMapView() {
+      if (!map) return;
+      map.setCenter(DEFAULT_VIEW.center);
+      map.setZoom(DEFAULT_VIEW.zoom);
+    }
+
+    function commercialTierWeight(airport) {
+      if (airport.hubTier === 1) return -40;
+      if (airport.hubTier === 2) return -18;
+      if (airport.hubTier === 3) return 6;
+      return 24;
+    }
+
+    function commercialAccessPenalty(miles) {
+      if (miles <= 20) return 0;
+      if (miles <= 40) return 4;
+      if (miles <= 75) return 14;
+      if (miles <= 120) return 40;
+      if (miles <= 180) return 96;
+      if (miles <= 260) return 180;
+      return 300;
+    }
+
+    async function resolveRegionalAirport(point) {
+      const db = await ensureAirportDataReady();
+      const key = `regional:${pointKey(point)}`;
+      if (cache.airports.has(key)) return cache.airports.get(key);
+
+      let best = null;
+      let bestScore = Infinity;
+      db.airports.forEach((airport) => {
+        if ((airport.maxPavedRwyFt || 0) < MIN_REGIONAL_RUNWAY_FT) return;
+        const miles = haversineMiles(point, airport);
+        const lower = airport.name.toLowerCase();
+        let score = miles;
+        if (airport.type === 'large_airport') score += 22;
+        else if (airport.type === 'medium_airport') score += 8;
+        if (airport.scheduledService) score += 8;
+        if (/executive|municipal|county|regional|field/.test(lower) && !airport.scheduledService) score -= 3;
+        if (/international/.test(lower)) score += 6;
+        if (miles > 120 && airport.type === 'large_airport') score += 20;
+        if (score < bestScore) {
+          bestScore = score;
+          best = { airport: { ...airport, code: displayCodeForAirport(airport, false) }, miles };
+        }
+      });
+
+      cache.airports.set(key, best);
+      return best;
+    }
+
+    function getCommercialCandidates(point, limit = 10) {
+      return AIRPORT_DB.passengerAirports
+        .map((airport) => {
+          const miles = haversineMiles(point, airport);
+          const score = miles + commercialAccessPenalty(miles) + commercialTierWeight(airport);
+          return { airport, miles, score };
+        })
+        .sort((a, b) => a.score - b.score)
+        .slice(0, limit);
+    }
+
+    function majorCount(airportA, airportB) {
+      return (airportA.major ? 1 : 0) + (airportB.major ? 1 : 0);
+    }
+
+    function estimateCommercialConnections(fromAirport, toAirport, airMiles) {
+      if (fromAirport.code === toAirport.code) return 0;
+      if (airMiles < 300) return 0;
+      if (airMiles < 750) return majorCount(fromAirport, toAirport) >= 1 ? 0 : 1;
+      if (airMiles < 1400) return Math.min(fromAirport.hubTier, toAirport.hubTier) <= 2 ? 0 : 1;
+      if (airMiles < 2200) return Math.min(fromAirport.hubTier, toAirport.hubTier) === 1 ? 1 : 1;
+      return Math.min(fromAirport.hubTier, toAirport.hubTier) <= 2 ? 1 : 2;
+    }
+
+    function resolveCommercialAirports(fromPoint, toPoint) {
+      const originCandidates = getCommercialCandidates(fromPoint, 9);
+      const destinationCandidates = getCommercialCandidates(toPoint, 9);
+      if (!originCandidates.length || !destinationCandidates.length) return null;
+
+      let best = null;
+      let bestScore = Infinity;
+
+      originCandidates.forEach(({ airport: fromAirport, miles: fromMiles }) => {
+        destinationCandidates.forEach(({ airport: toAirport, miles: toMiles }) => {
+          const airMiles = haversineMiles(fromAirport, toAirport);
+          const inAirMinutes = Math.max(30, Math.round((airMiles / COMMERCIAL_AIR_SPEED_MPH) * 60) + 18);
+          const connections = estimateCommercialConnections(fromAirport, toAirport, airMiles);
+          const accessMinutes =
+            groundTransferMinutes(fromMiles, COMMERCIAL_GROUND_SPEED_MPH, 12) +
+            groundTransferMinutes(toMiles, COMMERCIAL_GROUND_SPEED_MPH, 12);
+
+          const tierPenalty = Math.max(0, fromAirport.hubTier - 1) * 16 + Math.max(0, toAirport.hubTier - 1) * 16;
+          const longDrivePenalty = commercialAccessPenalty(fromMiles) * 1.25 + commercialAccessPenalty(toMiles) * 1.25;
+          const connectionPenalty = connections * 78;
+          const sameAirportPenalty = fromAirport.code === toAirport.code && airMiles > 110 ? 120 : 0;
+          const hubPairBonus = (fromAirport.hubTier <= 2 ? -8 : 0) + (toAirport.hubTier <= 2 ? -8 : 0);
+
+          const score = accessMinutes + inAirMinutes + tierPenalty + longDrivePenalty + connectionPenalty + sameAirportPenalty + hubPairBonus;
+
+          if (score < bestScore) {
+            bestScore = score;
+            best = {
+              fromAirport,
+              toAirport,
+              fromMiles,
+              toMiles,
+              airMiles,
+              connections
+            };
+          }
+        });
+      });
+
+      return best;
+    }
+
+    function renderTargetChips() {
+      targetChips.innerHTML = state.points.map((point, index) => `
+        <button class="target-chip ${state.activeIndex === index ? 'active' : ''}" type="button" data-point-index="${index}">
+          <span>${point ? pointTitle(point) : 'Click map'}</span>
+          <small>${labelForIndex(index)}</small>
+        </button>
+      `).join('');
+
+      targetChips.querySelectorAll('[data-point-index]').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.activeIndex = Number(button.dataset.pointIndex);
+          syncUI();
+        });
+      });
+    }
+
+    function updateStatus() {
+      const point = state.points[state.activeIndex];
+      const label = labelForIndex(state.activeIndex);
+      if (document.activeElement !== selectedTargetInput) {
+        selectedTargetInput.value = point ? pointTitle(point) : '';
+      }
+      selectedTargetInput.placeholder = `Search ${label.toLowerCase()}`;
+      selectedTargetStatus.textContent = point
+        ? `${label} selected · ${pointTitle(point)}`
+        : `Search or click the map to set ${label.toLowerCase()}.`;
+
+      if (AIRPORT_DB.loadError) {
+        builderStatus.textContent = 'Airport database failed to load. Check FAA/OurAirports CSV paths and reload.';
+      } else if (AIRPORT_DB.loading && !AIRPORT_DB.ready) {
+        builderStatus.textContent = 'Loading FAA/public-use airport data…';
+      } else {
+        builderStatus.textContent = `Click anywhere on the map or search to set ${label.toLowerCase()}.`;
+      }
+
+      resultBadge.textContent = state.isComputing
+        ? 'Modeling...'
+        : AIRPORT_DB.loading && !state.result
+          ? 'Airports loading'
+          : state.result
+            ? 'Modeled'
+            : 'Awaiting route';
+
+      computeButton.disabled = state.isComputing || (!AIRPORT_DB.ready && AIRPORT_DB.loading);
+      computeButton.style.opacity = computeButton.disabled ? '0.65' : '1';
+      computeButton.style.cursor = computeButton.disabled ? 'wait' : 'pointer';
+    }
+
+    async function getDriveLeg(pointA, pointB) {
+      const key = `${pointKey(pointA)}=>${pointKey(pointB)}`;
+      if (cache.directions.has(key)) return cache.directions.get(key);
+
+      const fallbackMiles = haversineMiles(pointA, pointB) * 1.18;
+      const fallbackMinutes = Math.round((fallbackMiles / 62) * 60);
+
+      try {
+        if (!directionsService) throw new Error('directions unavailable');
+
+        const result = await directionsService.route({
+          origin: pointA,
+          destination: pointB,
+          travelMode: google.maps.TravelMode.DRIVING
+        });
+
+        const route = result?.routes?.[0];
+        const leg = route?.legs?.[0];
+        if (!route || !leg) throw new Error('no route');
+
+        const resolved = {
+          miles: leg.distance.value / 1609.344,
+          minutes: leg.duration.value / 60,
+          geometry: route.overview_path.map((p) => ({ lat: p.lat(), lng: p.lng() })),
+          isFallback: false
+        };
+        cache.directions.set(key, resolved);
+        return resolved;
+      } catch (error) {
+        const fallback = {
+          miles: fallbackMiles,
+          minutes: fallbackMinutes,
+          geometry: [],
+          isFallback: true,
+          error: error?.message || 'Directions unavailable'
+        };
+        cache.directions.set(key, fallback);
+        return fallback;
+      }
+    }
+
+    async function computeRoute() {
+      const db = await ensureAirportDataReady();
+      const points = buildValidRoute();
+      if (points.length < 2) return null;
+      if (!db.airports.length) throw new Error('Airport database is empty.');
+
+      const labels = await Promise.all(points.map(reverseGeocode));
+      labels.forEach((label, index) => {
+        if (points[index]) points[index].label = label;
+      });
+
+      const regionalAirports = await Promise.all(points.map((point) => resolveRegionalAirport(point)));
+      if (regionalAirports.some((entry) => !entry || !entry.airport)) {
+        throw new Error('A regional airport could not be resolved for one or more stops.');
+      }
+
+      const legs = [];
+      for (let i = 0; i < points.length - 1; i++) {
+        const fromPoint = points[i];
+        const toPoint = points[i + 1];
+        const driveRoute = await getDriveLeg(fromPoint, toPoint);
+
+        const fromRegional = regionalAirports[i];
+        const toRegional = regionalAirports[i + 1];
+        const heuristicCommercialPair = resolveCommercialAirports(fromPoint, toPoint);
+        if (!heuristicCommercialPair) throw new Error('A commercial airport pair could not be resolved.');
+
+        const cirrusAccessOutDrive = await getDriveLeg(fromPoint, fromRegional.airport);
+        const cirrusAccessInDrive = await getDriveLeg(toRegional.airport, toPoint);
+
+        const cirrusGroundOut = Math.round(cirrusAccessOutDrive.minutes);
+        const cirrusGroundIn = Math.round(cirrusAccessInDrive.minutes);
+        const cirrusAirMiles = haversineMiles(fromRegional.airport, toRegional.airport);
+        const cirrusCruiseMinutes = Math.max(18, Math.round((cirrusAirMiles / CIRRUS_SPEED_MPH) * 60) + 8);
+        const cirrusLegMinutes = cirrusGroundOut + CIRRUS_READY_MINUTES_PER_LEG + cirrusCruiseMinutes + cirrusGroundIn;
+
+        const originCandidates = getCommercialCandidates(fromPoint, LIVE_COMMERCIAL_CANDIDATE_LIMIT);
+        const destinationCandidates = getCommercialCandidates(toPoint, LIVE_COMMERCIAL_CANDIDATE_LIMIT);
+        const liveCommercial = await buildLiveCommercialOptionsForLeg({
+          fromPoint,
+          toPoint,
+          originCandidates,
+          destinationCandidates,
+          cirrusLegMinutes
+        });
+
+        const fallbackCommercialOption = await buildCommercialOptionModel({
+          fromPoint,
+          toPoint,
+          fromAirport: heuristicCommercialPair.fromAirport,
+          toAirport: heuristicCommercialPair.toAirport,
+          cirrusLegMinutes,
+          selectedFlight: null,
+          fallbackConnections: heuristicCommercialPair.connections,
+          fallbackAirMiles: heuristicCommercialPair.airMiles
+        });
+
+        const selectedCommercialOption = liveCommercial.liveOptions[0] || fallbackCommercialOption;
+
+        const rawDriveMinutes = Math.round(driveRoute.minutes);
+        const overnightStops = rawDriveMinutes > (DRIVE_SLEEP_THRESHOLD_HOURS * 60)
+          ? Math.max(0, Math.ceil(rawDriveMinutes / (DRIVE_SLEEP_THRESHOLD_HOURS * 60)) - 1)
+          : 0;
+        const sleepLayoverMinutes = overnightStops * DRIVE_SLEEP_BLOCK_HOURS * 60;
+        const driveLegMinutes = rawDriveMinutes + sleepLayoverMinutes;
+
+        legs.push({
+          fromPoint,
+          toPoint,
+          driveRoute,
+          driveMiles: driveRoute.miles,
+          rawDriveMinutes,
+          driveLegMinutes,
+          overnightStops,
+          sleepLayoverMinutes,
+          cirrus: {
+            fromAirport: fromRegional.airport,
+            toAirport: toRegional.airport,
+            accessOutDrive: cirrusAccessOutDrive,
+            accessInDrive: cirrusAccessInDrive,
+            accessOutMinutes: cirrusGroundOut,
+            accessInMinutes: cirrusGroundIn,
+            airMiles: cirrusAirMiles,
+            cruiseMinutes: cirrusCruiseMinutes,
+            totalMinutes: cirrusLegMinutes
+          },
+          commercial: {
+            ...selectedCommercialOption,
+            liveStatus: liveCommercial.feed.status,
+            liveSource: liveCommercial.feed.source,
+            liveOptions: liveCommercial.liveOptions,
+            selectedOptionId: selectedCommercialOption.optionId,
+            fallbackOption: fallbackCommercialOption
+          }
+        });
+      }
+
+      return recalculateResultAggregates({
+        points,
+        legs,
+        totalDriveMiles: 0,
+        totalDriveMinutes: 0,
+        totalCirrusMinutes: 0,
+        totalCommercialMinutes: 0,
+        totalOvernightStops: 0,
+        totalSleepMinutes: 0,
+        totalCommercialConnections: 0,
+        totalCommercialGapMinutes: 0,
+        totalFallbackDriveSegments: 0,
+        cirrusFirstRegional: legs[0]?.cirrus?.fromAirport || null,
+        cirrusLastRegional: legs[legs.length - 1]?.cirrus?.toAirport || null,
+        commercialFirstAirport: legs[0]?.commercial?.fromAirport || null,
+        commercialLastAirport: legs[legs.length - 1]?.commercial?.toAirport || null
+      });
+    }
+
+    function renderSummary(result) {
+      if (!result) {
+        summaryCard.innerHTML = `<div class="empty-state">Click the map to create an origin and destination, then add more stops if needed and hit done.</div>`;
+        return;
+      }
+
+      summaryCard.innerHTML = `
+        <div class="summary-top">
+          <div>
+            <div class="panel-label">SR22T showcase</div>
+            <strong>${formatMinutes(result.totalCirrusMinutes)}</strong>
+            <div class="results-copy" style="margin-top:6px;">${result.cirrusFirstRegional.code} → ${result.cirrusLastRegional.code} is the best trip for you in your Cirrus SR22T.</div>
+          </div>
+          <span class="badge">Regional path</span>
+        </div>
+        <div class="summary-grid">
+          <div class="mini-stat">
+            <div class="small-label">Drive miles</div>
+            <div class="mini-value">${Math.round(result.totalDriveMiles).toLocaleString()}</div>
+          </div>
+          <div class="mini-stat">
+            <div class="small-label">Legs</div>
+            <div class="mini-value">${result.legs.length}</div>
+          </div>
+          <div class="mini-stat">
+            <div class="small-label">Commercial drag</div>
+            <div class="mini-value">+${formatMinutes(result.totalCommercialGapMinutes)}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCards(result) {
+      if (!result) {
+        cardsMount.innerHTML = `<div class="empty-state">No model yet.</div>`;
+        return;
+      }
+
+      const cirrusLegPath = result.legs.map((leg) => `${leg.cirrus.fromAirport.code}→${leg.cirrus.toAirport.code}`).join(' · ');
+      const commercialLegPath = result.legs.map((leg) => `${leg.commercial.fromAirport.code}→${leg.commercial.toAirport.code}`).join(' · ');
+
+      cardsMount.innerHTML = `
+        <div class="result-card">
+          <div class="result-card-top">
+            <h3 class="result-title">SR22T option</h3>
+            <span class="badge">Nearest regional</span>
+          </div>
+          <div class="result-big"><strong>${formatMinutes(result.totalCirrusMinutes)}</strong><span>Ready now - Click to Book</span></div>
+          <div class="list">
+            <div class="list-item"><span>Regional path</span><strong>${cirrusLegPath}</strong></div>
+            <div class="list-item"><span>Total private-air time</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.cirrus.cruiseMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Ground access</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.cirrus.accessOutMinutes + leg.cirrus.accessInMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Departure allowance</span><strong>${result.legs.length} × ${CIRRUS_READY_MINUTES_PER_LEG} min</strong></div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-card-top">
+            <h3 class="result-title">Commercial option</h3>
+            <span class="badge">Passenger airport</span>
+          </div>
+          <div class="result-big"><strong>${formatMinutes(result.totalCommercialMinutes)}</strong><span>Total trip</span></div>
+          <div class="list">
+            <div class="list-item"><span>Commercial path</span><strong>${commercialLegPath}</strong></div>
+            <div class="list-item"><span>Drive segments using Google roads</span><strong>${result.totalFallbackDriveSegments ? `${result.totalFallbackDriveSegments} estimated fallback` : 'All routed'}</strong></div>
+            <div class="list-item"><span>Next-flight waits</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.commercial.nextFlightWindowMinutes, 0))}</strong></div>
+            <div class="list-item"><span>TSA + boarding</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.commercial.tsaMinutes + leg.commercial.boardingTaxiMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Layovers + delay buffer</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.commercial.layoverMinutes + leg.commercial.delayBufferMinutes + leg.commercial.scheduleSlackMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Airport access</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.commercial.accessOutMinutes + leg.commercial.accessInMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Modeled connections</span><strong>${result.totalCommercialConnections}</strong></div>
+          </div>
+          ${renderLiveFlights(result.legs[0], 0)}
+        </div>
+
+        <div class="result-card">
+          <div class="result-card-top">
+            <h3 class="result-title">Drive model</h3>
+            <span class="badge">Road route</span>
+          </div>
+          <div class="result-big"><strong>${formatMinutes(result.totalDriveMinutes)}</strong><span>Total drive</span></div>
+          <div class="list">
+            <div class="list-item"><span>Road distance</span><strong>${formatMiles(result.totalDriveMiles)}</strong></div>
+            <div class="list-item"><span>Raw driving time</span><strong>${formatMinutes(result.legs.reduce((s, leg) => s + leg.rawDriveMinutes, 0))}</strong></div>
+            <div class="list-item"><span>Sleep layovers</span><strong>${result.totalOvernightStops} overnight ${result.totalOvernightStops === 1 ? 'stop' : 'stops'}</strong></div>
+            <div class="list-item"><span>Sleep added</span><strong>${formatMinutes(result.totalSleepMinutes)}</strong></div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-card-top">
+            <h3 class="result-title">Leg breakdown</h3>
+            <span class="badge">Live mapping</span>
+          </div>
+          <div class="leg-list">
+            ${result.legs.map((leg, index) => `
+              <div class="leg-item">
+                <div class="leg-title">Leg ${index + 1}: ${pointTitle(leg.fromPoint)} → ${pointTitle(leg.toPoint)}</div>
+                <div class="leg-meta">SR22T: ${leg.cirrus.fromAirport.code} → ${leg.cirrus.toAirport.code} · ${formatMinutes(leg.cirrus.totalMinutes)}</div>
+                <div class="leg-meta">Commercial: ${leg.commercial.fromAirport.code} → ${leg.commercial.toAirport.code} · ${formatMinutes(leg.commercial.totalMinutes)} · ${leg.commercial.connections} ${leg.commercial.connections === 1 ? 'connection' : 'connections'}</div>
+                <div class="leg-meta">Drive: ${formatMiles(leg.driveMiles)} · ${formatMinutes(leg.driveLegMinutes)}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    let map;
+    let geocoder;
+    let directionsService;
+    let infoWindow;
+
+    const mapObjects = {
+      markers: [],
+      polylines: []
+    };
+
+    function clearMapObjects() {
+      mapObjects.markers.forEach((marker) => marker.setMap(null));
+      mapObjects.polylines.forEach((polyline) => polyline.setMap(null));
+      mapObjects.markers = [];
+      mapObjects.polylines = [];
+    }
+
+    function addMarker(position, kind, text, title, popupHtml) {
+      const markerStyle = kind === 'point'
+        ? { fillColor: '#0d5eaf', scale: 10.5, strokeWeight: 3, fontSize: '11px' }
+        : kind === 'regional'
+          ? { fillColor: '#124d8f', scale: 7.4, strokeWeight: 2.4, fontSize: '9px' }
+          : { fillColor: '#ef6a33', scale: 7.4, strokeWeight: 2.4, fontSize: '9px' };
+
+      const marker = new google.maps.Marker({
+        map,
+        position,
+        title,
+        label: {
+          text: String(text || ''),
+          color: '#ffffff',
+          fontSize: markerStyle.fontSize,
+          fontWeight: '700'
+        },
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          fillColor: markerStyle.fillColor,
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeOpacity: 1,
+          strokeWeight: markerStyle.strokeWeight,
+          scale: markerStyle.scale,
+          labelOrigin: new google.maps.Point(0, 0.5)
+        },
+        zIndex: kind === 'point' ? 1200 : 900,
+        optimized: true
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.setContent(popupHtml);
+        infoWindow.open({ map, anchor: marker });
+      });
+
+      mapObjects.markers.push(marker);
+      return marker;
+    }
+
+    function addPolyline(path, opts = {}) {
+      const polyline = new google.maps.Polyline({
+        map,
+        path,
+        strokeColor: opts.color || '#6b7686',
+        strokeOpacity: opts.strokeOpacity ?? 1,
+        strokeWeight: opts.weight ?? 3,
+        geodesic: opts.geodesic ?? false,
+        icons: opts.icons || undefined,
+        zIndex: opts.zIndex ?? 1
+      });
+
+      mapObjects.polylines.push(polyline);
+      return polyline;
+    }
+
+    function drawCasedLine(path, opts = {}) {
+      if (!path || path.length < 2) return;
+      addPolyline(path, {
+        color: opts.casingColor || '#ffffff',
+        weight: (opts.weight ?? 3) + (opts.casingExpand ?? 2.2),
+        strokeOpacity: opts.casingOpacity ?? 0.86,
+        geodesic: opts.geodesic ?? false,
+        zIndex: (opts.zIndex ?? 10) - 1
+      });
+      addPolyline(path, opts);
+    }
+
+    function dashedLineSymbol(color, weight = 2, opacity = 1) {
+      return {
+        path: 'M 0,-1 0,1',
+        strokeColor: color,
+        strokeOpacity: opacity,
+        scale: weight
+      };
+    }
+
+    function drawDashedLine(path, opts = {}) {
+      if (!path || path.length < 2) return;
+      if (opts.casing !== false) {
+        addPolyline(path, {
+          color: opts.casingColor || '#ffffff',
+          weight: (opts.weight ?? 2.4) + (opts.casingExpand ?? 2.0),
+          strokeOpacity: opts.casingOpacity ?? 0.8,
+          geodesic: opts.geodesic ?? false,
+          zIndex: (opts.zIndex ?? 20) - 1
+        });
+      }
+      addPolyline(path, {
+        color: opts.color,
+        weight: opts.weight ?? 2.4,
+        strokeOpacity: 0,
+        geodesic: opts.geodesic ?? false,
+        zIndex: opts.zIndex ?? 20,
+        icons: [{
+          icon: dashedLineSymbol(opts.color, opts.symbolScale ?? 2.2, opts.opacity ?? 0.9),
+          offset: '0',
+          repeat: opts.repeat || '11px'
+        }]
+      });
+    }
+
+    async function initMap() {
+      const { Map } = await google.maps.importLibrary('maps');
+      await google.maps.importLibrary('places');
+
+      geocoder = new google.maps.Geocoder();
+      directionsService = new google.maps.DirectionsService();
+      infoWindow = new google.maps.InfoWindow();
+
+      map = new Map(document.getElementById('map'), {
+        center: DEFAULT_VIEW.center,
+        zoom: DEFAULT_VIEW.zoom,
+        ...(window.TRAVEL_MODELER_GOOGLE_MAP_ID ? { mapId: window.TRAVEL_MODELER_GOOGLE_MAP_ID } : {}),
+        disableDefaultUI: true,
+        zoomControl: true,
+        gestureHandling: 'greedy'
+      });
+
+      const placeAutocomplete = new google.maps.places.Autocomplete(selectedTargetInput, {
+        fields: ['name', 'formatted_address', 'geometry'],
+        types: ['geocode', 'establishment']
+      });
+
+      placeAutocomplete.addListener('place_changed', async () => {
+        const place = placeAutocomplete.getPlace();
+        const location = normalizeLatLng(place?.geometry?.location);
+        if (!location) return;
+        const preferredLabel = place?.formatted_address || place?.name || `${location.lat.toFixed(3)}, ${location.lng.toFixed(3)}`;
+        await setActivePoint(location, {
+          preferredLabel,
+          viewport: place?.geometry?.viewport || null
+        });
+      });
+
+      selectedTargetInput.addEventListener('keydown', async (event) => {
+        if (event.key !== 'Enter') return;
+        event.preventDefault();
+        const query = selectedTargetInput.value.trim();
+        if (!query) return;
+        try {
+          const geocoded = await geocodeTextQuery(query);
+          if (!geocoded?.point) return;
+          await setActivePoint(geocoded.point, {
+            preferredLabel: geocoded.label,
+            viewport: geocoded.viewport
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      });
+
+      map.addListener('click', async (event) => {
+        const nextPoint = {
+          lat: event.latLng.lat(),
+          lng: event.latLng.lng()
+        };
+        await setActivePoint(nextPoint);
+      });
+
+      await syncUI();
+      focusMapOnRoute();
+    }
+
+    async function addAirportMarker(airport, role) {
+      if (!airport) return;
+      const text = role === 'regional' ? 'R' : 'C';
+
+      addMarker(
+        { lat: airport.lat, lng: airport.lng },
+        role,
+        text,
+        `${airport.code} · ${airport.name}`,
+        makePopupHtml(
+          `${airport.code} · ${airport.name}`,
+          role === 'regional' ? 'SR22T regional mapping' : 'Commercial mapping'
+        )
+      );
+    }
+
+    async function updateMapRoute() {
+      if (!map) return;
+      clearMapObjects();
+
+      const route = buildValidRoute();
+      if (!route.length) return;
+
+      for (let index = 0; index < route.length; index++) {
+        const point = route[index];
+        addMarker(
+          { lat: point.lat, lng: point.lng },
+          'point',
+          `${index + 1}`,
+          pointTitle(point),
+          makePopupHtml(
+            pointTitle(point),
+            index === 0 ? 'Origin' : index === route.length - 1 ? 'Destination' : `Stop ${index}`
+          )
+        );
+      }
+
+      if (!state.result?.legs?.length) return;
+
+      const seenRegional = new Set();
+      const seenCommercial = new Set();
+
+      for (const leg of state.result.legs) {
+        if (leg.driveRoute.geometry?.length > 1) {
+          drawCasedLine(leg.driveRoute.geometry, {
+            color: '#66768a',
+            weight: 3.2,
+            strokeOpacity: 0.88,
+            casingOpacity: 0.88,
+            casingExpand: 2.4,
+            zIndex: 10
+          });
+        }
+
+        if (leg.cirrus.accessOutDrive.geometry?.length > 1) {
+          drawDashedLine(leg.cirrus.accessOutDrive.geometry, {
+            color: '#0d5eaf',
+            weight: 2.2,
+            repeat: '10px',
+            symbolScale: 2.0,
+            opacity: 0.78,
+            casingExpand: 1.8,
+            zIndex: 22
+          });
+        }
+
+        if (leg.cirrus.accessInDrive.geometry?.length > 1) {
+          drawDashedLine(leg.cirrus.accessInDrive.geometry, {
+            color: '#0d5eaf',
+            weight: 2.2,
+            repeat: '10px',
+            symbolScale: 2.0,
+            opacity: 0.78,
+            casingExpand: 1.8,
+            zIndex: 22
+          });
+        }
+
+        if (leg.commercial.accessOutDrive.geometry?.length > 1) {
+          drawDashedLine(leg.commercial.accessOutDrive.geometry, {
+            color: '#ef6a33',
+            weight: 2.1,
+            repeat: '8px',
+            symbolScale: 1.8,
+            opacity: 0.84,
+            casingExpand: 1.7,
+            zIndex: 24
+          });
+        }
+
+        if (leg.commercial.accessInDrive.geometry?.length > 1) {
+          drawDashedLine(leg.commercial.accessInDrive.geometry, {
+            color: '#ef6a33',
+            weight: 2.1,
+            repeat: '8px',
+            symbolScale: 1.8,
+            opacity: 0.84,
+            casingExpand: 1.7,
+            zIndex: 24
+          });
+        }
+
+        drawCasedLine([
+          { lat: leg.cirrus.fromAirport.lat, lng: leg.cirrus.fromAirport.lng },
+          { lat: leg.cirrus.toAirport.lat, lng: leg.cirrus.toAirport.lng }
+        ], {
+          color: '#0d5eaf',
+          weight: 3.4,
+          strokeOpacity: 0.96,
+          geodesic: true,
+          casingOpacity: 0.84,
+          casingExpand: 2.1,
+          zIndex: 30
+        });
+
+        drawDashedLine([
+          { lat: leg.commercial.fromAirport.lat, lng: leg.commercial.fromAirport.lng },
+          { lat: leg.commercial.toAirport.lat, lng: leg.commercial.toAirport.lng }
+        ], {
+          color: '#ef6a33',
+          weight: 2.8,
+          geodesic: true,
+          repeat: '11px',
+          symbolScale: 2.4,
+          opacity: 0.92,
+          casingExpand: 2.0,
+          zIndex: 32
+        });
+
+        if (!seenRegional.has(leg.cirrus.fromAirport.code)) {
+          await addAirportMarker(leg.cirrus.fromAirport, 'regional');
+          seenRegional.add(leg.cirrus.fromAirport.code);
+        }
+        if (!seenRegional.has(leg.cirrus.toAirport.code)) {
+          await addAirportMarker(leg.cirrus.toAirport, 'regional');
+          seenRegional.add(leg.cirrus.toAirport.code);
+        }
+        if (!seenCommercial.has(leg.commercial.fromAirport.code)) {
+          await addAirportMarker(leg.commercial.fromAirport, 'commercial');
+          seenCommercial.add(leg.commercial.fromAirport.code);
+        }
+        if (!seenCommercial.has(leg.commercial.toAirport.code)) {
+          await addAirportMarker(leg.commercial.toAirport, 'commercial');
+          seenCommercial.add(leg.commercial.toAirport.code);
+        }
+      }
+    }
+
+    function focusMapOnRoute() {
+      if (!map) return;
+
+      const points = buildValidRoute();
+      if (!points.length) {
+        resetMapView();
+        return;
+      }
+
+      const bounds = new google.maps.LatLngBounds();
+      points.forEach((point) => bounds.extend(point));
+
+      if (state.result?.legs?.length) {
+        state.result.legs.forEach((leg) => {
+          [
+            leg.cirrus.fromAirport,
+            leg.cirrus.toAirport,
+            leg.commercial.fromAirport,
+            leg.commercial.toAirport
+          ].forEach((airport) => bounds.extend({ lat: airport.lat, lng: airport.lng }));
+        });
+      }
+
+      if (bounds.isEmpty()) {
+        resetMapView();
+        return;
+      }
+
+      map.fitBounds(bounds, 100);
+    }
+
+    async function syncUI() {
+      renderTargetChips();
+      updateStatus();
+      await updateMapRoute();
+      renderSummary(state.result);
+      renderCards(state.result);
+    }
+
+    cardsMount.addEventListener('click', async (event) => {
+      const trigger = event.target.closest('[data-select-flight]');
+      if (!trigger || !state.result) return;
+      const legIndex = Number(trigger.dataset.legIndex || 0);
+      const optionId = trigger.dataset.optionId || '';
+      const leg = state.result.legs?.[legIndex];
+      if (!leg?.commercial?.liveOptions?.length) return;
+      const option = leg.commercial.liveOptions.find((item) => item.optionId === optionId);
+      if (!option) return;
+      applyCommercialOptionToLeg(leg, option);
+      recalculateResultAggregates(state.result);
+      await syncUI();
+      focusMapOnRoute();
+    });
+
+    addStopButton.addEventListener('click', async () => {
+      state.points.push(null);
+      state.activeIndex = state.points.length - 1;
+      state.result = null;
+      await syncUI();
+    });
+
+    undoButton.addEventListener('click', async () => {
+      if (state.points.length <= 2) {
+        state.points[state.activeIndex] = null;
+      } else {
+        state.points.pop();
+        state.activeIndex = Math.max(0, Math.min(state.activeIndex, state.points.length - 1));
+      }
+      state.result = null;
+      await syncUI();
+    });
+
+    computeButton.addEventListener('click', async () => {
+      state.isComputing = true;
+      updateStatus();
+      try {
+        await ensureAirportDataReady();
+        state.result = await computeRoute();
+      } catch (error) {
+        console.error(error);
+        state.result = null;
+        builderStatus.textContent = error?.message || 'Route modeling failed.';
+      } finally {
+        state.isComputing = false;
+        await syncUI();
+        focusMapOnRoute();
+      }
+    });
+
+    resetButton.addEventListener('click', async () => {
+      state.points = EMPTY_ROUTE_POINTS.map(() => null);
+      state.activeIndex = 0;
+      state.result = null;
+      await syncUI();
+      focusMapOnRoute();
+    });
+
+    demoRouteButton.addEventListener('click', async () => {
+      state.points = DEMO_ROUTE_POINTS.map((point) => ({ ...point }));
+      state.activeIndex = state.points.length - 1;
+      state.result = null;
+      await syncUI();
+      focusMapOnRoute();
+    });
+
+    async function boot() {
+      try {
+        await initMap();
+        ensureAirportDataReady()
+          .then(() => syncUI())
+          .catch((error) => {
+            console.error(error);
+            builderStatus.textContent = 'Airport database failed to load. Check FAA/OurAirports CSV paths and reload.';
+          });
+      } catch (error) {
+        console.error(error);
+        builderStatus.textContent = 'Google Maps failed to load. Add your browser-restricted key and map ID, then reload.';
+        selectedTargetStatus.textContent = 'Map unavailable';
+      }
+    }
+
+    boot();
+  </script>
+</body>
+</html>
+
+  
+  
+
+
+

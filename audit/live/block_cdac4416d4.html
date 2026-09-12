@@ -1,0 +1,249 @@
+
+  
+    <!-- Transparent US Map with Vector Borders, 207mi hover circles + Legend (responsive/mobile-optimized) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+  #us-flight-map { width:100%; height:560px; background:transparent; }
+
+  :root{
+    --accent:#FF6700;
+    --fill:rgba(255,103,0,0.14);
+    --border:#fff;          /* border color for nation/state outlines */
+  }
+
+  #us-flight-map .leaflet-map-pane,
+  #us-flight-map .leaflet-pane { position:absolute !important; top:0; left:0; }
+
+  .city-dot{
+    width:12px; height:12px; margin-left:-6px; margin-top:-6px;
+    border-radius:9999px; background:var(--accent);
+    border:2px solid #fff; box-shadow:0 0 0 3px rgba(0,0,0,.08);
+  }
+
+  .leaflet-tooltip.city-label{
+    background:rgba(0,0,0,.7); color:#fff; border:none;
+    border-radius:10px; padding:6px 10px; font-size:18px; font-weight:500;
+    box-shadow:0 2px 8px rgba(0,0,0,.25); white-space:nowrap;
+  }
+
+  .ba-legend{
+    background:rgba(255,255,255,0.85);
+    border-radius:12px; padding:10px 12px; line-height:1.25;
+    font-size:18px; font-weight:500; color:#222;
+    box-shadow:0 2px 10px rgba(0,0,0,.15); backdrop-filter:saturate(150%) blur(2px);
+  }
+
+  .ba-legend-row{ display:flex; align-items:center; gap:8px; }
+
+  .ba-legend .ba-swatch{
+    width:16px; height:16px; border-radius:9999px; flex:0 0 16px;
+    border:2px solid var(--accent); background:var(--fill);
+  }
+
+  .ba-legend .ba-note{ margin-top:6px; opacity:.75; font-size:12px; }
+
+  #us-flight-map .leaflet-control-attribution,
+  #us-flight-map .leaflet-control-scale{ display:none !important; }
+
+  #us-flight-map .leaflet-control-zoom a{
+    font-size:24px !important; font-weight:700 !important;
+    line-height:30px !important; width:36px !important; height:36px !important;
+  }
+
+  #us-flight-map .leaflet-control-zoom{
+    border-radius:12px !important; box-shadow:0 2px 6px rgba(0,0,0,.25);
+    background:rgba(255,255,255,0.9);
+  }
+
+  #us-flight-map .leaflet-control-zoom a:hover{
+    background:var(--accent); color:#fff;
+  }
+
+  @media (max-width: 640px){
+    #us-flight-map{ height:420px; }
+    .leaflet-tooltip.city-label{ font-size:14px; padding:5px 8px; }
+    .ba-legend{ font-size:14px; padding:8px 10px; }
+    .ba-legend .ba-note{ font-size:11px; }
+    .city-dot{ width:16px; height:16px; margin-left:-8px; margin-top:-8px; }
+
+    #us-flight-map .leaflet-control-zoom a{
+      width:40px !important; height:40px !important;
+      line-height:36px !important; font-size:26px !important;
+    }
+  }
+</style>
+
+<div id="us-flight-map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/topojson-client@3"></script>
+
+<script>
+(function(){
+  const RADIUS_METERS = 207 * 1609.344;
+
+  const cities = [
+    { name:"Dallas",     lat:32.7767, lng:-96.7970 },
+    { name:"Cincinnati", lat:39.1031, lng:-84.5120 },
+    { name:"Charlotte",  lat:35.2271, lng:-80.8431 },
+    { name:"Orlando",    lat:28.5383, lng:-81.3792 },
+    { name:"Van Nuys",   lat:34.1897, lng:-118.4493 },
+    { name:"Denver",     lat:39.7392, lng:-104.9903 },
+    { name:"Houston",    lat:29.7604, lng:-95.3698 },
+    { name:"Blue Ridge", lat:34.8640, lng:-84.3241 }
+  ];
+
+  const map = L.map('us-flight-map', {
+    zoomControl:false,
+    scrollWheelZoom:false,
+    attributionControl:false
+  });
+
+  L.control.zoom({ position:'topright' }).addTo(map);
+  map.doubleClickZoom.disable();
+
+  // Layer panes
+  map.createPane('pane-nation');  map.getPane('pane-nation').style.zIndex  = 400;
+  map.createPane('pane-states');  map.getPane('pane-states').style.zIndex  = 410;
+  map.createPane('pane-circles'); map.getPane('pane-circles').style.zIndex = 420;
+
+  const cityGroup = L.featureGroup().addTo(map);
+
+  let activeCircle = null;
+
+  function showExclusive(circle){
+    if (activeCircle && map.hasLayer(activeCircle) && activeCircle !== circle) {
+      map.removeLayer(activeCircle);
+    }
+    if (!map.hasLayer(circle)) circle.addTo(map);
+    activeCircle = circle;
+  }
+
+  cities.forEach(city => {
+    const dot = L.marker([city.lat, city.lng], {
+      icon: L.divIcon({ className:'city-dot' }),
+      pane:'markerPane'
+    }).addTo(cityGroup);
+
+    const circle = L.circle([city.lat, city.lng], {
+      radius: RADIUS_METERS,
+      color: getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(),
+      weight: 2,
+      fillColor: getComputedStyle(document.documentElement).getPropertyValue('--fill').trim(),
+      fillOpacity: 1,
+      pane:'pane-circles'
+    });
+
+    dot.bindTooltip(
+      `${city.name}<br>207 mile radius (~1 hr)`,
+      { direction:'top', offset:[0,-10], className:'leaflet-tooltip city-label' }
+    );
+
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+    if (!isTouch) {
+      dot.on('mouseover', () => circle.addTo(map));
+      dot.on('mouseout', () => { if (activeCircle !== circle) map.removeLayer(circle); });
+      dot.on('click', () => {
+        if (activeCircle === circle) {
+          map.removeLayer(circle);
+          activeCircle = null;
+        } else {
+          showExclusive(circle);
+          dot.openTooltip();
+        }
+      });
+    } else {
+      const tap = (e) => {
+        e?.originalEvent?.preventDefault();
+        e?.originalEvent?.stopPropagation();
+
+        if (activeCircle === circle) {
+          map.removeLayer(circle);
+          activeCircle = null;
+        } else {
+          showExclusive(circle);
+          dot.openTooltip();
+        }
+      };
+
+      dot.on('touchstart', tap);
+      dot.on('click', tap);
+    }
+  });
+
+  const borderColor = getComputedStyle(document.documentElement).getPropertyValue('--border').trim();
+
+  // National outline
+  fetch('https://unpkg.com/us-atlas@3/nation-10m.json')
+    .then(r=>r.json())
+    .then(topo=>{
+      const geo = topojson.feature(topo, topo.objects.nation);
+      L.geoJSON(geo,{
+        pane:'pane-nation',
+        interactive:false,
+        style:{ color:borderColor, weight:1.6, opacity:0.9, fillOpacity:0 }
+      }).addTo(map);
+    })
+    .catch(err => console.error('nation borders failed to load', err));
+
+  // State outlines
+  fetch('https://unpkg.com/us-atlas@3/states-10m.json')
+    .then(r=>r.json())
+    .then(topo=>{
+      const geo = topojson.feature(topo, topo.objects.states);
+      L.geoJSON(geo,{
+        pane:'pane-states',
+        interactive:false,
+        style:{ color:borderColor, weight:1, opacity:0.8, fillOpacity:0 }
+      }).addTo(map);
+    })
+    .catch(err => console.error('state borders failed to load', err));
+
+  const legend = L.control({ position:'bottomleft' });
+
+  legend.onAdd = function(){
+    const div = L.DomUtil.create('div','ba-legend');
+    div.innerHTML = `
+      <div class="ba-legend-row">
+        <span class="ba-swatch"></span>
+        <span><strong>Program Area:</strong> Within 1 hour flight time (207 miles) of the selected city</span>
+      </div>
+      <div class="ba-note">Hover (desktop) or tap (mobile) a city to show its range.</div>
+    `;
+    L.DomEvent.disableClickPropagation(div);
+    return div;
+  };
+
+  legend.addTo(map);
+
+  const bounds = cityGroup.getBounds();
+
+  function refit(){
+    const isSmall = window.matchMedia('(max-width: 640px)').matches;
+
+    if (isSmall) {
+      map.fitBounds(bounds, { padding:[30,30] });
+    } else {
+      map.fitBounds(bounds, { padding:[60,60] });
+    }
+  }
+
+  refit();
+
+  let resizeTimer;
+  window.addEventListener('resize',()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(()=>{
+      map.invalidateSize();
+      refit();
+    },120);
+  });
+})();
+</script>
+  
+  
+
+
+

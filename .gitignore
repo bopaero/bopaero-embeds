@@ -1,0 +1,5 @@
+dist/*.map
+.DS_Store
+audit/pages/
+*.pyc
+__pycache__/

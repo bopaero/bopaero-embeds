@@ -1,0 +1,335 @@
+
+  
+    <style>
+:root{
+  --bg:#e9cba9;           
+  --input-bg:#fff7ef;       
+  --focus-bg:#ffffff;   
+  --text:#fff;
+  --outline:rgba(0,0,0,.45);
+  --radius-pill:9999px;
+  --pad:18px 26px;
+}
+
+.ssq-form{max-width:1060px;margin:0 auto;color:var(--text);font-family:system-ui, -apple-system, "Helvetica Neue", Helvetica, Arial, "Segoe UI", Roboto, sans-serif;}
+.ssq-form .two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:8px;}
+@media (max-width:720px){.ssq-form .two{grid-template-columns:1fr;}}
+
+.ssq-form label{display:block;font-size:15px;margin:10px 12px 8px 12px;opacity:.9}
+.ssq-form .req{opacity:.6;font-weight:400;font-size:.92em;margin-left:6px}
+.ssq-form .opt{opacity:.55;font-weight:400;font-size:.92em;margin-left:6px}
+
+.ssq-form input,
+.ssq-form select,
+.ssq-form textarea{
+  display:block;width:100%;
+  background:var(--input-bg);
+  border:none; outline:1px solid transparent;
+  padding:var(--pad);
+  border-radius:var(--radius-pill);
+  box-shadow:none; color:var(--text);
+  transition:background-color .15s ease, outline-color .15s ease, box-shadow .15s ease;
+}
+
+.ssq-form textarea{border-radius:32px; resize:vertical; min-height:140px}
+
+.ssq-form input:hover,
+.ssq-form select:hover,
+.ssq-form textarea:hover,
+.ssq-form input:focus,
+.ssq-form select:focus,
+.ssq-form textarea:focus{
+  background:var(--focus-bg);
+  outline-color:var(--outline);
+  box-shadow:0 0 0 2px var(--outline); /* crisp light ring */
+}
+
+.ssq-form ::placeholder{color:rgba(0,0,0,.35);}
+
+.ssq-form select{appearance:none;-webkit-appearance:none;-moz-appearance:none;background-image:linear-gradient(45deg, transparent 50%, currentColor 50%),linear-gradient(135deg, currentColor 50%, transparent 50%);background-position:calc(100% - 24px) 55%, calc(100% - 18px) 55%;background-size:6px 6px; background-repeat:no-repeat}
+
+.pill-btn{
+  margin-top:18px; border:none; cursor:pointer;
+  padding:18px 28px; border-radius:36px;
+  background:#ff6a00; color:#fff; font-weight:700; font-size:18px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  transition:transform .05s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.pill-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.16)}
+.pill-btn:active{transform:translateY(0);box-shadow:0 6px 18px rgba(0,0,0,.12)}
+
+:root{
+  --col-gap: 28px;         
+  --row-gap: 16px;
+  --pad-y: clamp(14px, 1.2vw, 18px);
+  --pad-x: clamp(20px, 1.6vw, 26px);
+}
+.ssq-form{ 
+  max-width: 1060px; 
+  margin: 0 auto; 
+  padding: 0 16px;                       
+  font-size: clamp(15.5px, 0.6vw + 14px, 17.5px);
+}
+.ssq-form label{
+  font-size: clamp(14px, 0.45vw + 12px, 16px);
+}
+
+.ssq-form .field{ margin-bottom: 14px; }
+.ssq-form .two{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--col-gap);
+  row-gap: var(--row-gap);
+  margin-bottom: 8px;
+}
+
+@media (max-width: 760px){
+  .ssq-form .two{ grid-template-columns: 1fr; column-gap: 0; }
+}
+
+.ssq-form input,
+.ssq-form select,
+.ssq-form textarea{
+  padding: var(--pad-y) var(--pad-x);
+}
+
+.ssq-form input:hover,
+.ssq-form select:hover,
+.ssq-form textarea:hover,
+.ssq-form input:focus,
+.ssq-form select:focus,
+.ssq-form textarea:focus{
+  background: #fff;
+  outline-color: rgba(0,0,0,.45);
+  box-shadow: 0 0 0 2px rgba(0,0,0,.45);
+}
+
+.pill-btn{ font-size: clamp(16px, 0.5vw + 14px, 18px); padding: 18px 28px; }
+
+/* test patch */
+.ssq-form input:focus,
+.ssq-form select:focus,
+.ssq-form textarea:focus{
+  outline: none !important;              
+  box-shadow: 0 0 0 2px var(--outline) !important;
+}
+
+.ssq-form .two{ column-gap: clamp(20px, 2vw, 28px); } 
+.ssq-form .two .field{ min-width: 0; position: relative; }
+.ssq-form .two .field:has(:focus){ z-index: 1; }      
+
+.ssq-form input,
+.ssq-form select,
+.ssq-form textarea{
+  box-sizing: border-box;
+  -webkit-appearance: none; 
+  appearance: none;
+}
+
+.ssq-form select{
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  padding-right: calc(var(--pad-x) + 24px); 
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    right calc(var(--pad-x) + 6px) 55%,
+    right var(--pad-x) 55%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+/* clean-up patch - todo: merge in fixes */
+.ssq-form input:focus,
+.ssq-form select:focus,
+.ssq-form textarea:focus{
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--outline) !important;
+}
+
+.ssq-form input:not([type="checkbox"]):not([type="radio"]),
+.ssq-form select,
+.ssq-form textarea{
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.ssq-form input[type="checkbox"]{
+  -webkit-appearance: auto;
+  appearance: auto;
+  width: 1.15em;
+  height: 1.15em;
+  padding: 0;
+  margin .2em .6em 0 0;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+  accent-color: #e04f16;
+}
+.ssq-form input[type="checkbox"]:focus{
+  outline: 2px solid var(--outline);
+  outline-offset: 2px;
+}
+
+.ssq-form select{
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  padding-right: calc(var(--pad-x) + 28px);
+  background-color: var(--input-bg);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-repeat: no-repeat;
+  background-size: 6px 6px, 6px 6px;
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 14px) 50%;
+}
+
+.ssq-form .two .field{ 
+  min-width:0; 
+  position:relative; 
+}
+
+/* mobile edits - testing */
+@media (max-width: 760px){
+  .ssq-form .two{
+    grid-template-columns: 1fr;
+    row-gap: 0 !important;        
+    column-gap: 0 !important;
+    margin-bottom: 0 !important;    
+  }
+  .ssq-form .two .field{ margin-bottom: 14px; } 
+
+  .ssq-form{ padding-left: 12px; padding-right: 12px; } 
+  .ssq-form label{ margin-left: 6px; margin-right: 6px; } 
+  .ssq-form input,
+  .ssq-form select,
+  .ssq-form textarea{ width: 100%; }                
+
+  .ssq-form .pill-btn{
+    display: block;
+    margin: 22px auto 30px;  
+  }
+
+  .ssq-form{ padding-bottom: 20px; }
+}
+</style>
+
+<form id="contact" class="ssq-form" method="post" novalidate>
+  <div class="two">
+    <div class="field">
+      <label for="first_name">First Name</label>
+      <input id="first_name" name="first_name" autocomplete="given-name" placeholder="First Name" required />
+    </div>
+    <div class="field">
+      <label for="last_name">Last Name</label>
+      <input id="last_name" name="last_name" autocomplete="family-name" placeholder="Last Name" required />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="email">Email *</label>
+    <input id="email" name="email" type="email" autocomplete="email" placeholder="Email" required />
+  </div>
+
+  <div class="field">
+    <label for="phone">Phone</label>
+    <input id="phone" name="phone" autocomplete="tel" placeholder="Phone" />
+  </div>
+
+  <div class="field">
+    <label for="company">Company Name <span class="opt">(optional)</span></label>
+    <input id="company" name="company" placeholder="Company" />
+  </div>
+
+  <div class="field">
+    <label for="preferred_demo_date">Preferred Demo Date *</label>
+    <input id="preferred_demo_date" name="preferred_demo_date" type="date" required />
+  </div>
+
+  <div class="field">
+    <label for="accredited_investor">Are You An Accredited Investor? *</label>
+    <select id="accredited_investor" name="accredited_investor" required>
+      <option value="" selected disabled>Select an option</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+      <option value="Not sure">Not sure</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="message">Any Questions or Notes?</label>
+    <textarea id="message" name="message" rows="4"></textarea>
+  </div>
+
+  <!-- honeypot -->
+  <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" />
+
+  <button class="pill-btn" type="submit">Book Demo</button>
+  <p class="form-note" id="form-note" hidden></p>
+</form>
+
+<script>
+(function () {
+  const WEBHOOK = "https://services.leadconnectorhq.com/hooks/nLUgMWigE8clvznzsfio/webhook-trigger/8bd10e02-718e-402f-92d7-259cb698d834";
+  const form = document.getElementById('contact');
+  const note = document.getElementById('form-note');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (form.website && form.website.value) return; // honeypot
+
+    const fd = new FormData(form);
+    const qs = new URLSearchParams(location.search);
+
+    const payload = {
+      first_name:            fd.get('first_name')?.trim() || "",
+      last_name:             fd.get('last_name')?.trim()  || "",
+      email:                 fd.get('email')?.trim()      || "",
+      phone:                 fd.get('phone')?.trim()      || "",
+      company:               fd.get('company')?.trim()    || "",
+      preferred_demo_date:   fd.get('preferred_demo_date') || "",
+      accredited_investor:   fd.get('accredited_investor') || "",
+      message:               fd.get('message') || "",
+      utm_source:   qs.get('utm_source'),
+      utm_medium:   qs.get('utm_medium'),
+      utm_campaign: qs.get('utm_campaign'),
+      referrer: document.referrer || ""
+    };
+
+    try {
+      const r = await fetch(WEBHOOK, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if (!r.ok) throw new Error(await r.text());
+      form.reset();
+      note.hidden = false;
+      note.textContent = "Thanks! We received your message and the owner will contact you soon.";
+    } catch (err) {
+      console.error('Webhook error:', err);
+      note.hidden = false; note.textContent = "Submission failed. Please try again.";
+    }
+  });
+})();
+</script>
+
+  
+  
+
+
+

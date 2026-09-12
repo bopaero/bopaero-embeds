@@ -1,0 +1,422 @@
+
+  
+    <!-- Collapsible wrapper (initially collapsed) -->
+<details class="calc-accordion" id="sr22t-calc">
+  <summary class="calc-summary">
+    <span class="summary-title">Cirrus SR22T GTS Program Cost Calculator</span>
+    <span class="summary-hint">Open</span>
+    <span class="summary-caret" aria-hidden="true"></span>
+  </summary>
+
+  <div class="calculator-container">
+    <h2>Cirrus SR22T GTS Program</h2>
+
+    <!-- Two-column layout for desktop/tablet; stacks on mobile -->
+    <div class="calculator-grid">
+      <!-- LEFT: Image column (on mobile this appears above the calculator) -->
+      <div class="image-panel">
+        <img
+          id="sr22t-image-1"
+          src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/1a2ef5bd-81d4-4bc2-99bb-55c250b221d1/G6+Pet+Friendly+Lifestyle.jpg?content-type=image%2Fjpeg"
+          alt="SR22T Exterior"
+          loading="lazy"
+        />
+        <img
+          id="sr22t-image-2"
+          src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/6b935415-45d7-4bb6-83ef-9296ed429310/SR+Series+NY+2024.jpeg?content-type=image%2Fjpeg"
+          alt="SR22T Lifestyle"
+          loading="lazy"
+          class="second-image-desktop"
+        />
+      </div>
+
+      <!-- RIGHT: Calculator -->
+      <div class="calculator">
+
+        <!-- Inputs -->
+        <div class="input-section">
+          <label for="ownership-years">
+            Years of Ownership:
+            <input
+              type="number"
+              id="ownership-years"
+              name="ownership-years"
+              inputmode="numeric"
+              placeholder="e.g., 5 yrs."
+              min="1"
+              max="20"
+              step="1"
+              required
+            />
+          </label>
+          <label for="hours-per-year" style="margin-top:12px;">
+            Estimated Flying Hours per Year:
+            <input
+              type="number"
+              id="hours-per-year"
+              name="hours-per-year"
+              inputmode="decimal"
+              placeholder="e.g., 50 hrs."
+              min="1"
+              max="1400"
+              required
+            />
+          </label>
+        </div>
+
+        <div class="button-section">
+          <button onclick="clearData()">Clear</button>
+          <button onclick="calculate()">Calculate</button>
+        </div>
+
+        <div class="output-section">
+          <h3>1/8th Ownership Position (Share)</h3>
+
+          <div class="output-item units">
+            <span>Units:* </span>
+            <span id="units">-</span>
+          </div>
+          <div class="output-item">
+            <span>Price to Purchase Units:*</span>
+            <span id="price-units">-</span>
+          </div>
+          <div class="output-item">
+            <span>Annual Combined Fees:**</span>
+            <span id="annual-fees">-</span>
+          </div>
+          <div class="output-item">
+            <span>Average Fuel/Oil Cost per Hour:***</span>
+            <span id="fuel-cost">-</span>
+          </div>
+
+          <!-- Blended (ownership-only) -->
+          <div class="output-item" id="blended-row">
+            <span>Estimated Ownership Cost per Hour:****</span>
+            <span id="blended-cost-per-hour">-</span>
+          </div>
+
+          <!-- MOBILE: second image appears below the results -->
+          <div class="second-image-mobile">
+            <img
+              src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/6b935415-45d7-4bb6-83ef-9296ed429310/SR+Series+NY+2024.jpeg?content-type=image%2Fjpeg"
+              alt="SR22T Lifestyle"
+              loading="lazy"
+            />
+          </div>
+
+          <div class="addendum">
+            <p>*Program longevity for each aircraft is estimated to be approx. four to five (4–5) years. The aircraft will be sold and all proceeds used to purchase a new aircraft. Aircraft depreciation is accounted for in the Aircraft Ownership fee. Applicable taxes related to the aircraft purchase are not included.</p>
+            <p>**Annual Combined fees include the bop Aero Management fee and the Aircraft Ownership fee (which includes estimated aircraft maintenance and fixed costs including insurance and storage).</p>
+            <p>***AVGAS ~$6/gal × 18 gph + Oil ~$1.66 (1 qt.) every 5 hrs. + TKS Anti-ice fluid (when used)</p>
+            <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the share purchase and annual fees; additional years include annual fees only.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<style>
+  /* ---- Collapsible summary styles (same as SF50) ---- */
+  .calc-accordion {
+    border: none;
+    margin: 0 0 12px 0;
+  }
+  .calc-summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #ff6700; /* orange background */
+    color: #fff;         /* white text */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.25);
+    outline: none;
+  }
+  .calc-summary::-webkit-details-marker { display: none; }
+
+  .summary-title {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+  .summary-hint {
+    font-size: 18px;
+    font-weight: 500;
+    opacity: .85;
+  }
+  .summary-caret {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(-45deg);
+    transition: transform .2s ease;
+    margin-left: 6px;
+  }
+  .calc-accordion[open] .summary-caret { transform: rotate(45deg); }
+  .calc-summary:hover { background: #e55d00; }
+  .calc-summary:focus-visible {
+    outline: 2px solid #0a58ca;
+    outline-offset: 2px;
+  }
+
+  /* ---- Container + layout (same as SF50) ---- */
+  .calculator-container {
+    font-family: Arial, sans-serif;
+    max-width: 1100px;
+    margin: auto;
+    padding: 15px;
+    background: #E9CEB0;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    margin-top: 12px;
+  }
+
+  .calculator-container h2 {
+    text-align: center;
+    color: #333;
+    font-size: 30px;
+    margin-bottom: 25px; /* increased space below title */
+  }
+
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* image left, content right */
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* Images: transparent panel, spacing, rounded corners */
+  .image-panel {
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 125px;
+    margin-bottom: 20px; /* space between images and input boxes */
+  }
+
+  .image-panel img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .calculator-container h3 {
+    text-align: center;
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .calculator {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .calculator .input-section,
+  .calculator .button-section,
+  .calculator .output-section {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .calculator label {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+  }
+  .calculator input {
+    padding: 10px;
+    margin-top: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .calculator .button-section {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .calculator .button-section button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #fff;
+  }
+  .calculator .button-section button:first-child { background: #dc3545; }
+  .calculator .button-section button:first-child:hover { background: #c82333; }
+  .calculator .button-section button:last-child { background: #28a745; }
+  .calculator .button-section button:last-child:hover { background: #218838; }
+
+  .calculator .output-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+    color: #555;
+  }
+  .calculator .output-item.units span {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .calculator .output-item span:last-child {
+    text-align: right;
+    display: inline-block;
+    width: 50%;
+  }
+  .calculator .output-item:last-child { border-bottom: none; }
+
+  .calculator .addendum {
+    padding: 12px;
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  .calculator span { font-size: 16px; }
+
+  /* Second image appears below the results ONLY on mobile */
+  .second-image-mobile { display: none; }
+
+  /* Responsive: stack image above content on narrow screens */
+  @media (max-width: 900px) {
+    .calculator-grid { grid-template-columns: 1fr; }
+    .image-panel .second-image-desktop { display: none; }
+    .second-image-mobile {
+      display: block;
+      margin-top: 15px;
+    }
+    .second-image-mobile img {
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+</style>
+
+<script>
+  // OPTIONAL: When the accordion opens, scroll it into view smoothly
+  document.addEventListener('DOMContentLoaded', () => {
+    const acc = document.getElementById('sr22t-calc');
+    acc.addEventListener('toggle', () => {
+      if (acc.open) {
+        acc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // ===== Constants (SR22T) =====
+  const MAX_AVAILABLE_HOURS = 1400;   // user-selectable cap across scenarios
+  const EIGHTH_FRACTION = 1 / 8;
+
+  const HOURS_PER_UNIT = 1;
+  const PRICE_PER_UNIT = 1164.285;     // purchase price per unit
+  const FEES_PER_UNIT  = 386.056;     // annual combined fees per unit
+  const FUEL_COST_PER_HOUR = 110;     // display-only, not included in blended calc
+  const HR_SUFFIX = " /hr";
+
+  // ===== Helpers =====
+  const formatCurrency0 = (num) =>
+    num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+  // 1/8 share (fixed)
+  const shareHours = Math.round(MAX_AVAILABLE_HOURS * EIGHTH_FRACTION); // e.g., 1400/8 = 175
+  const units = Math.round(shareHours / HOURS_PER_UNIT);
+
+  const priceUnits = units * PRICE_PER_UNIT; // one-time in Year 1
+  const annualFees = units * FEES_PER_UNIT;  // every year
+
+  const fuelCostPerHourDisplay = `$${formatCurrency0(FUEL_COST_PER_HOUR)}${HR_SUFFIX}`;
+
+  // ===== UI Wiring =====
+  document.addEventListener('DOMContentLoaded', () => {
+    // Static snapshot values
+    document.getElementById('units').innerText = units.toString();
+    document.getElementById('price-units').innerText = `$${formatCurrency0(priceUnits)}`;
+    document.getElementById('annual-fees').innerText = `$${formatCurrency0(annualFees)}`;
+    document.getElementById('fuel-cost').innerText = fuelCostPerHourDisplay;
+
+    // Enter key & blur triggers
+    const yearsEl = document.getElementById('ownership-years');
+    const hoursEl = document.getElementById('hours-per-year');
+
+    [yearsEl, hoursEl].forEach(el => {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          calculate();
+          el.blur();
+        }
+      });
+      el.addEventListener('blur', () => {
+        if (yearsEl.value && hoursEl.value) calculate();
+      });
+    });
+  });
+
+  // ===== Actions =====
+  function calculate() {
+    const years = parseInt(document.getElementById('ownership-years').value, 10);
+    const hoursPerYear = parseFloat(document.getElementById('hours-per-year').value);
+
+    // Validate years (1–20)
+    if (isNaN(years) || years < 1 || years > 20) {
+      alert('Please enter Years of Ownership between 1 and 20.');
+      return;
+    }
+
+    // Allow up to 1400 annual hours
+    const MAX_HOURS_PER_YEAR = MAX_AVAILABLE_HOURS; // 1400
+    if (isNaN(hoursPerYear) || hoursPerYear < 1 || hoursPerYear > MAX_HOURS_PER_YEAR) {
+      alert(`Annual hours must be between 1 and ${MAX_HOURS_PER_YEAR}.`);
+      return;
+    }
+
+    // Ownership-only costs:
+    // Year 1: share purchase + annual combined fees
+    // Years 2..N: annual combined fees only
+    const ownershipCostTotal = priceUnits + (annualFees * years);
+
+    // Hours across ownership period
+    const totalHours = years * hoursPerYear;
+
+    // Blended ownership-only $/hr
+    const blendedOwnershipPerHour = ownershipCostTotal / totalHours;
+
+    // Render
+    document.getElementById('blended-cost-per-hour').innerText =
+      `$${formatCurrency0(blendedOwnershipPerHour)}${HR_SUFFIX}`;
+  }
+
+  function clearData() {
+    document.getElementById('ownership-years').value = '';
+    document.getElementById('hours-per-year').value = '';
+    document.getElementById('blended-cost-per-hour').innerText = '-';
+  }
+</script>
+  
+  
+
+
+

@@ -1,0 +1,337 @@
+{
+  "_comment": "Single source of truth: which component lives on which pages, and how it deploys. mode: loader = one script on GitHub Pages, edit once updates every page. paste = build then paste into the Squarespace block (single-page components only). vendor = third-party embed, content managed in the vendor UI - DO NOT manage here. review = needs Raymond's decision before adopting.",
+  "baseline_captured": "2026-09-12",
+  "site": "https://bopaero.com",
+  "components": {
+    "vendor-form-footer": {
+      "mode": "vendor",
+      "description": "LeadConnector: Footer Email form",
+      "block_hash": "f792629275",
+      "chars": 710,
+      "pages": [
+        "about",
+        "home",
+        "overview",
+        "privacy-policy",
+        "referral-program-pilot-information",
+        "rules-regulations",
+        "sf50-locations-with-interest",
+        "sr22t-leasing-program",
+        "sr22t-locations-with-interest",
+        "testimonials",
+        "tos",
+        "travel-model-test"
+      ]
+    },
+    "vendor-form-sr22t": {
+      "mode": "vendor",
+      "description": "LeadConnector: Lead Interest Form - SR22T",
+      "block_hash": "b8e92dd70a",
+      "chars": 739,
+      "pages": [
+        "sr22t-fractional-ownership-program-nonpilots-business",
+        "sr22t-fractional-ownership-program-nonpilots-personal",
+        "sr22t-fractional-ownership-program-pilots",
+        "sr22t-leasing-program",
+        "sr22t-pilots-v",
+        "sr22t-pilots-v-1"
+      ]
+    },
+    "sf50-calc": {
+      "mode": "loader",
+      "description": "SF50 cost calculator",
+      "block_hash": "9455dadb44",
+      "chars": 30100,
+      "pages": [
+        "sf50-fractional-ownership-program-nonpilots",
+        "sf50-fractional-ownership-program-nonpilots-business",
+        "sf50-fractional-ownership-program-pilots"
+      ]
+    },
+    "vendor-form-sf50": {
+      "mode": "vendor",
+      "description": "LeadConnector: Lead Interest Form - SF50",
+      "block_hash": "5442174e25",
+      "chars": 737,
+      "pages": [
+        "sf50-fractional-ownership-program-nonpilots",
+        "sf50-fractional-ownership-program-nonpilots-business",
+        "sf50-fractional-ownership-program-pilots"
+      ]
+    },
+    "sr22t-calc": {
+      "mode": "loader",
+      "description": "SR22T cost calculator (program pages variant)",
+      "block_hash": "e805a6d9da",
+      "chars": 33602,
+      "pages": [
+        "sr22t-fractional-ownership-program-nonpilots-business",
+        "sr22t-fractional-ownership-program-nonpilots-personal",
+        "sr22t-fractional-ownership-program-pilots"
+      ]
+    },
+    "unnamed-ee28e3d903": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "ee28e3d903",
+      "chars": 9641,
+      "pages": [
+        "sr22t-pilots-v",
+        "sr22t-pilots-v-1"
+      ]
+    },
+    "sr22t-calc-v": {
+      "mode": "review",
+      "description": "SR22T calculator, older variant on sr22t-pilots-v pages",
+      "block_hash": "fe836b05ce",
+      "chars": 12929,
+      "pages": [
+        "sr22t-pilots-v",
+        "sr22t-pilots-v-1"
+      ]
+    },
+    "unnamed-fce2f05ba0": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "fce2f05ba0",
+      "chars": 2845,
+      "pages": [
+        "bop-aero-pilot-referral-program"
+      ]
+    },
+    "contact-a": {
+      "mode": "review",
+      "description": "Contact form variant A",
+      "block_hash": "2e8d42a845",
+      "chars": 10485,
+      "pages": [
+        "contact"
+      ]
+    },
+    "unnamed-4e2df8b7e6": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "4e2df8b7e6",
+      "chars": 195,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-4a3564f8b8": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "4a3564f8b8",
+      "chars": 319,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-e8b386f367": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "e8b386f367",
+      "chars": 118,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-421612ebb8": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "421612ebb8",
+      "chars": 86,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-e32b0216a5": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "e32b0216a5",
+      "chars": 243,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-df6a4c71fe": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "df6a4c71fe",
+      "chars": 178,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-0092aaac7b": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "0092aaac7b",
+      "chars": 381,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-21f3f25b1e": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "21f3f25b1e",
+      "chars": 77,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-a84a7a05f0": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "a84a7a05f0",
+      "chars": 97,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-168131b08a": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "168131b08a",
+      "chars": 223,
+      "pages": [
+        "overview"
+      ]
+    },
+    "unnamed-1415fed186": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "1415fed186",
+      "chars": 334,
+      "pages": [
+        "overview"
+      ]
+    },
+    "aircraft": {
+      "mode": "paste",
+      "description": "Aircraft component",
+      "block_hash": "48aa10cbd5",
+      "chars": 5115,
+      "pages": [
+        "overview"
+      ]
+    },
+    "survey": {
+      "mode": "paste",
+      "description": "Survey component",
+      "block_hash": "119989d7c1",
+      "chars": 17736,
+      "pages": [
+        "overview"
+      ]
+    },
+    "collect": {
+      "mode": "paste",
+      "description": "Collect component",
+      "block_hash": "73131a2c1e",
+      "chars": 6259,
+      "pages": [
+        "privacy-policy"
+      ]
+    },
+    "contact-b": {
+      "mode": "review",
+      "description": "Contact form variant B",
+      "block_hash": "511776e095",
+      "chars": 9962,
+      "pages": [
+        "schedule-demo"
+      ]
+    },
+    "us-flight-map-sf50": {
+      "mode": "review",
+      "description": "US flight map, SF50 locations page",
+      "block_hash": "ebb97c5628",
+      "chars": 8019,
+      "pages": [
+        "sf50-locations-with-interest"
+      ]
+    },
+    "us-flight-map-sr22t": {
+      "mode": "review",
+      "description": "US flight map, SR22T locations page",
+      "block_hash": "cdac4416d4",
+      "chars": 7605,
+      "pages": [
+        "sr22t-locations-with-interest"
+      ]
+    },
+    "unnamed-4881892500": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "4881892500",
+      "chars": 20562,
+      "pages": [
+        "sr22t-pilots-v-1"
+      ]
+    },
+    "unnamed-6462e9631b": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "6462e9631b",
+      "chars": 19642,
+      "pages": [
+        "sr22t-pilots-v"
+      ]
+    },
+    "founders-circle": {
+      "mode": "paste",
+      "description": "Founder\u2019s Circle page",
+      "block_hash": "fde5815077",
+      "chars": 45928,
+      "pages": [
+        "the-founders-circle-invite"
+      ]
+    },
+    "learn-more": {
+      "mode": "paste",
+      "description": "Learn more component",
+      "block_hash": "b3f2a1abcd",
+      "chars": 26248,
+      "pages": [
+        "the-founders-circle"
+      ]
+    },
+    "unnamed-5ad36b3ef9": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "5ad36b3ef9",
+      "chars": 6482,
+      "pages": [
+        "tos"
+      ]
+    },
+    "route-intel": {
+      "mode": "paste",
+      "description": "Route intelligence component",
+      "block_hash": "4cf1df4043",
+      "chars": 99769,
+      "pages": [
+        "travel-model-test"
+      ]
+    },
+    "unnamed-21d2a21c7f": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "21d2a21c7f",
+      "chars": 204,
+      "pages": [
+        "tripcalc"
+      ]
+    },
+    "unnamed-20f9876656": {
+      "mode": "review",
+      "description": "Unclassified small snippet",
+      "block_hash": "20f9876656",
+      "chars": 1726,
+      "pages": [
+        "win-a-day-at-the-masters-sweepstakes"
+      ]
+    }
+  }
+}

@@ -1,0 +1,605 @@
+
+  
+    <div class="ss-gswitch" data-gswitch>
+  <script type="application/json" class="ss-gswitch-data">
+  [
+    {
+      "label": "Safety",
+      "title": "Safety, Always Within Reach",
+      "body": "Built around confidence: the CAPS handle is there when you need it, and Safe Return™ Emergency Autoland gives passengers a one-touch option to command an automated landing in an emergency.",
+      "ctaText": "Schedule a Demo",
+      "ctaHref": "https://bopaero.com/schedule-demo",
+      "video": "https://cirrusaircraft.com/wp-content/uploads/2025/05/DIGITAL-ADS_ALDRIN_BUTTON-PUSH_4.28.25-2.mp4"
+    },
+    {
+      "label": "Avionics",
+      "title": "Cirrus Perspective Touch+™",
+      "body": "A clean, intuitive control center powered by Garmin®—touch-first workflow, crisp displays, and modern situational awareness that feels more like a premium cockpit than a panel.",
+      "ctaText": "Schedule a Demo",
+      "ctaHref": "https://bopaero.com/schedule-demo",
+      "video": "https://cirrusaircraft.com/wp-content/uploads/2025/05/Avionics-1.5.mp4"
+    },
+    {
+      "label": "Cabin",
+      "title": "Unmatched Design, Real Comfort",
+      "body": "Beauty with purpose: thoughtful ergonomics, upscale materials, and a cabin experience tuned for long cross-countries—quiet confidence, not flashy complexity.",
+      "ctaText": "Schedule a Demo",
+      "ctaHref": "https://bopaero.com/schedule-demo",
+      "video": "https://cirrusaircraft.com/wp-content/uploads/2025/05/SR_G7_FEATURES_5.1.25.mp4.mp4"
+    },
+    {
+      "label": "FIKI",
+      "title": "More-Season Capability",
+      "body": "With the available Flight Into Known Icing (FIKI) system integrated into the wings and tail, the SR22 platform is built for pilots who want more flexibility across changing conditions.",
+      "ctaText": "Schedule a Demo",
+      "ctaHref": "https://bopaero.com/schedule-demo",
+      "image": "https://cirrusaircraft.com/wp-content/uploads/2024/08/3-vi-fiki-1024x640-2.webp"
+    },
+    {
+      "label": "Performance",
+      "title": "Refined Aerodynamics. Serious Stopping Power.",
+      "body": "Reduced drag details, redesigned fairings, and hardware upgrades that translate into real-world efficiency—plus Beringer brakes engineered for consistent, confident landings.",
+      "ctaText": "Schedule a Demo",
+      "ctaHref": "https://bopaero.com/schedule-demo",
+      "image": "https://cirrusaircraft.com/wp-content/uploads/2024/08/idaho-highperformanceberingerbrakesjpg-1024x601-1.webp"
+    }
+  ]
+  </script>
+
+  <style>
+    .ss-gswitch{
+      --gs-bg:#003767;
+      --gs-surface:rgba(0,0,0,.18);
+      --gs-text:rgba(255,255,255,.94);
+      --gs-muted:rgba(255,255,255,.72);
+      --gs-line:rgba(255,255,255,.22);
+      --gs-accent:#FF6700;
+
+      --gs-btn:rgba(0,0,0,.28);
+      --gs-btnText:rgba(255,255,255,.94);
+      --gs-btnDisabled:rgba(255,255,255,.10);
+
+      --gs-radius:999px;
+      --gs-minH: min(78vh, 860px);
+      --gs-leftW: 42%;
+      --gs-pad: clamp(22px, 3.2vw, 64px);
+
+      --gs-progressBottom: clamp(14px, 2.2vh, 24px);
+      --gs-footerSafe: clamp(108px, 12vh, 170px);
+      --gs-mediaInset: clamp(12px, 1.8vw, 26px);
+      --gs-mediaRadius: clamp(16px, 2vw, 28px);
+
+      --gs-ease: cubic-bezier(.2,.9,.2,1);
+      --gs-fade: 420ms;
+      --gs-textFade: 220ms;
+
+      width:100%;
+      background:var(--gs-bg);
+      position:relative;
+      overflow:hidden;
+      font-family: inherit;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+    }
+
+    .ss-gswitch *{ box-sizing:border-box; }
+
+    .ss-gswitch-shell{
+      min-height: var(--gs-minH);
+      display:grid;
+      grid-template-columns: var(--gs-leftW) 1fr;
+      background:var(--gs-bg);
+      outline:none;
+    }
+
+    .ss-gswitch-copy{
+      padding: var(--gs-pad);
+      padding-bottom: calc(var(--gs-pad) + var(--gs-footerSafe));
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      gap: 18px;
+      color:var(--gs-text);
+    }
+
+    .ss-gswitch-title{
+      margin:0;
+      font-weight: 800;
+      letter-spacing:-0.02em;
+      font-size: clamp(40px, 4.2vw, 72px);
+      line-height: 0.98;
+      margin-top: clamp(14px, 6vh, 72px);
+      max-width: 14ch;
+    }
+
+    .ss-gswitch-body{
+      margin:0;
+      color: var(--gs-muted);
+      font-size: clamp(14px, 1.25vw, 18px);
+      line-height: 1.65;
+      max-width: 58ch;
+      margin-top: 10px;
+      white-space: pre-line;
+    }
+
+    .ss-gswitch-cta{
+      margin-top: 14px;
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      text-decoration:none;
+      font-weight: 750;
+      font-size: clamp(14px, 1.2vw, 18px);
+      width: fit-content;
+      box-shadow: 0 14px 34px rgba(0,0,0,.22);
+      transition: transform 140ms var(--gs-ease), border-color 140ms var(--gs-ease), background 140ms var(--gs-ease), opacity 140ms var(--gs-ease), color 140ms var(--gs-ease);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .ss-gswitch-cta:hover{
+      border-color: rgba(255,103,0,.80);
+      background: rgba(255,255,255,.13);
+      opacity: .99;
+    }
+    .ss-gswitch-cta:active{ transform: scale(.98); }
+    .ss-gswitch-cta:focus-visible{ outline: 3px solid rgba(255,103,0,.45); outline-offset: 4px; }
+    .ss-gswitch-ctaArrow{
+      font-size: 1.25em;
+      transform: translateY(1px);
+      color: rgba(255,255,255,.86);
+      transition: color 140ms var(--gs-ease), transform 140ms var(--gs-ease);
+    }
+    .ss-gswitch-cta:hover .ss-gswitch-ctaArrow{ color: rgba(255,103,0,.95); transform: translate(2px, 1px); }
+
+    .ss-gswitch-media{
+      position:relative;
+      background: transparent;
+      overflow:hidden;
+    }
+
+    .ss-gswitch-slot{
+      position:absolute;
+      inset: var(--gs-mediaInset);
+      border-radius: var(--gs-mediaRadius);
+      overflow:hidden;
+      opacity:0;
+      transition: opacity var(--gs-fade) var(--gs-ease);
+      transform: translateZ(0);
+      background: var(--gs-surface);
+    }
+    .ss-gswitch-slot.is-visible{ opacity:1; }
+
+    .ss-gswitch-slot img,
+    .ss-gswitch-slot video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+    }
+
+    .ss-gswitch-slot img{ display:block; }
+    .ss-gswitch-slot video{ display:none; }
+
+    .ss-gswitch-slot.is-video img{ display:none; }
+    .ss-gswitch-slot.is-video video{ display:block; }
+
+    .ss-gswitch-slot::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(1200px 700px at 70% 55%, rgba(0,0,0,.00), rgba(0,0,0,.34) 60%, rgba(0,0,0,.66) 100%),
+        linear-gradient(to top, rgba(0,0,0,.62), rgba(0,0,0,.12) 38%, rgba(0,0,0,0) 60%),
+        radial-gradient(900px 600px at 15% 25%, rgba(255,255,255,.06), transparent 62%);
+      pointer-events:none;
+    }
+
+    .ss-gswitch-controls{
+      position:absolute;
+      right: calc(var(--gs-mediaInset) + clamp(10px, 1.4vw, 22px));
+      bottom: calc(var(--gs-progressBottom) + 56px);
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      z-index:5;
+    }
+    .ss-gswitch-btn{
+      width: 54px;
+      height: 54px;
+      border-radius: var(--gs-radius);
+      border: 1px solid var(--gs-line);
+      background: var(--gs-btn);
+      color: var(--gs-btnText);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+      transition: transform 140ms var(--gs-ease), opacity 140ms var(--gs-ease), background 140ms var(--gs-ease), border-color 140ms var(--gs-ease);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .ss-gswitch-btn:active{ transform: scale(.96); }
+    .ss-gswitch-btn:focus-visible{ outline: 3px solid rgba(255,103,0,.45); outline-offset: 3px; }
+    .ss-gswitch-btn.is-next{
+      background: var(--gs-accent);
+      border-color: rgba(255,103,0,.60);
+      color:#0B0F14;
+    }
+    .ss-gswitch-btn[disabled]{
+      background: var(--gs-btnDisabled);
+      border-color: rgba(255,255,255,.18);
+      color: rgba(255,255,255,.65);
+      cursor:not-allowed;
+      opacity: .9;
+      box-shadow:none;
+    }
+
+    .ss-gswitch-progress{
+      position:absolute;
+      left: var(--gs-pad);
+      right: var(--gs-pad);
+      bottom: var(--gs-progressBottom);
+      display:flex;
+      justify-content:space-between;
+      z-index:6;
+      padding-top: 6px;
+    }
+    .ss-gswitch-progress::before{
+      content:"";
+      position:absolute;
+      left:0; right:0;
+      top: 12px;
+      height:2px;
+      background: rgba(255,255,255,.22);
+    }
+
+    .ss-gswitch-step{
+      background: transparent;
+      border:none;
+      padding: 0;
+      cursor:pointer;
+      color: rgba(255,255,255,.66);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap: 10px;
+      min-width: 44px;
+      z-index:7;
+    }
+    .ss-gswitch-step:focus-visible{
+      outline: 3px solid rgba(255,103,0,.45);
+      outline-offset: 6px;
+      border-radius: 10px;
+    }
+
+    .ss-gswitch-dot{
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.55);
+      background: var(--gs-bg);
+      position:relative;
+    }
+    .ss-gswitch-step.is-active .ss-gswitch-dot{
+      border-color: var(--gs-accent);
+      box-shadow: 0 0 0 3px rgba(255,103,0,.18);
+    }
+    .ss-gswitch-step.is-active .ss-gswitch-dot::after{
+      content:"";
+      position:absolute;
+      inset:3px;
+      border-radius:999px;
+      background: var(--gs-accent);
+    }
+
+    .ss-gswitch-label{
+      font-size: 14px;
+      letter-spacing: .02em;
+      user-select:none;
+    }
+    .ss-gswitch-step.is-active{ color: rgba(255,255,255,.92); }
+
+    .ss-gswitch-copy.is-fade{
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity var(--gs-textFade) var(--gs-ease), transform var(--gs-textFade) var(--gs-ease);
+    }
+    .ss-gswitch-copy{
+      opacity:1;
+      transform: translateY(0);
+      transition: opacity var(--gs-textFade) var(--gs-ease), transform var(--gs-textFade) var(--gs-ease);
+    }
+
+    @media (max-width: 980px){
+      .ss-gswitch-shell{ grid-template-columns: 1fr; }
+      .ss-gswitch-copy{
+        padding-bottom: calc(var(--gs-pad) + 140px);
+      }
+      .ss-gswitch-title{ max-width: 20ch; margin-top: 22px; }
+      .ss-gswitch-media{ min-height: 52vh; }
+      .ss-gswitch-slot{ inset: clamp(10px, 2.6vw, 18px); }
+      .ss-gswitch-controls{
+        right: 18px;
+        bottom: calc(var(--gs-progressBottom) + 54px);
+      }
+      .ss-gswitch-progress{ left: 18px; right: 18px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .ss-gswitch-slot,
+      .ss-gswitch-copy,
+      .ss-gswitch-btn{ transition: none !important; }
+    }
+
+    .ss-gswitch-cta:hover{
+  background: var(--gs-accent);
+  border-color: var(--gs-accent);
+  color:#0B0F14;
+}
+
+  </style>
+
+  <div class="ss-gswitch-shell" tabindex="0" aria-label="Gallery section (use arrow keys)">
+    <div class="ss-gswitch-copy" aria-live="polite">
+      <h2 class="ss-gswitch-title"></h2>
+      <p class="ss-gswitch-body"></p>
+      <a class="ss-gswitch-cta" href="#">
+        <span class="ss-gswitch-ctaText"></span>
+        <span class="ss-gswitch-ctaArrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="ss-gswitch-media" aria-hidden="true">
+      <div class="ss-gswitch-slot is-a is-visible">
+        <img class="ss-gswitch-img" alt="" />
+        <video class="ss-gswitch-vid" muted playsinline loop autoplay preload="metadata"></video>
+      </div>
+      <div class="ss-gswitch-slot is-b">
+        <img class="ss-gswitch-img" alt="" />
+        <video class="ss-gswitch-vid" muted playsinline loop autoplay preload="metadata"></video>
+      </div>
+    </div>
+
+    <div class="ss-gswitch-controls" aria-label="Gallery controls">
+      <button type="button" class="ss-gswitch-btn ss-first" aria-label="First slide" title="First">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M13.5 6L7.5 12L13.5 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 6L12 12L18 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="ss-gswitch-btn ss-prev" aria-label="Previous slide" title="Previous">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M14.5 6L8.5 12L14.5 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <button type="button" class="ss-gswitch-btn ss-next is-next" aria-label="Next slide" title="Next">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9.5 6L15.5 12L9.5 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="ss-gswitch-progress" role="tablist" aria-label="Gallery slides"></div>
+  </div>
+
+  <script>
+    (() => {
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      function init(root){
+        if (!root || root.__gs_inited) return;
+        root.__gs_inited = true;
+
+        const dataEl = root.querySelector('.ss-gswitch-data');
+        let slides = [];
+        try { slides = JSON.parse((dataEl?.textContent || '').trim()); } catch(e){}
+        if (!slides.length) return;
+
+        const shell = root.querySelector('.ss-gswitch-shell');
+        const copy  = root.querySelector('.ss-gswitch-copy');
+        const title = root.querySelector('.ss-gswitch-title');
+        const body  = root.querySelector('.ss-gswitch-body');
+        const cta   = root.querySelector('.ss-gswitch-cta');
+        const ctaText = root.querySelector('.ss-gswitch-ctaText');
+
+        const media = root.querySelector('.ss-gswitch-media');
+        const slotA = root.querySelector('.ss-gswitch-slot.is-a');
+        const slotB = root.querySelector('.ss-gswitch-slot.is-b');
+
+        const btnFirst = root.querySelector('.ss-first');
+        const btnPrev  = root.querySelector('.ss-prev');
+        const btnNext  = root.querySelector('.ss-next');
+
+        const progress = root.querySelector('.ss-gswitch-progress');
+
+        let index = Math.min(Math.max(parseInt(root.getAttribute('data-start') || '0', 10), 0), slides.length - 1);
+        let usingA = true;
+
+        const stepBtns = slides.map((s, i) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'ss-gswitch-step';
+          b.setAttribute('role', 'tab');
+          b.dataset.index = String(i);
+
+          const dot = document.createElement('span');
+          dot.className = 'ss-gswitch-dot';
+
+          const lab = document.createElement('span');
+          lab.className = 'ss-gswitch-label';
+          lab.textContent = s.label || String(i + 1);
+
+          b.append(dot, lab);
+          b.addEventListener('click', () => go(i, true));
+          progress.appendChild(b);
+          return b;
+        });
+
+        function setActiveStep(){
+          stepBtns.forEach((b, i) => {
+            const active = i === index;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', active ? 'true' : 'false');
+            b.tabIndex = active ? 0 : -1;
+          });
+        }
+
+        function setButtons(){
+          const atStart = index === 0;
+          const atEnd = index === slides.length - 1;
+          btnFirst.disabled = atStart;
+          btnPrev.disabled  = atStart;
+          btnNext.disabled  = atEnd;
+        }
+
+        function swapText(s){
+          const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (!reduce) copy.classList.add('is-fade');
+
+          const apply = () => {
+            title.textContent = s.title || '';
+            body.textContent  = s.body  || '';
+            cta.href          = s.ctaHref || '#';
+            ctaText.textContent = s.ctaText || '';
+            cta.style.display = s.ctaText ? 'inline-flex' : 'none';
+            if (!reduce) requestAnimationFrame(() => copy.classList.remove('is-fade'));
+          };
+
+          if (reduce) { apply(); return; }
+          setTimeout(apply, 170);
+        }
+
+        function stopSlot(slot){
+          const v = slot.querySelector('video');
+          if (!v) return;
+          try { v.pause(); } catch(_) {}
+        }
+
+        function setSlotMedia(slot, s){
+          const img = slot.querySelector('img');
+          const vid = slot.querySelector('video');
+
+          if (s.video){
+            slot.classList.add('is-video');
+            if (img) img.removeAttribute('src');
+            if (vid){
+              vid.src = s.video;
+              try { vid.load(); } catch(_) {}
+              const play = () => { try { vid.currentTime = 0; } catch(_) {} vid.play().catch(() => {}); };
+              if (vid.readyState >= 2) play();
+              else vid.onloadeddata = () => play();
+            }
+            return;
+          }
+
+          slot.classList.remove('is-video');
+          if (vid){
+            stopSlot(slot);
+            vid.removeAttribute('src');
+            try { vid.load(); } catch(_) {}
+          }
+          if (img) img.src = s.image || '';
+        }
+
+        function swapMedia(s){
+          const nextSlot = usingA ? slotB : slotA;
+          const curSlot  = usingA ? slotA : slotB;
+
+          stopSlot(curSlot);
+          setSlotMedia(nextSlot, s);
+          nextSlot.classList.add('is-visible');
+          curSlot.classList.remove('is-visible');
+          usingA = !usingA;
+        }
+
+        function go(i, focusStep=false){
+          const nextIndex = Math.min(Math.max(i, 0), slides.length - 1);
+          if (nextIndex === index) return;
+
+          index = nextIndex;
+          const s = slides[index];
+
+          setActiveStep();
+          setButtons();
+          swapText(s);
+          swapMedia(s);
+
+          if (focusStep) stepBtns[index].focus({preventScroll:true});
+        }
+
+        function prev(){ if (index > 0) go(index - 1); }
+        function next(){ if (index < slides.length - 1) go(index + 1); }
+        function first(){ go(0); }
+
+        btnPrev.addEventListener('click', prev);
+        btnNext.addEventListener('click', next);
+        btnFirst.addEventListener('click', first);
+
+        shell.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowLeft')  { e.preventDefault(); prev(); }
+          if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
+          if (e.key === 'Home')       { e.preventDefault(); first(); }
+          if (e.key === 'End')        { e.preventDefault(); go(slides.length - 1); }
+        });
+
+        let startX = 0, startY = 0, down = false;
+        media.addEventListener('pointerdown', (e) => {
+          down = true; startX = e.clientX; startY = e.clientY;
+          try { media.setPointerCapture(e.pointerId); } catch(_) {}
+        });
+        media.addEventListener('pointerup', (e) => {
+          if (!down) return; down = false;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) next(); else prev();
+          }
+        });
+        media.addEventListener('pointercancel', () => { down = false; });
+
+        const s0 = slides[index];
+        title.textContent = s0.title || '';
+        body.textContent  = s0.body  || '';
+        cta.href          = s0.ctaHref || '#';
+        ctaText.textContent = s0.ctaText || '';
+        cta.style.display = s0.ctaText ? 'inline-flex' : 'none';
+
+        setSlotMedia(slotA, s0);
+        slotA.classList.add('is-visible');
+        slotB.classList.remove('is-visible');
+
+        setActiveStep();
+        setButtons();
+      }
+
+      function boot(){
+        $$('.ss-gswitch[data-gswitch]').forEach(init);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        boot();
+      }
+
+      window.addEventListener('load', boot);
+
+      const mo = new MutationObserver(() => boot());
+      mo.observe(document.documentElement, { childList: true, subtree: true });
+    })();
+  </script>
+</div>
+
+  
+  
+
+
+

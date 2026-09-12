@@ -1,0 +1,463 @@
+
+  
+    <!-- Collapsible wrapper (initially collapsed) -->                                                                                                     
+  <details class="calc-accordion" id="sr22t-calc">                                                                                                       
+    <summary class="calc-summary">                                                                                                                       
+      <span class="summary-title">Cirrus SR22T Shared Ownership Cost Calculator</span>                                                                        
+      <span class="summary-hint">Open</span>                                                                                                             
+      <span class="summary-caret" aria-hidden="true"></span>
+    </summary>                                                                                                                                           
+                                                            
+    <div class="calculator-container">                                                                                                                   
+      <h2>2026 Cirrus SR22T G7+ GTS Shared Ownership Program</h2>            
+                                                                                                                                                         
+      <!-- Two-column layout for desktop/tablet; stacks on mobile -->                                                                                    
+      <div class="calculator-grid">                                                                                                                      
+        <!-- LEFT: Image column (on mobile this appears above the calculator) -->                                                                        
+        <div class="image-panel">                                                                                                                        
+          <img                                                                                                                                           
+            id="sr22t-image-1"                                                                                                                           
+            src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/1a2ef5bd-81d4-4bc2-99bb-55c250b221d1/G6+Pet+Friendly+Lifestyle.jpg?content-type=image%2Fjpeg"                                                                                                                              
+            alt="SR22T Exterior"                                                                                                                         
+            loading="lazy"                                                                                                                               
+          />                                                
+          <img
+            id="sr22t-image-2"                                                                                                                           
+            src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/6b935415-45d7-4bb6-83ef-9296ed429310/SR+Series+NY+2024.jpeg?content-type=image%2Fjpeg"                                                                                                                                     
+            alt="SR22T Lifestyle"                           
+            loading="lazy"                                                                                                                               
+            class="second-image-desktop"                    
+          />                                                                                                                                             
+        </div>
+                                                                                                                                                         
+        <!-- RIGHT: Calculator -->                          
+        <div class="calculator">
+
+          <!-- Inputs -->
+          <div class="input-section">
+            <label for="ownership-years">                                                                                                                
+              Years of Ownership:
+              <input                                                                                                                                     
+                type="number"                               
+                id="ownership-years"                                                                                                                     
+                name="ownership-years"
+                inputmode="numeric"                                                                                                                      
+                placeholder="e.g., 5 yrs."                  
+                min="1"                                                                                                                                  
+                max="20"
+                step="1"                                                                                                                                 
+                required                                    
+              />
+            </label>
+            <label for="hours-per-year" style="margin-top:12px;">
+              Estimated Flying Hours per Year (96-hour maximum):                                                                                                           
+              <input
+                type="number"                                                                                                                            
+                id="hours-per-year"                                                                                                                      
+                name="hours-per-year"
+                inputmode="decimal"                                                                                                                      
+                placeholder="e.g., 50 hrs."                 
+                min="1"                                                                                                                                  
+                max="96"
+                required                                                                                                                                 
+              />                                            
+            </label>
+          </div>
+
+          <div class="button-section">                                                                                                                   
+            <button type="button" id="clear-calculator">Clear</button>
+            <button type="button" id="calculate-cost">Calculate</button>                                                                                             
+          </div>                                            
+                                                                                                                                                         
+          <div class="output-section">
+            <h3 id="share-position">Ownership Cost (per share)</h3>
+
+            <div class="output-item share-hours">
+              <span>Annual Flying Hour Allowance:</span>
+              <span id="share-hours">-</span>
+            </div>
+            <div class="output-item">
+              <span>Program Cost:*</span>
+              <span id="program-cost">-</span>
+            </div>
+            <div class="output-item">
+              <span>Annual Program Fee:**</span>
+              <span id="annual-program-fee">-</span>
+            </div>
+            <div class="output-item">                                                                                                                    
+              <span>Average Fuel/Oil Cost per Hour:***</span>
+              <span id="fuel-cost">-</span>                                                                                                              
+            </div>                                                                                                                                       
+   
+            <!-- Blended (ownership-only) -->                                                                                                            
+            <div class="output-item" id="blended-row">      
+              <span>Estimated Ownership Cost per Hour:****</span>                                                                                        
+              <span id="blended-cost-per-hour">-</span>                                                                                                  
+            </div>
+                                                                                                                                                         
+            <!-- MOBILE: second image appears below the results -->                                                                                      
+            <div class="second-image-mobile">
+              <img                                                                                                                                       
+                src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/6b935415-45d7-4bb6-83ef-9296ed429310/SR+Series+NY+2024.jpeg?content-type=image%2Fjpeg"                                                                                                                                 
+                alt="SR22T Lifestyle"                       
+                loading="lazy"                                                                                                                           
+              />                                                                                                                                         
+            </div>
+                                                                                                                                                         
+            <div class="addendum">                          
+              <p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a
+  2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p>                                                                                   
+              <p>*16 available shared ownership positions. Each share permits up to 96 flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>
+              <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>                                
+              <p id="fuel-note">***100LL national avg × 18 gph + oil. TKS Anti-ice fluid additional when used.</p>
+              <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>                                                                                                      
+            </div>                                                                                                                                       
+          </div>                                            
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <style>
+    /* ---- Collapsible summary styles ---- */
+    .calc-accordion {                                                                                                                                    
+      border: none;
+      margin: 0 0 12px 0;                                                                                                                                
+    }                                                                                                                                                    
+    .calc-summary {
+      list-style: none;                                                                                                                                  
+      cursor: pointer;                                      
+      user-select: none;                                                                                                                                 
+      display: flex;
+      align-items: center;                                                                                                                               
+      gap: 12px;                                            
+      padding: 12px 14px;                                                                                                                                
+      background: #ff6700;
+      color: #fff;                                                                                                                                       
+      border-radius: 10px;                                                                                                                               
+      box-shadow: 0 0 10px rgba(0,0,0,.25);
+      outline: none;                                                                                                                                     
+    }                                                       
+    .calc-summary::-webkit-details-marker { display: none; }                                                                                             
+                                                                                                                                                         
+    .summary-title {
+      font-size: 18px;                                                                                                                                   
+      font-weight: 700;                                     
+      flex: 1;                                                                                                                                           
+    }
+    .summary-hint {                                                                                                                                      
+      font-size: 18px;                                      
+      font-weight: 500;
+      opacity: .85;                                                                                                                                      
+    }
+    .summary-caret {                                                                                                                                     
+      width: 10px;                                          
+      height: 10px;
+      border-right: 2px solid #fff;                                                                                                                      
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg);                                                                                                                         
+      transition: transform .2s ease;                       
+      margin-left: 6px;                                                                                                                                  
+    }
+    .calc-accordion[open] .summary-caret { transform: rotate(45deg); }                                                                                   
+    .calc-summary:hover { background: #e55d00; }                                                                                                         
+    .calc-summary:focus-visible {                                                                                                                        
+      outline: 2px solid #0a58ca;                                                                                                                        
+      outline-offset: 2px;                                                                                                                               
+    }                                                       
+                                                                                                                                                         
+    .calculator-container {                                 
+      font-family: Arial, sans-serif;
+      max-width: 1100px;                                                                                                                                 
+      margin: auto;
+      padding: 15px;                                                                                                                                     
+      background: #E9CEB0;                                  
+      border-radius: 10px;                                                                                                                               
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      margin-top: 12px;                                                                                                                                  
+    }                                                       
+                                                                                                                                                         
+    .calculator-container h2 {                              
+      text-align: center;
+      color: #333;                                                                                                                                       
+      font-size: 30px;
+      margin-bottom: 25px;                                                                                                                               
+    }                                                       
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;                                                                                                                    
+      gap: 20px;
+      align-items: start;                                                                                                                                
+    }                                                       
+
+    .image-panel {
+      background: transparent;
+      border: none;                                                                                                                                      
+      border-radius: 8px;
+      box-shadow: none;                                                                                                                                  
+      padding: 0;                                           
+      overflow: hidden;
+      display: flex;                                                                                                                                     
+      flex-direction: column;
+      gap: 125px;                                                                                                                                        
+      margin-bottom: 20px;                                  
+    }                                                                                                                                                    
+    .image-panel img {
+      display: block;                                                                                                                                    
+      width: 100%;                                          
+      height: auto;
+      object-fit: cover;
+      border-radius: 8px;
+    }                                                                                                                                                    
+   
+    .calculator-container h3 {                                                                                                                           
+      text-align: center;                                   
+      font-size: 28px;
+      color: #333;                                                                                                                                       
+      margin-bottom: 10px;
+    }                                                                                                                                                    
+                                                            
+    .calculator {                                                                                                                                        
+      display: flex;
+      flex-direction: column;                                                                                                                            
+      gap: 20px;                                            
+    }
+
+    .calculator .input-section,                                                                                                                          
+    .calculator .button-section,
+    .calculator .output-section {                                                                                                                        
+      background: #fff;                                     
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;                                                                                                                                
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }                                                                                                                                                    
+                                                            
+    .calculator label {                                                                                                                                  
+      display: flex;
+      flex-direction: column;                                                                                                                            
+      font-size: 18px;                                      
+      font-weight: bold;
+      color: #555;                                                                                                                                       
+    }
+    .calculator input {                                                                                                                                  
+      padding: 10px;                                        
+      margin-top: 8px;
+      border: 1px solid #ddd;                                                                                                                            
+      border-radius: 6px;
+      font-size: 24px;                                                                                                                                   
+      text-align: center;                                   
+    }
+                                                                                                                                                         
+    .calculator .button-section {
+      display: flex;                                                                                                                                     
+      gap: 10px;                                            
+      justify-content: center;
+    }
+    .calculator .button-section button {                                                                                                                 
+      padding: 10px 20px;
+      border: none;                                                                                                                                      
+      border-radius: 6px;                                   
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;                                                                                                                 
+      color: #fff;
+    }                                                                                                                                                    
+    .calculator .button-section button:first-child { background: #dc3545; }
+    .calculator .button-section button:first-child:hover { background: #c82333; }                                                                        
+    .calculator .button-section button:last-child { background: #28a745; }
+    .calculator .button-section button:last-child:hover { background: #218838; }                                                                         
+                                                            
+    .calculator .output-item {                                                                                                                           
+      display: flex;                                        
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+      color: #555;
+    }                                                                                                                                                    
+    .calculator .output-item.share-hours span {
+      font-size: 18px;                                                                                                                                   
+      font-weight: bold;                                    
+    }
+    .calculator .output-item span:last-child {                                                                                                           
+      text-align: right;
+      display: inline-block;                                                                                                                             
+      width: 50%;                                           
+    }                                                                                                                                                    
+    .calculator .output-item:last-child { border-bottom: none; }
+                                                                                                                                                         
+    .calculator .addendum {                                                                                                                              
+      padding: 12px;
+      font-size: 12px;                                                                                                                                   
+      font-style: italic;                                   
+      color: black;                                                                                                                                      
+    }
+                                                                                                                                                         
+    .calculator span { font-size: 16px; }                   
+
+    .second-image-mobile { display: none; }                                                                                                              
+   
+    @media (max-width: 900px) {                                                                                                                          
+      .calculator-grid { grid-template-columns: 1fr; }      
+      .image-panel .second-image-desktop { display: none; }                                                                                              
+      .second-image-mobile {
+        display: block;                                                                                                                                  
+        margin-top: 15px;                                   
+      }                                                                                                                                                  
+      .second-image-mobile img {                            
+        width: 100%;                                                                                                                                     
+        border-radius: 8px;
+      }                                                                                                                                                  
+    }                                                       
+  </style>
+
+  <script>
+  (function () {
+    // ===== Constants (SR22T shared ownership) =====
+    const TOTAL_SHARES = 16;
+    const MAX_HOURS_PER_SHARE = 96;
+    const PROGRAM_COST = 95677;
+    const ANNUAL_PROGRAM_FEE = 30522;
+    const FUEL_COST_FALLBACK = 110;
+    const SR22T_GPH = 18;
+    const SR22T_OIL_PER_HR = 2.00;
+    const HR_SUFFIX = " /hr";
+
+    // ===== Helpers =====
+    const formatCurrency0 = (num) =>
+      num.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+
+    // ===== Live Fuel Price =====
+    const FUEL_PRICES_URL =
+      'https://raw.githubusercontent.com/bopaero/bopaeroFlightCalc/main/data/fuel_prices.json';
+
+    function computeFuelCostPerHour(pricePerGal) {
+      return Math.round(pricePerGal * SR22T_GPH + SR22T_OIL_PER_HR);
+    }
+
+    function initializeCalculator() {
+      const root = document.getElementById('sr22t-calc');
+      if (!root) return;
+
+      const yearsEl = root.querySelector('#ownership-years');
+      const hoursEl = root.querySelector('#hours-per-year');
+      const calculateButton = root.querySelector('#calculate-cost');
+      const clearButton = root.querySelector('#clear-calculator');
+      const blendedCostEl = root.querySelector('#blended-cost-per-hour');
+      const fuelCostEl = root.querySelector('#fuel-cost');
+      const fuelNoteEl = root.querySelector('#fuel-note');
+
+      root.addEventListener('toggle', function () {
+        if (this.open) {
+          this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      root.querySelector('#share-position').innerText =
+        `Ownership Cost (per share)`;
+      root.querySelector('#share-hours').innerText =
+        `Up to ${MAX_HOURS_PER_SHARE} hours`;
+      root.querySelector('#program-cost').innerText =
+        `$${formatCurrency0(PROGRAM_COST)}`;
+      root.querySelector('#annual-program-fee').innerText =
+        `$${formatCurrency0(ANNUAL_PROGRAM_FEE)}`;
+      fuelCostEl.innerText =
+        `$${formatCurrency0(FUEL_COST_FALLBACK)}${HR_SUFFIX}`;
+
+      function applyFuelPrice(pricePerGal, updatedDate) {
+        const costPerHr = computeFuelCostPerHour(pricePerGal);
+        fuelCostEl.innerText = `$${formatCurrency0(costPerHr)}${HR_SUFFIX}`;
+
+        if (fuelNoteEl) {
+          fuelNoteEl.innerText =
+            `***100LL $${pricePerGal.toFixed(2)}/gal ` +
+            `(national avg, AirNav.com${updatedDate ? `, updated ${updatedDate}` : ''}) × ` +
+            `${SR22T_GPH} gph + oil. TKS Anti-ice fluid additional when used.`;
+        }
+      }
+
+      function loadFuelPrices() {
+        fetch(`${FUEL_PRICES_URL}?v=${new Date().toISOString().slice(0, 10)}`)
+          .then(response => response.ok ? response.json() : null)
+          .then(data => {
+            if (data && data.avgas_100ll) {
+              applyFuelPrice(data.avgas_100ll, data.updated);
+            }
+          })
+          .catch(error =>
+            console.warn('SR22T fuel price fetch failed:', error.message)
+          );
+      }
+
+      function calculate() {
+        const years = Number(yearsEl.value);
+        const hoursPerYear = Number(hoursEl.value);
+
+        if (!Number.isInteger(years) || years < 1 || years > 20) {
+          alert('Please enter Years of Ownership as a whole number between 1 and 20.');
+          return;
+        }
+
+        if (
+          !Number.isFinite(hoursPerYear) ||
+          hoursPerYear < 1 ||
+          hoursPerYear > MAX_HOURS_PER_SHARE
+        ) {
+          alert(`Annual hours must be between 1 and ${MAX_HOURS_PER_SHARE}.`);
+          return;
+        }
+
+        const ownershipCostTotal =
+          PROGRAM_COST + (ANNUAL_PROGRAM_FEE * years);
+        const totalHours = years * hoursPerYear;
+        const blendedOwnershipPerHour = ownershipCostTotal / totalHours;
+
+        blendedCostEl.innerText =
+          `$${formatCurrency0(blendedOwnershipPerHour)}${HR_SUFFIX}`;
+      }
+
+      function clearData() {
+        yearsEl.value = '';
+        hoursEl.value = '';
+        blendedCostEl.innerText = '-';
+        yearsEl.focus();
+      }
+
+      calculateButton.addEventListener('click', calculate);
+      clearButton.addEventListener('click', clearData);
+
+      [yearsEl, hoursEl].forEach(element => {
+        element.addEventListener('keydown', event => {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            calculate();
+            element.blur();
+          }
+        });
+
+        element.addEventListener('blur', () => {
+          if (yearsEl.value && hoursEl.value) calculate();
+        });
+      });
+
+      loadFuelPrices();
+
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeCalculator, { once: true });
+    } else {
+      initializeCalculator();
+    }
+  })();
+  </script>
+  
+  
+
+
+

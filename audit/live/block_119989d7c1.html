@@ -1,0 +1,198 @@
+
+  
+    <div id="survey-container">                                                                                                                                                           
+      <h2>Not sure which program is best for you?  Let us help.</h2>                                                                                                                    
+      <form id="survey-form">                                                                                                                                                           
+                                                            
+          <!-- Question 1 -->                                                                                                                                                           
+          <div class="question">                            
+              <p><br><b>1. Are you a certified pilot?</b></p>                                                                                                                           
+              <label>                                                                                                                                                                   
+                  <input type="radio" name="pilot" value="True"> Yes                                                                                                                    
+              </label>                                                                                                                                                                  
+              <label>                                       
+                  <input type="radio" name="pilot" value="False"> No
+              </label>                                                                                                                                                                  
+          </div>
+                                                                                                                                                                                        
+          <!-- Question 2 -->                               
+          <div class="question">
+              <p><br><b>2. What is your primary purpose for air travel?</b></p>
+              <label>                                                                                                                                                                   
+                  <input type="radio" name="purpose" value="Business"> Business
+              </label>                                                                                                                                                                  
+              <label>                                       
+                  <input type="radio" name="purpose" value="Personal"> Personal
+              </label>                                                                                                                                                                  
+              <label>
+                  <input type="radio" name="purpose" value="Both"> Both                                                                                                                 
+              </label>                                      
+          </div>
+
+          <!-- Question 3 -->
+          <div class="question">
+              <p><br><b>3. Which is a greater priority?</b></p>
+              <label>                                                                                                                                                                   
+                  <input type="radio" name="priority" value="Time"> Time
+              </label>                                                                                                                                                                  
+              <label>                                       
+                  <input type="radio" name="priority" value="Cost"> Cost                                                                                                                
+              </label>                                      
+              <label>
+                  <input type="radio" name="priority" value="Both"> Both
+              </label>                                                                                                                                                                  
+          </div>
+                                                                                                                                                                                        
+          <!-- Go Button -->                            
+          <button type="submit">Go</button>
+          <p id="error-message" style="color: red; display: none; margin-top: 10px;">Please answer all questions!</p>
+      </form>                                                                                                                                                                           
+  </div>
+                                                                                                                                                                                        
+  <style>                                                   
+      #survey-container {
+          max-width: 1360px;
+          margin: 0px auto;
+          padding: 20px;
+          background: linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.92)),                                                                                                          
+  url('https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/9ecefb8f-0ee7-499e-842e-e8d8c58b6689/SR+G7+G2+Jet+NY.jpeg?content-type=image%2Fjpeg') center/cover;                                                             
+          border: 1px solid #ccc;
+          border-radius: 10px;                                                                                                                                                          
+          text-align: center;                               
+          font-family: Proxima-nova, sans-serif;
+          color: #000;
+      }                                                                                                                                                                                 
+   
+      #survey-container h2 {                                                                                                                                                            
+          font-size: 36px;                                  
+          color: #000;
+          margin-top: 20px;
+          margin-bottom: 20px;
+      }
+
+      .question {
+          margin-bottom: 20px;
+          text-align: left;                                                                                                                                                             
+      }
+                                                                                                                                                                                        
+      .question p {                                         
+          font-size: 24px;
+          margin-bottom: 10px;                                                                                                                                                          
+      }
+                                                                                                                                                                                        
+      .question label {                                     
+          display: block;
+          margin: 10px 0;
+          font-size: 20px;
+          cursor: pointer;                                                                                                                                                              
+          transition: color 0.3s ease;
+      }                                                                                                                                                                                 
+                                                            
+      .question label:hover {
+          color: #ff6700;
+      }                                                                                                                                                                                 
+   
+      .question input[type="radio"] {                                                                                                                                                   
+          margin-right: 10px;                               
+      }
+
+      #survey-form button {
+          display: block;
+          margin: 0 auto;
+          padding: 10px 20px;                                                                                                                                                           
+          font-size: 18px;
+          font-weight: bold;                                                                                                                                                            
+          color: #fff;                                      
+          background-color: #0073e6;
+          border: none;                                                                                                                                                                 
+          border-radius: 50px;
+          cursor: pointer;                                                                                                                                                              
+          transition: background-color 0.3s ease, transform 0.2s ease;
+      }                                                                                                                                                                                 
+   
+      #survey-form button:hover {                                                                                                                                                       
+          background-color: #005bb5;                        
+          transform: scale(1.05);
+      }
+
+      #error-message {                                                                                                                                                                  
+          font-size: 16px;
+          color: red;                                                                                                                                                                   
+          margin-top: 20px;                                 
+      }
+
+      @media (max-width: 600px) {                                                                                                                                                       
+          #survey-container {
+              width: 90%;                                                                                                                                                               
+              padding: 15px;                                
+          }
+
+          #survey-container h2 {
+              font-size: 28px;
+          }                                                                                                                                                                             
+   
+          .question p {                                                                                                                                                                 
+              font-size: 16px;                              
+          }
+
+          .question label {
+              font-size: 17px;
+          }                                                                                                                                                                             
+      }
+  </style>                                                                                                                                                                              
+                                                            
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const form = document.getElementById("survey-form");
+          const errorMessage = document.getElementById("error-message");                                                                                                                
+   
+          form.addEventListener("submit", function (event) {                                                                                                                            
+              event.preventDefault();                       
+
+              const pilot = document.querySelector('input[name="pilot"]:checked');                                                                                                      
+              const purpose = document.querySelector('input[name="purpose"]:checked');
+              const priority = document.querySelector('input[name="priority"]:checked');                                                                                                
+                                                            
+              if (!pilot || !purpose || !priority) {                                                                                                                                    
+                  errorMessage.style.display = "block";
+                  return;                                                                                                                                                               
+              } else {                                      
+                  errorMessage.style.display = "none";
+              }
+
+              let targetPage = "";                                                                                                                                                      
+   
+              if (pilot.value === "True") {                                                                                                                                             
+                  if (priority.value === "Cost" || priority.value === "Both") {
+                      targetPage = "https://bopaero.com/sr22t-fractional-ownership-program-pilots";
+                  } else if (priority.value === "Time") {                                                                                                                               
+                      targetPage = "https://bopaero.com/sf50-fractional-ownership-program-pilots";
+                  }                                                                                                                                                                     
+              }                                             
+                                                                                                                                                                                        
+              if (pilot.value === "False") {                
+                  if ((purpose.value === "Business" || purpose.value === "Both") && (priority.value === "Cost" || priority.value === "Both")) {
+                      targetPage = "https://bopaero.com/sr22t-fractional-ownership-program-nonpilots-business";                                                                         
+                  } else if (purpose.value === "Personal" && (priority.value === "Cost" || priority.value === "Both")) {                                                                
+                      targetPage = "https://bopaero.com/sr22t-fractional-ownership-program-nonpilots-personal";                                                                         
+                  } else if ((purpose.value === "Business" || purpose.value === "Both") && priority.value === "Time") {                                                                 
+                      targetPage = "https://bopaero.com/sf50-fractional-ownership-program-nonpilots-business";                                                                          
+                  } else if (purpose.value === "Personal" && priority.value === "Time") {                                                                                               
+                      targetPage = "https://bopaero.com/sf50-fractional-ownership-program-nonpilots";                                                                                   
+                  }                                                                                                                                                                     
+              }
+                                                                                                                                                                                        
+              if (targetPage) {                             
+                  window.location.href = targetPage;
+              } else {
+                  errorMessage.textContent = "Unexpected error occurred. Please try again.";                                                                                            
+                  errorMessage.style.display = "block";
+              }                                                                                                                                                                         
+          });                                               
+      });
+  </script>
+  
+  
+
+
+
