@@ -211,24 +211,6 @@
         "schedule-demo"
       ]
     },
-    "us-flight-map-sf50": {
-      "mode": "review",
-      "description": "US flight map, SF50 locations page",
-      "block_hash": "ebb97c5628",
-      "chars": 8019,
-      "pages": [
-        "sf50-locations-with-interest"
-      ]
-    },
-    "us-flight-map-sr22t": {
-      "mode": "review",
-      "description": "US flight map, SR22T locations page",
-      "block_hash": "cdac4416d4",
-      "chars": 7605,
-      "pages": [
-        "sr22t-locations-with-interest"
-      ]
-    },
     "unnamed-4881892500": {
       "mode": "review",
       "description": "Unclassified small snippet",
@@ -317,6 +299,19 @@
       "block_hash": "4cf1df4043",
       "pages": [
         "travel-model-test"
+      ]
+    },
+    "flight-map": {
+      "mode": "loader",
+      "data_driven": true,
+      "aircraft": [
+        "sf50",
+        "sr22t"
+      ],
+      "description": "US program-area map. Cities and service-area model come from data/aircraft/<id>.json \u2014 the same files the calculator uses.",
+      "pages": [
+        "sf50-locations-with-interest",
+        "sr22t-locations-with-interest"
       ]
     }
   }

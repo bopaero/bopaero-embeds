@@ -1,0 +1,16 @@
+{
+  "name": "flight-map",
+  "mode": "loader",
+  "entry": "initFlightMap",
+  "dataDir": "data/aircraft",
+  "description": "US program-area map. Cities and service-area model come from the shared aircraft data files.",
+  "deps": [
+    { "type": "css", "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" },
+    { "type": "js",  "url": "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" },
+    { "type": "js",  "url": "https://unpkg.com/topojson-client@3" }
+  ],
+  "instances": {
+    "sf50":  ["sf50-locations-with-interest"],
+    "sr22t": ["sr22t-locations-with-interest"]
+  }
+}

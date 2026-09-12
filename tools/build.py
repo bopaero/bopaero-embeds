@@ -103,15 +103,49 @@ DATA_TEMPLATE = """/* bop Aero embed: {name}
       document.head.appendChild(st);
     }}
     el.innerHTML = HTML;
-    var root = el.querySelector('[data-calc-root]');
-    try {{ initCalculator(root, spec); }}
+    var root = el.querySelector('[data-calc-root]') || el;
+    try {{ {entry}(root, spec); }}
     catch (e) {{ console.error('[bopaero:' + NAME + '] ' + id + ' failed', e); }}
   }}
 
+  var DEPS = {deps};
+
+  function loadDeps(done) {{
+    /* Squarespace blocks used to carry their own <script> tags for Leaflet etc.
+       The stub cannot, so the loader pulls them itself — once per page, even if
+       two components need the same library. */
+    var pending = DEPS.length;
+    if (!pending) return done();
+    DEPS.forEach(function (d) {{
+      var sel = d.type === 'css' ? 'link[href="' + d.url + '"]' : 'script[src="' + d.url + '"]';
+      var existing = document.querySelector(sel);
+      if (existing) {{
+        if (d.type === 'css' || existing.getAttribute('data-loaded')) {{ if (!--pending) done(); return; }}
+        existing.addEventListener('load', function () {{ if (!--pending) done(); }});
+        return;
+      }}
+      var el;
+      if (d.type === 'css') {{
+        el = document.createElement('link'); el.rel = 'stylesheet'; el.href = d.url;
+        document.head.appendChild(el); if (!--pending) done(); return;
+      }}
+      el = document.createElement('script'); el.src = d.url; el.async = false;
+      el.addEventListener('load', function () {{ el.setAttribute('data-loaded', '1'); if (!--pending) done(); }});
+      el.addEventListener('error', function () {{
+        console.error('[bopaero:' + NAME + '] dependency failed to load: ' + d.url);
+        if (!--pending) done();
+      }});
+      document.head.appendChild(el);
+    }});
+  }}
+
   function boot() {{
-    var els = document.querySelectorAll('[data-aircraft]');
-    if (!els.length) console.warn('[bopaero:' + NAME + '] no [data-aircraft] mount found');
-    Array.prototype.forEach.call(els, mount);
+    var els = document.querySelectorAll('[data-embed="' + NAME + '"][data-aircraft]');
+    if (!els.length) {{
+      console.warn('[bopaero:' + NAME + '] no [data-embed="' + NAME + '"][data-aircraft] mount found');
+      return;
+    }}
+    loadDeps(function () {{ Array.prototype.forEach.call(els, mount); }});
   }}
 
   /* ── engine (verbatim from src/component.js) ───────────────────────── */
@@ -125,9 +159,9 @@ DATA_TEMPLATE = """/* bop Aero embed: {name}
 
 DATA_STUB = """<!-- bop Aero embed: {name} ({aircraft})
      Managed in the bopaero-embeds repo — do not paste component code here.
-     Edit components/{name}/src/ or data/{aircraft}.json, run tools/build.py, push.
+     Edit components/{name}/src/ or data/aircraft/{aircraft}.json, run tools/build.py, push.
      Every page showing this aircraft updates. -->
-<div data-aircraft="{aircraft}"></div>
+<div data-embed="{name}" data-aircraft="{aircraft}"></div>
 <script src="https://embeds.bopaero.com/{name}.js?v={ver}" defer></script>
 """
 
@@ -142,7 +176,7 @@ def build(name):
 
     body = '\n'.join('  ' + l if l.strip() else l for l in js.splitlines())
 
-    ddir = os.path.join(cdir, 'data')
+    ddir = os.path.join(ROOT, meta['dataDir']) if meta.get('dataDir') else os.path.join(cdir, 'data')
     if os.path.isdir(ddir):
         specs = {}
         for f in sorted(os.listdir(ddir)):
@@ -151,7 +185,9 @@ def build(name):
         out = DATA_TEMPLATE.format(
             name=name, name_js=json.dumps(name), stamp=datetime.date.today().isoformat(),
             ids=', '.join(specs), css=json.dumps(css), html=json.dumps(html),
-            data=json.dumps(specs, indent=0), js=body)
+            data=json.dumps(specs, indent=0), js=body,
+            entry=meta.get('entry', 'initCalculator'),
+            deps=json.dumps(meta.get('deps', [])))
         os.makedirs(os.path.join(ROOT, 'docs'), exist_ok=True)
         open(os.path.join(ROOT, 'docs', f'{name}.js'), 'w').write(out)
         ver = hashlib.sha256(out.encode()).hexdigest()[:8]

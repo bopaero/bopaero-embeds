@@ -42,7 +42,53 @@
 "availableShares": 8,
 "_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed.",
 "addendumHtml": "<p>*The Program Cost purchases one of eight available shared ownership positions. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to 175 flight hours or 35 days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
-"inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time."
+"inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time.",
+"map": {
+"cities": [
+{
+"name": "Boca Raton",
+"lat": 26.3587,
+"lng": -80.0831
+},
+{
+"name": "Dallas",
+"lat": 32.7767,
+"lng": -96.797
+},
+{
+"name": "Cincinnati",
+"lat": 39.1031,
+"lng": -84.512
+},
+{
+"name": "Atlanta",
+"lat": 33.749,
+"lng": -84.388
+},
+{
+"name": "Denver",
+"lat": 39.7392,
+"lng": -104.9903
+},
+{
+"name": "Providence",
+"lat": 41.824,
+"lng": -71.4128
+},
+{
+"name": "Raleigh",
+"lat": 35.7796,
+"lng": -78.6382
+}
+],
+"serviceArea": {
+"model": "split",
+"dividerLongitude": -100,
+"legendTitle": "Program Area",
+"legendText": "Bi-coastal U.S. operation, divided into Western and Eastern program halves. The aircraft remains where the last owner left it and repositions to the next owner, which avoids empty repositioning cycles.",
+"dotLabel": "Owner / interest location"
+}
+}
 },
 "sr22t": {
 "id": "sr22t",
@@ -75,7 +121,58 @@
 ],
 "availableShares": 15,
 "_dataVerified": "All figures confirmed by Raymond 2026-09-12. Program cost and annual fee corrected this session (per share; stored at full precision, engine rounds for display). totalShares 16 / availableShares 15 confirmed. FUEL AND USAGE FIGURES ARE CORRECT AND CONSERVATIVE BY DESIGN \u2014 18 gph, $2.00/hr oil, $110/hr fallback, 96-hour annual cap per share. Do NOT \"correct\" them upward to match book performance figures; the conservatism is intentional.",
-"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>"
+"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"map": {
+"cities": [
+{
+"name": "Dallas",
+"lat": 32.7767,
+"lng": -96.797
+},
+{
+"name": "Cincinnati",
+"lat": 39.1031,
+"lng": -84.512
+},
+{
+"name": "Charlotte",
+"lat": 35.2271,
+"lng": -80.8431
+},
+{
+"name": "Orlando",
+"lat": 28.5383,
+"lng": -81.3792
+},
+{
+"name": "Van Nuys",
+"lat": 34.1897,
+"lng": -118.4493
+},
+{
+"name": "Denver",
+"lat": 39.7392,
+"lng": -104.9903
+},
+{
+"name": "Houston",
+"lat": 29.7604,
+"lng": -95.3698
+},
+{
+"name": "Blue Ridge",
+"lat": 34.864,
+"lng": -84.3241
+}
+],
+"serviceArea": {
+"model": "radius",
+"miles": 207,
+"legendTitle": "Program Area",
+"legendText": "Within 1 hour flight time (207 miles) of the selected city",
+"dotLabel": "Owner / interest location"
+}
+}
 }
 };
 
@@ -95,15 +192,49 @@
       document.head.appendChild(st);
     }
     el.innerHTML = HTML;
-    var root = el.querySelector('[data-calc-root]');
+    var root = el.querySelector('[data-calc-root]') || el;
     try { initCalculator(root, spec); }
     catch (e) { console.error('[bopaero:' + NAME + '] ' + id + ' failed', e); }
   }
 
+  var DEPS = [];
+
+  function loadDeps(done) {
+    /* Squarespace blocks used to carry their own <script> tags for Leaflet etc.
+       The stub cannot, so the loader pulls them itself — once per page, even if
+       two components need the same library. */
+    var pending = DEPS.length;
+    if (!pending) return done();
+    DEPS.forEach(function (d) {
+      var sel = d.type === 'css' ? 'link[href="' + d.url + '"]' : 'script[src="' + d.url + '"]';
+      var existing = document.querySelector(sel);
+      if (existing) {
+        if (d.type === 'css' || existing.getAttribute('data-loaded')) { if (!--pending) done(); return; }
+        existing.addEventListener('load', function () { if (!--pending) done(); });
+        return;
+      }
+      var el;
+      if (d.type === 'css') {
+        el = document.createElement('link'); el.rel = 'stylesheet'; el.href = d.url;
+        document.head.appendChild(el); if (!--pending) done(); return;
+      }
+      el = document.createElement('script'); el.src = d.url; el.async = false;
+      el.addEventListener('load', function () { el.setAttribute('data-loaded', '1'); if (!--pending) done(); });
+      el.addEventListener('error', function () {
+        console.error('[bopaero:' + NAME + '] dependency failed to load: ' + d.url);
+        if (!--pending) done();
+      });
+      document.head.appendChild(el);
+    });
+  }
+
   function boot() {
-    var els = document.querySelectorAll('[data-aircraft]');
-    if (!els.length) console.warn('[bopaero:' + NAME + '] no [data-aircraft] mount found');
-    Array.prototype.forEach.call(els, mount);
+    var els = document.querySelectorAll('[data-embed="' + NAME + '"][data-aircraft]');
+    if (!els.length) {
+      console.warn('[bopaero:' + NAME + '] no [data-embed="' + NAME + '"][data-aircraft] mount found');
+      return;
+    }
+    loadDeps(function () { Array.prototype.forEach.call(els, mount); });
   }
 
   /* ── engine (verbatim from src/component.js) ───────────────────────── */
