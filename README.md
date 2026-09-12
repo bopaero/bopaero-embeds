@@ -28,7 +28,7 @@ The Squarespace block holds only a stub (`snippets/<name>.html`):
 <script src="https://embeds.bopaero.com/sf50-calc.js?v=..." defer></script>
 ```
 
-After that one-time paste, the block is never touched again. `dist/<name>.js`
+After that one-time paste, the block is never touched again. `docs/<name>.js`
 injects the CSS once, renders the HTML into the mount, then runs the component JS.
 It refuses to mount twice and falls back to its own parent node if the mount div
 is missing, so a mangled block degrades rather than breaks.
@@ -38,8 +38,8 @@ is missing, so a mangled block degrades rather than breaks.
 ```bash
 python3 tools/extract.py <name>     # live block -> components/<name>/src/{html,css,js}
 # edit components/<name>/src/
-python3 tools/build.py              # src -> dist/<name>.js + snippets/<name>.html
-node --check dist/<name>.js         # always
+python3 tools/build.py              # src -> docs/<name>.js + snippets/<name>.html
+node --check docs/<name>.js         # always
 python3 tools/audit_site.py         # drift check against the live site
 git add -A && git commit && git push
 ```

@@ -88,14 +88,14 @@ def build(name):
         name=name, name_js=json.dumps(name), stamp=datetime.date.today().isoformat(),
         pages=', '.join(meta['pages']), css=json.dumps(css), html=json.dumps(html), js=body)
 
-    os.makedirs(os.path.join(ROOT, 'dist'), exist_ok=True)
-    dist = os.path.join(ROOT, 'dist', f'{name}.js')
+    os.makedirs(os.path.join(ROOT, 'docs'), exist_ok=True)
+    dist = os.path.join(ROOT, 'docs', f'{name}.js')
     open(dist, 'w').write(out)
 
     ver = hashlib.sha256(out.encode()).hexdigest()[:8]
     os.makedirs(os.path.join(ROOT, 'snippets'), exist_ok=True)
     open(os.path.join(ROOT, 'snippets', f'{name}.html'), 'w').write(STUB.format(name=name, ver=ver))
-    print(f"  built dist/{name}.js  {len(out):,} bytes  v={ver}  ({len(meta['pages'])} page(s))")
+    print(f"  built docs/{name}.js  {len(out):,} bytes  v={ver}  ({len(meta['pages'])} page(s))")
     return ver
 
 if __name__ == '__main__':

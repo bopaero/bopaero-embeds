@@ -1,4 +1,4 @@
-dist/*.map
+docs/*.map
 .DS_Store
 audit/pages/
 *.pyc
