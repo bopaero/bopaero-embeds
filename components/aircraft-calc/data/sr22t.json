@@ -27,5 +27,6 @@
       "alt": "SR22T Lifestyle"
     }
   ],
+  "availableShares": 15,
   "_dataVerified": "Program cost and annual fee corrected by Raymond 2026-09-12 (per share). Stored at full precision; the engine rounds for display. NOTE: totalShares is not displayed anywhere - it is declared but unused, inherited from the original live code. 15 of 16 shares available for purchase as of 2026-09-12, not currently surfaced in the UI. Usage cap and fuel figures NOT yet re-confirmed by Raymond."
 }

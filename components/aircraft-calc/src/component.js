@@ -41,6 +41,13 @@ function initCalculator(root, spec) {
   var fuelNoteEl = q('#fuel-note');
   fuelCostEl.innerText = '$' + money0(spec.fuel.fallbackCostPerHour) + HR;
 
+  /* ── share availability (only if this program publishes it) ────────── */
+  var sharesRow = q('[data-shares]');
+  if (sharesRow && typeof spec.availableShares === 'number' && typeof spec.totalShares === 'number') {
+    q('#shares-available').innerText = spec.availableShares + ' of ' + spec.totalShares;
+    sharesRow.hidden = false;
+  }
+
   /* ── usage model: show only the rows this program uses ─────────────── */
   var model = (spec.usage && spec.usage.model) || 'unlimited';
   root.querySelectorAll('[data-usage]').forEach(function (el) {

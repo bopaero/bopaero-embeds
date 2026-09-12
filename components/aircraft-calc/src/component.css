@@ -188,3 +188,13 @@
         border-radius: 8px;
       }                                                                                                                                                  
     }
+
+/* The [hidden] attribute must actually hide.
+   `.calculator .output-item { display: flex }` above has higher specificity than
+   the browser's built-in `[hidden] { display: none }`, so rows the engine hides
+   (the usage row for the OTHER usage model, or an unavailable share count) stayed
+   visible. Only surfaced once one template served both aircraft. */
+.calculator .output-item[hidden],
+.calculator [hidden] {
+  display: none !important;
+}

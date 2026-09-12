@@ -53,7 +53,12 @@ python3 -m http.server 8791
 open http://127.0.0.1:8791/tools/testbed/index.html
 ```
 
-Verify the component RENDERS AND COMPUTES, not just that it parses. `sf50-calc`
+Verify the component RENDERS AND COMPUTES, not just that it parses — and check
+**computed visibility, not the `hidden` attribute**. A DOM check on `el.hidden`
+passed while a row was plainly visible on screen, because
+`.calculator .output-item { display: flex }` outranks the browser's
+`[hidden] { display: none }`. Filter on
+`getComputedStyle(el).display !== 'none'`, and take a screenshot. `sf50-calc`
 was verified this way: 5 yrs / 175 hrs -> $1,372/hr, Clear resets, fuel price
 fetched live from the TripCalc repo.
 

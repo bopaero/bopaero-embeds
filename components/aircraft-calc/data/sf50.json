@@ -3,7 +3,7 @@
   "summaryTitle": "Cirrus SF50 Vision Jet Shared Ownership Cost Calculator",
   "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
   "sharePositionLabel": "Ownership Costs (per share)",
-  "totalShares": 8,
+  "totalShares": 9,
   "programCost": 544375,
   "annualProgramFee": 131291,
   "fuel": {
@@ -28,5 +28,6 @@
       "alt": "SF50 Cockpit"
     }
   ],
+  "availableShares": 8,
   "_dataVerified": "2026-09-12 \u2014 matches live production block"
 }
