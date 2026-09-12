@@ -60,9 +60,7 @@
                 required
               />
             </label>
-            <p class="input-note">
-              Usage is unlimited. For scheduling purposes, each share may reserve up to 175 flight hours or 35 days at one time.
-            </p>                                                                                                                                     
+            <p class="input-note" id="input-note" hidden></p>                                                                                                                                     
           </div>                                            
 
           <div class="button-section">
@@ -71,7 +69,7 @@
           </div>
                                                                                                                                                          
           <div class="output-section">                      
-            <h3 id="share-position">1 of 8 Shared Ownership Shares</h3>
+            <h3 id="share-position"></h3>
 
             <div class="output-item shares-available" data-shares hidden>
               <span>Shares Available:</span>
@@ -79,7 +77,7 @@
             </div>
             <div class="output-item share-usage" data-usage="unlimited">
               <span>Usage:</span>
-              <span id="share-usage">Unlimited</span>
+              <span id="share-usage">-</span>
             </div>
 <div class="output-item share-hours" data-usage="capped" hidden>
               <span>Usage:</span>
@@ -87,7 +85,7 @@
             </div>
             <div class="output-item scheduling-limit" data-usage="unlimited">
               <span>Scheduling Limit:</span>
-              <span id="scheduling-limit">175 flight hours or 35 days at one time</span>
+              <span id="scheduling-limit">-</span>
             </div>
             <div class="output-item">
               <span>Program Cost:*</span>
@@ -108,6 +106,8 @@
               <span id="blended-cost-per-hour">-</span>
             </div>
                                                                                                                                                          
+            <div class="usage-warning" id="usage-warning" hidden></div>
+
             <!-- MOBILE: second image appears below the results -->                                                                                      
             <div class="second-image-mobile">
               <img data-img="1"                                                                                                                                       
@@ -117,12 +117,7 @@
               />                                            
             </div>                                                                                                                                       
                                                             
-            <div class="addendum">
-              <p>*The Program Cost purchases one of eight available shared ownership positions. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to 175 flight hours or 35 days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>
-              <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>
-              <p id="fuel-note">***JET-A national avg × 59 gph + oil.</p>
-              <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>
-            </div>
+            <div class="addendum"></div>
           </div>
         </div>
       </div>

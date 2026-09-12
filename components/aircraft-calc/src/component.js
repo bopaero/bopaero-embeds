@@ -33,6 +33,17 @@ function initCalculator(root, spec) {
     });
   });
 
+  /* Footnotes are per-aircraft: they state share counts, usage terms and fuel
+     specifics. They MUST come from the data file — the shared template was built
+     from the SF50 component, so a hard-coded block would put SF50 footnotes
+     ("one of eight positions", "unlimited usage") on every other aircraft.
+     Injected before #fuel-note is queried, because it lives inside this block. */
+  var noteEl = q('#input-note');
+  if (noteEl && spec.inputNote) { noteEl.innerText = spec.inputNote; noteEl.hidden = false; }
+
+  var addendumEl = root.querySelector('.addendum');
+  if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = spec.addendumHtml;
+
   q('#share-position').innerText     = spec.sharePositionLabel;
   q('#program-cost').innerText       = '$' + money0(spec.programCost);
   q('#annual-program-fee').innerText = '$' + money0(spec.annualProgramFee);
@@ -87,6 +98,28 @@ function initCalculator(root, spec) {
   var yearsEl = q('#ownership-years');
   var hoursEl = q('#hours-per-year');
   var blendedEl = q('#blended-cost-per-hour');
+  var warnEl = q('#usage-warning');
+
+  /* A capped program cannot deliver more than maxHours per share per year.
+     Without this, entering 175 hrs/yr against a 96-hour SR22T share returns a
+     confident cost per hour for a usage level the program does not permit —
+     and because the figure falls as hours rise, the error flatters the wrong
+     way. Warn rather than block: needing a second share is a conversation,
+     not an input error. */
+  function checkUsageCap(hoursPerYear) {
+    if (!warnEl) return;
+    var cap = spec.usage && spec.usage.model === 'capped' ? spec.usage.maxHours : null;
+    if (cap && hoursPerYear > cap) {
+      var shares = Math.ceil(hoursPerYear / cap);
+      warnEl.innerText =
+        hoursPerYear + ' hours per year exceeds the ' + cap +
+        '-hour annual limit for a single share. ' + shares +
+        ' shares would be required at this usage level — contact us to discuss.';
+      warnEl.hidden = false;
+    } else {
+      warnEl.hidden = true;
+    }
+  }
 
   root.addEventListener('toggle', function () {
     if (this.open) this.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -103,11 +136,14 @@ function initCalculator(root, spec) {
     }
     var total = spec.programCost + spec.annualProgramFee * years;
     blendedEl.innerText = '$' + money0(total / (years * hoursPerYear)) + HR;
+    checkUsageCap(hoursPerYear);
   }
 
   function clearData() {
     yearsEl.value = ''; hoursEl.value = '';
-    blendedEl.innerText = '-'; yearsEl.focus();
+    blendedEl.innerText = '-';
+    if (warnEl) warnEl.hidden = true;
+    yearsEl.focus();
   }
 
   q('#calculate-cost').addEventListener('click', calculate);

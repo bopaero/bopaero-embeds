@@ -198,3 +198,16 @@
 .calculator [hidden] {
   display: none !important;
 }
+
+
+/* Shown when requested hours exceed a capped program's per-share limit. */
+.calculator .usage-warning {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #7a4a00;
+  background: #fff6e5;
+  border-left: 4px solid #e8820c;
+  border-radius: 4px;
+}
