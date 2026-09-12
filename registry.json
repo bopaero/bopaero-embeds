@@ -274,15 +274,6 @@
         "tos"
       ]
     },
-    "route-intel": {
-      "mode": "paste",
-      "description": "Route intelligence component",
-      "block_hash": "4cf1df4043",
-      "chars": 99769,
-      "pages": [
-        "travel-model-test"
-      ]
-    },
     "unnamed-21d2a21c7f": {
       "mode": "review",
       "description": "Unclassified small snippet",
@@ -318,6 +309,14 @@
         "sr22t-fractional-ownership-program-pilots",
         "sr22t-pilots-v",
         "sr22t-pilots-v-1"
+      ]
+    },
+    "route-intel": {
+      "mode": "excluded",
+      "description": "Travel Modeler v2.5 on /travel-model-test. EXCLUDED 2026-09-12 \u2014 Raymond will not be using it. Baseline dropped from the repo; it also carried a Google Maps API key. Do not re-import.",
+      "block_hash": "4cf1df4043",
+      "pages": [
+        "travel-model-test"
       ]
     }
   }
