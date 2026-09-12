@@ -98,7 +98,8 @@
 ]
 ],
 "legendNote": "The aircraft stays where the last owner left it and repositions to the next owner, avoiding empty repositioning cycles."
-}
+},
+"_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
 }
 },
 "sr22t": {

@@ -85,9 +85,21 @@
 "model": "split",
 "dividerLongitude": -100,
 "legendTitle": "Program Area",
-"legendText": "Bi-coastal U.S. operation, divided into Western and Eastern program halves. The aircraft remains where the last owner left it and repositions to the next owner, which avoids empty repositioning cycles.",
-"dotLabel": "Owner / interest location"
-}
+"legendText": "Bi-coastal U.S. operation, divided into Western and Eastern program halves.",
+"dotLabel": "Owner / interest location",
+"fitBounds": [
+[
+24.5,
+-125.0
+],
+[
+49.5,
+-66.5
+]
+],
+"legendNote": "The aircraft stays where the last owner left it and repositions to the next owner, avoiding empty repositioning cycles."
+},
+"_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
 }
 },
 "sr22t": {
