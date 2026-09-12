@@ -38,11 +38,37 @@ function initCalculator(root, spec) {
      from the SF50 component, so a hard-coded block would put SF50 footnotes
      ("one of eight positions", "unlimited usage") on every other aircraft.
      Injected before #fuel-note is queried, because it lives inside this block. */
+  /* Footnote prose repeats numbers that also live in structured fields, so it
+     drifts: the SR22T footnote still claimed "16 available" after the program
+     moved to 15 of 16. Tokens keep one source of truth — edit the data, the
+     prose follows. Unknown tokens are left visible rather than blanked, so a
+     typo shows up instead of silently deleting a number. */
+  function fill(text) {
+    if (!text) return text;
+    var map = {
+      totalShares: spec.totalShares,
+      availableShares: spec.availableShares,
+      maxHours: spec.usage && spec.usage.maxHours,
+      schedulingHours: spec.usage && spec.usage.schedulingHours,
+      schedulingDays: spec.usage && spec.usage.schedulingDays,
+      fuelLabel: spec.fuel && spec.fuel.label,
+      gph: spec.fuel && spec.fuel.gph
+    };
+    return text.replace(/\{\{(\w+)\}\}/g, function (whole, key) {
+      var v = map[key];
+      if (v === undefined || v === null) {
+        console.warn('[bopaero:aircraft-calc] ' + spec.id + ' unknown token ' + whole);
+        return whole;
+      }
+      return v;
+    });
+  }
+
   var noteEl = q('#input-note');
-  if (noteEl && spec.inputNote) { noteEl.innerText = spec.inputNote; noteEl.hidden = false; }
+  if (noteEl && spec.inputNote) { noteEl.innerText = fill(spec.inputNote); noteEl.hidden = false; }
 
   var addendumEl = root.querySelector('.addendum');
-  if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = spec.addendumHtml;
+  if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = fill(spec.addendumHtml);
 
   q('#share-position').innerText     = spec.sharePositionLabel;
   q('#program-cost').innerText       = '$' + money0(spec.programCost);

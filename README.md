@@ -62,6 +62,22 @@ passed while a row was plainly visible on screen, because
 was verified this way: 5 yrs / 175 hrs -> $1,372/hr, Clear resets, fuel price
 fetched live from the TripCalc repo.
 
+## Footnote tokens
+
+Footnote prose repeats numbers that also live in structured data, so it drifts —
+the SR22T footnote still claimed "16 available" long after the program moved to
+15 of 16. Prose may use tokens, substituted from the data file at render time:
+
+    {{totalShares}} {{availableShares}} {{maxHours}}
+    {{schedulingHours}} {{schedulingDays}} {{fuelLabel}} {{gph}}
+
+Edit the number once in the data file and every mention follows. An unknown
+token is left visible and logged, so a typo shows up rather than silently
+deleting a number.
+
+Prose that spells numbers out ("one of eight available", in the SF50 note) is
+NOT tokenised — that would change the copy. It stays manually maintained.
+
 ## Drift
 
 `tools/audit_site.py` re-scans all pages and reports:

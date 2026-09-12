@@ -41,8 +41,8 @@
 ],
 "availableShares": 8,
 "_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed.",
-"addendumHtml": "<p>*The Program Cost purchases one of eight available shared ownership positions. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to 175 flight hours or 35 days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***JET-A national avg \u00d7 59 gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
-"inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to 175 flight hours or 35 days at one time."
+"addendumHtml": "<p>*The Program Cost purchases one of eight available shared ownership positions. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to 175 flight hours or 35 days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time."
 },
 "sr22t": {
 "id": "sr22t",
@@ -75,7 +75,7 @@
 ],
 "availableShares": 15,
 "_dataVerified": "Program cost and annual fee corrected by Raymond 2026-09-12 (per share). Stored at full precision; the engine rounds for display. NOTE: totalShares is not displayed anywhere - it is declared but unused, inherited from the original live code. 15 of 16 shares available for purchase as of 2026-09-12, not currently surfaced in the UI. Usage cap and fuel figures NOT yet re-confirmed by Raymond.",
-"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*16 available shared ownership positions. Each share permits up to 96 flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***100LL national avg \u00d7 18 gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>"
+"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>"
 }
 };
 
@@ -147,11 +147,37 @@
        from the SF50 component, so a hard-coded block would put SF50 footnotes
        ("one of eight positions", "unlimited usage") on every other aircraft.
        Injected before #fuel-note is queried, because it lives inside this block. */
+    /* Footnote prose repeats numbers that also live in structured fields, so it
+       drifts: the SR22T footnote still claimed "16 available" after the program
+       moved to 15 of 16. Tokens keep one source of truth — edit the data, the
+       prose follows. Unknown tokens are left visible rather than blanked, so a
+       typo shows up instead of silently deleting a number. */
+    function fill(text) {
+      if (!text) return text;
+      var map = {
+        totalShares: spec.totalShares,
+        availableShares: spec.availableShares,
+        maxHours: spec.usage && spec.usage.maxHours,
+        schedulingHours: spec.usage && spec.usage.schedulingHours,
+        schedulingDays: spec.usage && spec.usage.schedulingDays,
+        fuelLabel: spec.fuel && spec.fuel.label,
+        gph: spec.fuel && spec.fuel.gph
+      };
+      return text.replace(/\{\{(\w+)\}\}/g, function (whole, key) {
+        var v = map[key];
+        if (v === undefined || v === null) {
+          console.warn('[bopaero:aircraft-calc] ' + spec.id + ' unknown token ' + whole);
+          return whole;
+        }
+        return v;
+      });
+    }
+
     var noteEl = q('#input-note');
-    if (noteEl && spec.inputNote) { noteEl.innerText = spec.inputNote; noteEl.hidden = false; }
+    if (noteEl && spec.inputNote) { noteEl.innerText = fill(spec.inputNote); noteEl.hidden = false; }
 
     var addendumEl = root.querySelector('.addendum');
-    if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = spec.addendumHtml;
+    if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = fill(spec.addendumHtml);
 
     q('#share-position').innerText     = spec.sharePositionLabel;
     q('#program-cost').innerText       = '$' + money0(spec.programCost);
