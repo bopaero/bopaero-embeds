@@ -47,8 +47,8 @@
 "heading": "2026 Cirrus SR22T G7+ GTS Shared Ownership Program",
 "sharePositionLabel": "Ownership Cost (per share)",
 "totalShares": 16,
-"programCost": 95677,
-"annualProgramFee": 30522,
+"programCost": 100955.996,
+"annualProgramFee": 33975.783,
 "fuel": {
 "label": "100LL",
 "priceKey": "avgas_100ll",
@@ -70,7 +70,7 @@
 "alt": "SR22T Lifestyle"
 }
 ],
-"_dataVerified": "CARRIED OVER VERBATIM FROM LIVE 2026-09-12 \u2014 Raymond reports these SR22T program figures are OUT OF DATE and will be corrected separately. Do not treat as current."
+"_dataVerified": "Program cost and annual fee corrected by Raymond 2026-09-12 (per share). Stored at full precision; the engine rounds for display. NOTE: totalShares is not displayed anywhere - it is declared but unused, inherited from the original live code. 15 of 16 shares available for purchase as of 2026-09-12, not currently surfaced in the UI. Usage cap and fuel figures NOT yet re-confirmed by Raymond."
 }
 };
 
