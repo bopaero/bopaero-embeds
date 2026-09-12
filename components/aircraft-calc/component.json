@@ -1,0 +1,9 @@
+{
+  "name": "aircraft-calc",
+  "mode": "loader",
+  "description": "Shared cost calculator. One engine + template; each aircraft program is data/<id>.json.",
+  "instances": {
+    "sf50":  ["sf50-fractional-ownership-program-nonpilots","sf50-fractional-ownership-program-nonpilots-business","sf50-fractional-ownership-program-pilots"],
+    "sr22t": ["sr22t-fractional-ownership-program-nonpilots-business","sr22t-fractional-ownership-program-nonpilots-personal","sr22t-fractional-ownership-program-pilots","sr22t-pilots-v","sr22t-pilots-v-1"]
+  }
+}

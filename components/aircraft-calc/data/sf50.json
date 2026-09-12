@@ -1,0 +1,32 @@
+{
+  "id": "sf50",
+  "summaryTitle": "Cirrus SF50 Vision Jet Shared Ownership Cost Calculator",
+  "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
+  "sharePositionLabel": "Ownership Costs (per share)",
+  "totalShares": 8,
+  "programCost": 544375,
+  "annualProgramFee": 131291,
+  "fuel": {
+    "label": "JET-A",
+    "priceKey": "jet_a",
+    "gph": 59,
+    "oilPerHour": 6.45,
+    "fallbackCostPerHour": 375
+  },
+  "usage": {
+    "model": "unlimited",
+    "schedulingHours": 175,
+    "schedulingDays": 35
+  },
+  "images": [
+    {
+      "src": "https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/52dda135-bca3-4b6b-ad19-6a3b94b81807/DSC00966_croatia-a2a_013.jpeg?content-type=image%2Fjpeg",
+      "alt": "SF50 Vision Jet"
+    },
+    {
+      "src": "https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/4aad4998-5f44-4e12-8170-7356bfd777d3/FL+Keys+Vision+Jet+Lifestyle.jpeg?content-type=image%2Fjpeg",
+      "alt": "SF50 Cockpit"
+    }
+  ],
+  "_dataVerified": "2026-09-12 \u2014 matches live production block"
+}

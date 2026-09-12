@@ -37,17 +37,6 @@
         "sr22t-pilots-v-1"
       ]
     },
-    "sf50-calc": {
-      "mode": "loader",
-      "description": "SF50 cost calculator",
-      "block_hash": "9455dadb44",
-      "chars": 30100,
-      "pages": [
-        "sf50-fractional-ownership-program-nonpilots",
-        "sf50-fractional-ownership-program-nonpilots-business",
-        "sf50-fractional-ownership-program-pilots"
-      ]
-    },
     "vendor-form-sf50": {
       "mode": "vendor",
       "description": "LeadConnector: Lead Interest Form - SF50",
@@ -59,32 +48,11 @@
         "sf50-fractional-ownership-program-pilots"
       ]
     },
-    "sr22t-calc": {
-      "mode": "loader",
-      "description": "SR22T cost calculator (program pages variant)",
-      "block_hash": "e805a6d9da",
-      "chars": 33602,
-      "pages": [
-        "sr22t-fractional-ownership-program-nonpilots-business",
-        "sr22t-fractional-ownership-program-nonpilots-personal",
-        "sr22t-fractional-ownership-program-pilots"
-      ]
-    },
     "unnamed-ee28e3d903": {
       "mode": "review",
       "description": "Unclassified small snippet",
       "block_hash": "ee28e3d903",
       "chars": 9641,
-      "pages": [
-        "sr22t-pilots-v",
-        "sr22t-pilots-v-1"
-      ]
-    },
-    "sr22t-calc-v": {
-      "mode": "review",
-      "description": "SR22T calculator, older variant on sr22t-pilots-v pages",
-      "block_hash": "fe836b05ce",
-      "chars": 12929,
       "pages": [
         "sr22t-pilots-v",
         "sr22t-pilots-v-1"
@@ -331,6 +299,25 @@
       "chars": 1726,
       "pages": [
         "win-a-day-at-the-masters-sweepstakes"
+      ]
+    },
+    "aircraft-calc": {
+      "mode": "loader",
+      "description": "Shared cost calculator \u2014 one engine/template/stylesheet; each aircraft program is data/<id>.json. Replaces sf50-calc, sr22t-calc and the divergent sr22t-calc-v.",
+      "data_driven": true,
+      "aircraft": [
+        "sf50",
+        "sr22t"
+      ],
+      "pages": [
+        "sf50-fractional-ownership-program-nonpilots",
+        "sf50-fractional-ownership-program-nonpilots-business",
+        "sf50-fractional-ownership-program-pilots",
+        "sr22t-fractional-ownership-program-nonpilots-business",
+        "sr22t-fractional-ownership-program-nonpilots-personal",
+        "sr22t-fractional-ownership-program-pilots",
+        "sr22t-pilots-v",
+        "sr22t-pilots-v-1"
       ]
     }
   }

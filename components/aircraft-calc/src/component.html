@@ -1,28 +1,28 @@
 <!-- Collapsible wrapper (initially collapsed) -->                                                                                                     
-  <details class="calc-accordion" id="sf50-calc">                                                                                                        
+  <details class="calc-accordion" data-calc-root>                                                                                                        
     <summary class="calc-summary">                                                                                                                       
-      <span class="summary-title">Cirrus SF50 Vision Jet Shared Ownership Cost Calculator</span>                                                                  
+      <span class="summary-title"></span>                                                                  
       <span class="summary-hint">Open</span>                                                                                                             
       <span class="summary-caret" aria-hidden="true"></span>
     </summary>                                                                                                                                           
                                                             
     <div class="calculator-container">                                                                                                                   
-      <h2>2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program</h2>       
+      <h2></h2>       
                                                                                                                                                          
       <!-- Two-column layout for desktop/tablet; stacks on mobile -->                                                                                    
       <div class="calculator-grid">                                                                                                                      
         <!-- LEFT: Image column (on mobile this appears above the calculator) -->                                                                        
         <div class="image-panel">                                                                                                                        
           <img
-            id="aircraft-image"                                                                                                                          
+            data-img="0"                                                                                                                          
             src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/52dda135-bca3-4b6b-ad19-6a3b94b81807/DSC00966_croatia-a2a_013.jpeg?content-type=image%2Fjpeg"                                                                                                                              
-            alt="SF50 Vision Jet"                                                                                                                        
+            alt=""                                                                                                                        
             loading="lazy"                                                                                                                               
           />                                                
           <img                                                                                                                                           
-            id="aircraft-image-2"                           
+            data-img="1"                           
             src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/4aad4998-5f44-4e12-8170-7356bfd777d3/FL+Keys+Vision+Jet+Lifestyle.jpeg?content-type=image%2Fjpeg"                                                                                                                          
-            alt="SF50 Cockpit"
+            alt=""
             loading="lazy"                                                                                                                               
             class="second-image-desktop"                    
           />                                                                                                                                             
@@ -73,11 +73,15 @@
           <div class="output-section">                      
             <h3 id="share-position">1 of 8 Shared Ownership Shares</h3>
 
-            <div class="output-item share-usage">
+            <div class="output-item share-usage" data-usage="unlimited">
               <span>Usage:</span>
               <span id="share-usage">Unlimited</span>
             </div>
-            <div class="output-item scheduling-limit">
+            <div class="output-item share-hours" data-usage="capped" hidden>
+              <span>Usage:</span>
+              <span id="share-hours">-</span>
+            </div>
+            <div class="output-item scheduling-limit" data-usage="unlimited">
               <span>Scheduling Limit:</span>
               <span id="scheduling-limit">175 flight hours or 35 days at one time</span>
             </div>
@@ -102,9 +106,9 @@
                                                                                                                                                          
             <!-- MOBILE: second image appears below the results -->                                                                                      
             <div class="second-image-mobile">
-              <img                                                                                                                                       
+              <img data-img="1"                                                                                                                                       
                 src="https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/4aad4998-5f44-4e12-8170-7356bfd777d3/FL+Keys+Vision+Jet+Lifestyle.jpeg?content-type=image%2Fjpeg"                                                                                                                      
-                alt="SF50 Cockpit"
+                alt=""
                 loading="lazy"                                                                                                                           
               />                                            
             </div>                                                                                                                                       

@@ -1,0 +1,31 @@
+{
+  "id": "sr22t",
+  "summaryTitle": "Cirrus SR22T Shared Ownership Cost Calculator",
+  "heading": "2026 Cirrus SR22T G7+ GTS Shared Ownership Program",
+  "sharePositionLabel": "Ownership Cost (per share)",
+  "totalShares": 16,
+  "programCost": 95677,
+  "annualProgramFee": 30522,
+  "fuel": {
+    "label": "100LL",
+    "priceKey": "avgas_100ll",
+    "gph": 18,
+    "oilPerHour": 2.0,
+    "fallbackCostPerHour": 110
+  },
+  "usage": {
+    "model": "capped",
+    "maxHours": 96
+  },
+  "images": [
+    {
+      "src": "https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/1a2ef5bd-81d4-4bc2-99bb-55c250b221d1/G6+Pet+Friendly+Lifestyle.jpg?content-type=image%2Fjpeg",
+      "alt": "SR22T Exterior"
+    },
+    {
+      "src": "https://images.squarespace-cdn.com/content/66bd0ff9d4abd8302892103f/6b935415-45d7-4bb6-83ef-9296ed429310/SR+Series+NY+2024.jpeg?content-type=image%2Fjpeg",
+      "alt": "SR22T Lifestyle"
+    }
+  ],
+  "_dataVerified": "CARRIED OVER VERBATIM FROM LIVE 2026-09-12 \u2014 Raymond reports these SR22T program figures are OUT OF DATE and will be corrected separately. Do not treat as current."
+}
