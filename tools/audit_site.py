@@ -32,7 +32,10 @@ def main():
     refresh = '--refresh' in sys.argv
     reg = json.load(open(os.path.join(ROOT, 'registry.json')))
     urls = [u for u in open(os.path.join(ROOT,'audit','urls.txt')).read().split() if u.strip()]
-    known = {c['block_hash']: n for n, c in reg['components'].items() if c.get('block_hash')}
+    known = {}
+    for n, c in reg['components'].items():
+        for h in ([c['block_hash']] if c.get('block_hash') else []) + c.get('block_hashes', []):
+            known[h] = n
 
     live = {}   # hash -> [pages]
     stubbed = {}

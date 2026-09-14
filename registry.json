@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth: which component lives on which pages, and how it deploys. mode: loader = one script on GitHub Pages, edit once updates every page. paste = build then paste into the Squarespace block (single-page components only). vendor = third-party embed, content managed in the vendor UI - DO NOT manage here. review = needs Raymond's decision before adopting.",
+  "_comment": "Single source of truth: which component lives on which pages, and how it deploys. mode: loader = one script on GitHub Pages, edit once updates every page. paste = build then paste into the Squarespace block (single-page components only). vendor = third-party embed, content managed in the vendor UI - DO NOT manage here. review = needs Raymond's decision before adopting. block_hashes (plural) = one component with divergent live copies; mode: live = raw block we actively watch for drift, pending loader migration.",
   "baseline_captured": "2026-09-12",
   "site": "https://bopaero.com",
   "components": {
@@ -312,6 +312,31 @@
       "pages": [
         "sf50-locations-with-interest",
         "sr22t-locations-with-interest"
+      ]
+    },
+    "sf50-calc": {
+      "mode": "live",
+      "description": "SF50 shared-ownership cost calculator, raw block pasted per page. Pricing lives in const PROGRAM_COST / ANNUAL_PROGRAM_FEE. To be replaced by aircraft-calc (data/aircraft/sf50.json) on loader migration.",
+      "block_hash": "a74472485b",
+      "chars": 30108,
+      "pages": [
+        "sf50-fractional-ownership-program-nonpilots",
+        "sf50-fractional-ownership-program-nonpilots-business",
+        "sf50-fractional-ownership-program-pilots"
+      ]
+    },
+    "sr22t-calc": {
+      "mode": "live",
+      "description": "SR22T shared-ownership cost calculator, raw block pasted per page. Two live copies differ only by indentation on the ANNUAL_PROGRAM_FEE line - same values. To be replaced by aircraft-calc (data/aircraft/sr22t.json) on loader migration.",
+      "block_hashes": [
+        "3340ed05e7",
+        "0d6244563f"
+      ],
+      "chars": 33613,
+      "pages": [
+        "sr22t-fractional-ownership-program-nonpilots-business",
+        "sr22t-fractional-ownership-program-nonpilots-personal",
+        "sr22t-fractional-ownership-program-pilots"
       ]
     }
   }
