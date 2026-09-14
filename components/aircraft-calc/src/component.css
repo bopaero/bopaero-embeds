@@ -200,6 +200,19 @@
 }
 
 
+/* The inline usage note under the inputs. It had NO rule of its own, so it
+   inherited Squarespace's body copy - full-size orange paragraph text that read
+   as loudly as the heading and competed with the Calculate button. It is a
+   clarifying aside, not a warning: keep it quiet so the amber .usage-warning
+   below stays the only thing that shouts. */
+.calculator .input-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  font-style: italic;
+  color: #6b6b6b;
+}
+
 /* Shown when requested hours exceed a capped program's per-share limit. */
 .calculator .usage-warning {
   margin: 10px 0 0;
