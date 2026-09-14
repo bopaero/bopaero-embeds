@@ -166,11 +166,20 @@
     }                                                                                                                                                    
     .calculator .output-item:last-child { border-bottom: none; }
                                                                                                                                                          
-    .calculator .addendum {                                 
+    /* No colour was set, so the footnotes inherited Squarespace body copy and
+       rendered orange - louder than the figures they annotate. #333 is the same
+       near-black the output rows already use, so the footnotes read as quiet
+       supporting text rather than outweighing the numbers above them. */
+    .calculator .addendum {
       padding: 12px;
       font-size: 12px;
       font-style: italic;
-    }                                                                                                                                                    
+      color: #333;
+    }
+
+    /* The prose is injected as innerHTML from addendumHtml, so its <p> children
+       can pick the inherited colour back up; pin them too. */
+    .calculator .addendum p { color: #333; }                                                                                                                                                    
    
     .calculator span { font-size: 16px; }                                                                                                                
                                                             
