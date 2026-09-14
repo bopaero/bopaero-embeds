@@ -162,7 +162,20 @@ function initCalculator(root, spec) {
   }
 
   root.addEventListener('toggle', function () {
-    if (this.open) this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!this.open) return;
+    this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    /* The photos are loading="lazy" inside a <details>. While it is collapsed they
+       have zero area, so the browser never schedules the load - correct so far. The
+       trap is that opening the accordion does not break the deadlock: the img is
+       still height:auto with no intrinsic size, so it stays zero-height and the
+       lazy load may never fire. Observed live: photos absent on the SF50 pages,
+       and intermittently present depending on scroll timing, which is worse than a
+       clean failure. Switching to eager on first open costs nothing before open and
+       guarantees the fetch after it. */
+    this.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+      img.loading = 'eager';
+      if (!img.complete || !img.naturalWidth) { var u = img.src; img.src = ''; img.src = u; }
+    });
   });
 
   function calculate() {
