@@ -68,11 +68,16 @@ TEMPLATE = """/* bop Aero embed: {name}
 }})();
 """
 
+# NO ?v= CACHE BUSTER, DELIBERATELY. The stub is pasted into Squarespace by hand; if
+# its text changed on every build, every content change would mean re-pasting every
+# page - the exact problem this repo exists to remove. GitHub Pages serves the bundle
+# with cache-control: max-age=600 plus an ETag, so a push propagates within ten
+# minutes on its own. The pasted stub is permanent.
 STUB = """<!-- bop Aero embed: {name}
      Managed in the bopaero-embeds repo — do not paste component code here.
      Edit components/{name}/src/, run tools/build.py, push. Every page updates. -->
 <div id="{name}-mount"></div>
-<script src="https://embeds.bopaero.com/{name}.js?v={ver}" defer></script>
+<script src="https://embeds.bopaero.com/{name}.js" defer></script>
 """
 
 DATA_TEMPLATE = """/* bop Aero embed: {name}
@@ -162,7 +167,7 @@ DATA_STUB = """<!-- bop Aero embed: {name} ({aircraft})
      Edit components/{name}/src/ or data/aircraft/{aircraft}.json, run tools/build.py, push.
      Every page showing this aircraft updates. -->
 <div data-embed="{name}" data-aircraft="{aircraft}"></div>
-<script src="https://embeds.bopaero.com/{name}.js?v={ver}" defer></script>
+<script src="https://embeds.bopaero.com/{name}.js" defer></script>
 """
 
 
