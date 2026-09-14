@@ -49,8 +49,8 @@
       ]
     },
     "unnamed-ee28e3d903": {
-      "mode": "review",
-      "description": "Unclassified small snippet",
+      "mode": "legacy",
+      "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "ee28e3d903",
       "chars": 9641,
       "pages": [
@@ -212,8 +212,8 @@
       ]
     },
     "unnamed-4881892500": {
-      "mode": "review",
-      "description": "Unclassified small snippet",
+      "mode": "legacy",
+      "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "4881892500",
       "chars": 20562,
       "pages": [
@@ -221,8 +221,8 @@
       ]
     },
     "unnamed-6462e9631b": {
-      "mode": "review",
-      "description": "Unclassified small snippet",
+      "mode": "legacy",
+      "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "6462e9631b",
       "chars": 19642,
       "pages": [
@@ -288,9 +288,7 @@
         "sf50-fractional-ownership-program-pilots",
         "sr22t-fractional-ownership-program-nonpilots-business",
         "sr22t-fractional-ownership-program-nonpilots-personal",
-        "sr22t-fractional-ownership-program-pilots",
-        "sr22t-pilots-v",
-        "sr22t-pilots-v-1"
+        "sr22t-fractional-ownership-program-pilots"
       ]
     },
     "route-intel": {
@@ -337,6 +335,15 @@
         "sr22t-fractional-ownership-program-nonpilots-business",
         "sr22t-fractional-ownership-program-nonpilots-personal",
         "sr22t-fractional-ownership-program-pilots"
+      ]
+    },
+    "sr22t-calc-v": {
+      "mode": "legacy",
+      "description": "SUPERSEDED unit-based 1/8th-share SR22T calculator (PRICE_PER_UNIT 1164.285, FEES_PER_UNIT 386.056, MAX_AVAILABLE_HOURS 1400, 4-5yr longevity). A different ownership structure and price basis from the current flat 1/16th share at $100,956 / 96-hr cap. Raymond confirmed 2026-09-14 these pages are legacy and are being unpublished. Do NOT migrate to aircraft-calc and do NOT 'correct' its numbers - retire the pages.",
+      "block_hash": "fe836b05ce",
+      "pages": [
+        "sr22t-pilots-v",
+        "sr22t-pilots-v-1"
       ]
     }
   }
