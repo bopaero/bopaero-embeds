@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>embeds testbed — mobile</title>
+<!-- Phone-width harness. An iframe gets its own viewport, so the components'
+     @media (max-width: 900px) rules fire correctly inside it. Resizing the Chrome
+     window does NOT work for this: innerWidth stays desktop-wide even when the
+     window is narrow, so a window-resize screenshot silently tests nothing.
+     Serve the repo root (python3 -m http.server 8899) and open this file. -->
+<style>body{font:13px system-ui;margin:12px;background:#eee}
+h3{margin:10px 0 4px} iframe{border:2px solid #333;background:#fff;display:block}</style>
+<h3>390 x 844 (iPhone 14/15)</h3>
+<iframe src="./index.html" width="390" height="820"></iframe>
