@@ -43,11 +43,25 @@ function initCalculator(root, spec) {
      moved to 15 of 16. Tokens keep one source of truth — edit the data, the
      prose follows. Unknown tokens are left visible rather than blanked, so a
      typo shows up instead of silently deleting a number. */
+  /* Three distinct counts: totalShares (fleet positions), availableShares
+     (offered for sale) and sharesRemaining (still unsold). Older data files
+     predate the third, so it falls back to "none sold yet". */
+  function remaining() {
+    return typeof spec.sharesRemaining === 'number'
+      ? spec.sharesRemaining : spec.availableShares;
+  }
+
   function fill(text) {
     if (!text) return text;
     var map = {
       totalShares: spec.totalShares,
       availableShares: spec.availableShares,
+      sharesRemaining: remaining(),
+      /* Reads redundant while nothing has sold ("8 available for purchase, 8
+         currently remaining"), so the clause disappears until it carries news.
+         Computed, never prose, so it cannot drift from the numbers above. */
+      remainingClause: (remaining() === spec.availableShares
+        ? '' : ', ' + remaining() + ' currently remaining'),
       maxHours: spec.usage && spec.usage.maxHours,
       schedulingHours: spec.usage && spec.usage.schedulingHours,
       schedulingDays: spec.usage && spec.usage.schedulingDays,
@@ -81,7 +95,7 @@ function initCalculator(root, spec) {
   /* ── share availability (only if this program publishes it) ────────── */
   var sharesRow = q('[data-shares]');
   if (sharesRow && typeof spec.availableShares === 'number' && typeof spec.totalShares === 'number') {
-    q('#shares-available').innerText = spec.availableShares + ' of ' + spec.totalShares;
+    q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
     sharesRow.hidden = false;
   }
 

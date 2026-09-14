@@ -41,7 +41,7 @@
 ],
 "availableShares": 8,
 "_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed.",
-"addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. The Program Cost purchases one position. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost purchases one position. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
 "inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time.",
 "map": {
 "cities": [
@@ -100,7 +100,8 @@
 "legendNote": "The aircraft stays where the last owner left it and repositions to the next owner, avoiding empty repositioning cycles."
 },
 "_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
-}
+},
+"sharesRemaining": 8
 },
 "sr22t": {
 "id": "sr22t",
@@ -133,7 +134,7 @@
 ],
 "availableShares": 15,
 "_dataVerified": "All figures confirmed by Raymond 2026-09-12. Program cost and annual fee corrected this session (per share; stored at full precision, engine rounds for display). totalShares 16 / availableShares 15 confirmed. FUEL AND USAGE FIGURES ARE CORRECT AND CONSERVATIVE BY DESIGN \u2014 18 gph, $2.00/hr oil, $110/hr fallback, 96-hour annual cap per share. Do NOT \"correct\" them upward to match book performance figures; the conservatism is intentional.",
-"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
 "map": {
 "cities": [
 {
@@ -184,7 +185,8 @@
 "legendText": "Within 1 hour flight time (207 miles) of the selected city",
 "dotLabel": "Owner / interest location"
 }
-}
+},
+"sharesRemaining": 14
 }
 };
 
@@ -295,11 +297,25 @@
        moved to 15 of 16. Tokens keep one source of truth — edit the data, the
        prose follows. Unknown tokens are left visible rather than blanked, so a
        typo shows up instead of silently deleting a number. */
+    /* Three distinct counts: totalShares (fleet positions), availableShares
+       (offered for sale) and sharesRemaining (still unsold). Older data files
+       predate the third, so it falls back to "none sold yet". */
+    function remaining() {
+      return typeof spec.sharesRemaining === 'number'
+        ? spec.sharesRemaining : spec.availableShares;
+    }
+
     function fill(text) {
       if (!text) return text;
       var map = {
         totalShares: spec.totalShares,
         availableShares: spec.availableShares,
+        sharesRemaining: remaining(),
+        /* Reads redundant while nothing has sold ("8 available for purchase, 8
+           currently remaining"), so the clause disappears until it carries news.
+           Computed, never prose, so it cannot drift from the numbers above. */
+        remainingClause: (remaining() === spec.availableShares
+          ? '' : ', ' + remaining() + ' currently remaining'),
         maxHours: spec.usage && spec.usage.maxHours,
         schedulingHours: spec.usage && spec.usage.schedulingHours,
         schedulingDays: spec.usage && spec.usage.schedulingDays,
@@ -333,7 +349,7 @@
     /* ── share availability (only if this program publishes it) ────────── */
     var sharesRow = q('[data-shares]');
     if (sharesRow && typeof spec.availableShares === 'number' && typeof spec.totalShares === 'number') {
-      q('#shares-available').innerText = spec.availableShares + ' of ' + spec.totalShares;
+      q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
       sharesRow.hidden = false;
     }
 

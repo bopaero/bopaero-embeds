@@ -29,7 +29,7 @@
   ],
   "availableShares": 15,
   "_dataVerified": "All figures confirmed by Raymond 2026-09-12. Program cost and annual fee corrected this session (per share; stored at full precision, engine rounds for display). totalShares 16 / availableShares 15 confirmed. FUEL AND USAGE FIGURES ARE CORRECT AND CONSERVATIVE BY DESIGN \u2014 18 gph, $2.00/hr oil, $110/hr fallback, 96-hour annual cap per share. Do NOT \"correct\" them upward to match book performance figures; the conservatism is intentional.",
-  "addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+  "addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
   "map": {
     "cities": [
       {
@@ -80,5 +80,6 @@
       "legendText": "Within 1 hour flight time (207 miles) of the selected city",
       "dotLabel": "Owner / interest location"
     }
-  }
+  },
+  "sharesRemaining": 14
 }
