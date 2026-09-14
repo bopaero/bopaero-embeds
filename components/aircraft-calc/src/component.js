@@ -138,6 +138,7 @@ function initCalculator(root, spec) {
   var yearsEl = q('#ownership-years');
   var hoursEl = q('#hours-per-year');
   var blendedEl = q('#blended-cost-per-hour');
+  var blendedRow = q('#blended-row');
   var warnEl = q('#usage-warning');
 
   /* A capped program cannot deliver more than maxHours per share per year.
@@ -146,6 +147,11 @@ function initCalculator(root, spec) {
      and because the figure falls as hours rise, the error flatters the wrong
      way. Warn rather than block: needing a second share is a conversation,
      not an input error. */
+  function overCap(hoursPerYear) {
+    var cap = spec.usage && spec.usage.model === 'capped' ? spec.usage.maxHours : null;
+    return cap && hoursPerYear > cap ? cap : null;
+  }
+
   function checkUsageCap(hoursPerYear) {
     if (!warnEl) return;
     var cap = spec.usage && spec.usage.model === 'capped' ? spec.usage.maxHours : null;
@@ -187,14 +193,27 @@ function initCalculator(root, spec) {
     if (!Number.isFinite(hoursPerYear) || hoursPerYear < 1) {
       alert('Please enter estimated annual flying hours greater than zero.'); return;
     }
-    var total = spec.programCost + spec.annualProgramFee * years;
-    blendedEl.innerText = '$' + money0(total / (years * hoursPerYear)) + HR;
+    /* Above the cap the per-hour figure is not just unhelpful, it is wrong in the
+       flattering direction: it divides ONE share's cost by hours that one share is
+       not entitled to fly, so the rate falls as the overage grows. Raymond's call
+       (2026-09-14): show the warning alone rather than a number a prospect could
+       quote back. The static per-share rows stay - they remain true. */
+    var cap = overCap(hoursPerYear);
+    if (cap) {
+      blendedEl.innerText = '-';
+      if (blendedRow) blendedRow.hidden = true;
+    } else {
+      var total = spec.programCost + spec.annualProgramFee * years;
+      blendedEl.innerText = '$' + money0(total / (years * hoursPerYear)) + HR;
+      if (blendedRow) blendedRow.hidden = false;
+    }
     checkUsageCap(hoursPerYear);
   }
 
   function clearData() {
     yearsEl.value = ''; hoursEl.value = '';
     blendedEl.innerText = '-';
+    if (blendedRow) blendedRow.hidden = false;
     if (warnEl) warnEl.hidden = true;
     yearsEl.focus();
   }
