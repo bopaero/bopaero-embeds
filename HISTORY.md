@@ -6,6 +6,52 @@ carrying the stub updates within ~10 minutes. No pasting.
 
 ---
 
+## v2026-09-15.2 — design system, share selector, in-page CTA
+
+### Design
+Audited bopaero.com computed styles and rebuilt the embeds on a shared token layer
+(`components/_shared/tokens.css`, prepended to every component by build.py, scoped to
+`.bop-embed`). **Edit brand values there, never in a component.**
+
+| | Before | After |
+|---|---|---|
+| Buttons | Bootstrap `#dc3545` / `#28a745` | orange pill + outlined pill |
+| Body type | Arial | proxima-nova |
+| Corners | 6px | full pill (300px), matching the site |
+| Focus ring | Bootstrap blue | navy |
+| Usage note | inherited full-size orange | 13px grey italic |
+| Footnotes | inherited orange | `#333` |
+
+Measured tokens: Archivo Black headings (tracking −0.02em), proxima-nova body weight
+300, orange `#FF6700`, navy `#003767`, ink `#282D30`.
+
+**Container queries replace media queries.** These are embeds: the block can sit in a
+narrow column on a wide screen, where `max-width:900px` never fires. Verified — at a
+1384px window, narrowing the block to 420px collapses the grid.
+
+### Calculator
+- **Ships open.** Collapsed, most visitors never reached the numbers.
+- **Share selector** (1..N, capped at what is for sale — 8 SF50 / 14 SR22T) drives every
+  share-dependent figure from one function: program cost, annual fee, entitlement,
+  scheduling limit, heading, footnote phrase, per-hour cost.
+- Confirmed by Raymond: multi-share pricing is **strictly linear**; a reservation block
+  is **per share** so the scheduling limit scales.
+- SR22T hours placeholder was hard-coded at 175 against a 96-hour cap — now data-driven.
+- **In-page jump CTA**, delivered from the bundle with no Squarespace work. Verified on
+  a real phone by Raymond.
+
+### Traps worth remembering
+- The accordion shipping open moved the image-wake fix out from under the `toggle`
+  event, which no longer fires on load — it runs at init too, or the photos silently
+  never load.
+- Never re-inject `addendumHtml` to update the footnote: `fuelNoteEl` is captured from
+  inside it, and re-injecting orphans it so the live fuel price vanishes.
+- IntersectionObserver and scroll events are throttled in background tabs and some
+  webviews, and never deliver even the first IO callback — the CTA carries a geometry
+  fallback for that.
+
+---
+
 ## v2026-09-15.1 — first full release: all 8 embeds on the loader
 
 The site went from eight hand-pasted copies of two components to eight six-line
