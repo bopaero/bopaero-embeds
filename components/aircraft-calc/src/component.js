@@ -125,6 +125,21 @@ function initCalculator(root, spec) {
     if (hoursRow && spec.usage && spec.usage.model === 'capped') {
       hoursRow.innerText = 'Up to ' + (spec.usage.maxHours * n) + ' hours';
     }
+    /* Raymond 2026-09-15: a reservation block is per share, so two shares carry
+       two of them. */
+    var schedRow = q('#scheduling-limit');
+    if (schedRow && spec.usage && spec.usage.model === 'unlimited') {
+      schedRow.innerText = (spec.usage.schedulingHours * n) + ' flight hours or ' +
+                           (spec.usage.schedulingDays * n) + ' days at one time';
+    }
+    /* Only this phrase is rewritten, never the whole footnote: fuelNoteEl is captured
+       once from inside .addendum, and re-injecting the HTML would orphan it so the
+       live fuel price would write to a detached node and vanish from the page. */
+    var posEl = root.querySelector('[data-positions]');
+    if (posEl) {
+      posEl.textContent = n === 1 ? 'purchases one position'
+                                  : 'shown is for ' + n + ' positions';
+    }
   }
   renderShareFigures();
 
@@ -146,9 +161,7 @@ function initCalculator(root, spec) {
   });
   if (model === 'unlimited') {
     q('#share-usage').innerText = 'Unlimited';
-    q('#scheduling-limit').innerText =
-      spec.usage.schedulingHours + ' flight hours or ' +
-      spec.usage.schedulingDays + ' days at one time';
+    renderShareFigures();   /* scheduling limit scales with the selection */
   } else if (model === 'capped') {
     renderShareFigures();   /* scales the entitlement row with the selection */
   } else {
