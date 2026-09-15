@@ -167,21 +167,26 @@ function initCalculator(root, spec) {
     }
   }
 
-  root.addEventListener('toggle', function () {
-    if (!this.open) return;
-    this.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    /* The photos are loading="lazy" inside a <details>. While it is collapsed they
-       have zero area, so the browser never schedules the load - correct so far. The
-       trap is that opening the accordion does not break the deadlock: the img is
-       still height:auto with no intrinsic size, so it stays zero-height and the
-       lazy load may never fire. Observed live: photos absent on the SF50 pages,
-       and intermittently present depending on scroll timing, which is worse than a
-       clean failure. Switching to eager on first open costs nothing before open and
-       guarantees the fetch after it. */
-    this.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+  /* The photos are loading="lazy" with height:auto and no intrinsic size, so while
+     they have zero area the browser may never schedule the load - and opening the
+     accordion does not by itself break that deadlock. Switching to eager and
+     re-triggering guarantees the fetch.
+     MUST run at init as well as on toggle: the accordion now ships open, so the
+     toggle event never fires on load and the images would never wake. */
+  function wakeImages(scope) {
+    scope.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
       img.loading = 'eager';
       if (!img.complete || !img.naturalWidth) { var u = img.src; img.src = ''; img.src = u; }
     });
+  }
+  if (root.open) wakeImages(root);
+
+  root.addEventListener('toggle', function () {
+    if (!this.open) return;
+    wakeImages(this);
+    /* Only pull the page to the calculator when the USER opened it. Doing this on
+       an accordion that ships open would yank the page on load. */
+    if (this.dataset.userToggled) this.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   function calculate() {
@@ -217,6 +222,9 @@ function initCalculator(root, spec) {
     if (warnEl) warnEl.hidden = true;
     yearsEl.focus();
   }
+
+  var summaryEl = root.querySelector('summary');
+  if (summaryEl) summaryEl.addEventListener('click', function () { root.dataset.userToggled = '1'; });
 
   q('#calculate-cost').addEventListener('click', calculate);
   q('#clear-calculator').addEventListener('click', clearData);

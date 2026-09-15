@@ -1,0 +1,59 @@
+/* ============================================================================
+   bop Aero embed design tokens — ONE definition, prepended to every component
+   by tools/build.py. Edit here, rebuild, and both components change together.
+
+   WHY THIS FILE EXISTS: the components previously declared almost no colours or
+   fonts, so every unspecified property silently inherited whatever Squarespace
+   supplied. That produced two customer-facing bugs in one week - orange footnotes
+   and an orange full-size usage note - each fixed one at a time. Tokens make the
+   whole class of bug impossible: nothing is left to inherit by accident.
+
+   Values are MEASURED from bopaero.com computed styles (2026-09-15), not guessed.
+   ========================================================================== */
+.bop-embed {
+  /* brand ------------------------------------------------------------------ */
+  --bop-orange:        #FF6700;
+  --bop-orange-ink:    #fff;
+  /* Derived, so a brand tweak needs one edit. color-mix keeps hover/active in
+     step with --bop-orange instead of drifting as hand-picked hex values. */
+  --bop-orange-hover:  color-mix(in srgb, var(--bop-orange) 88%, #000);
+  --bop-orange-soft:   color-mix(in srgb, var(--bop-orange) 12%, #fff);
+  --bop-navy:          #003767;
+  --bop-ink:           #282D30;
+
+  /* surfaces --------------------------------------------------------------- */
+  --bop-panel:         #E9CEB0;   /* the established embed panel - kept for continuity */
+  --bop-card:          #fff;
+  --bop-line:          #e3e3e3;
+
+  /* text ------------------------------------------------------------------- */
+  --bop-text:          #333;
+  --bop-text-muted:    #6b6b6b;
+
+  /* type ------------------------------------------------------------------- */
+  --bop-font-head: "Archivo Black", "Arial Black", system-ui, sans-serif;
+  --bop-font-body: proxima-nova, "Proxima Nova", -apple-system, BlinkMacSystemFont,
+                   "Segoe UI", Helvetica, Arial, sans-serif;
+  --bop-head-ls:   -0.02em;       /* the site sets a tight negative tracking */
+
+  /* geometry --------------------------------------------------------------- */
+  --bop-radius:      10px;
+  --bop-radius-pill: 300px;       /* site buttons are full pills */
+  --bop-gap:         12px;
+
+  /* feedback --------------------------------------------------------------- */
+  --bop-focus:       var(--bop-navy);
+  --bop-warn-text:   #7a4a00;
+  --bop-warn-bg:     #fff6e5;
+  --bop-warn-edge:   #e8820c;
+
+  --bop-shadow:      0 1px 3px rgba(0,0,0,.10), 0 6px 18px rgba(0,0,0,.06);
+}
+
+/* Motion is opt-out, not opt-in. */
+@media (prefers-reduced-motion: reduce) {
+  .bop-embed *, .bop-embed *::before, .bop-embed *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}

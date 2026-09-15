@@ -176,7 +176,9 @@ def build(name):
     meta = json.load(open(os.path.join(cdir, 'component.json')))
     src = os.path.join(cdir, 'src')
     html = open(os.path.join(src, 'component.html'), encoding='utf-8').read()
-    css  = open(os.path.join(src, 'component.css'),  encoding='utf-8').read()
+    # Shared tokens lead every component's stylesheet so nothing inherits by accident.
+    tokens = open(os.path.join(ROOT, 'components', '_shared', 'tokens.css'), encoding='utf-8').read()
+    css  = tokens + '\n' + open(os.path.join(src, 'component.css'), encoding='utf-8').read()
     js   = open(os.path.join(src, 'component.js'),   encoding='utf-8').read()
 
     body = '\n'.join('  ' + l if l.strip() else l for l in js.splitlines())

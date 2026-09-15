@@ -1,5 +1,7 @@
 /* ---- Collapsible summary styles ---- */
-    .calc-accordion {                                                                                                                                    
+    .calc-accordion {
+      container-type: inline-size;
+      container-name: bopcalc;                                                                                                                                    
       border: none;
       margin: 0 0 12px 0;                                                                                                                                
     }                                                       
@@ -11,7 +13,7 @@
       align-items: center;
       gap: 12px;                                                                                                                                         
       padding: 12px 14px;
-      background: #ff6700;                                                                                                                               
+      background: var(--bop-orange);                                                                                                                               
       color: #fff;                                          
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,.25);                                                                                                              
@@ -39,18 +41,18 @@
       margin-left: 6px;                                     
     }                                                                                                                                                    
     .calc-accordion[open] .summary-caret { transform: rotate(45deg); }
-    .calc-summary:hover { background: #e55d00; }                                                                                                         
+    .calc-summary:hover { background: var(--bop-orange-hover); }                                                                                                         
     .calc-summary:focus-visible {                                                                                                                        
-      outline: 2px solid #0a58ca;                                                                                                                        
+      outline: 2px solid var(--bop-focus);                                                                                                                        
       outline-offset: 2px;                                                                                                                               
     }                                                                                                                                                    
                                                             
     .calculator-container {                                                                                                                              
-      font-family: Arial, sans-serif;
+      font-family: var(--bop-font-body);
       max-width: 1100px;                                                                                                                                 
       margin: auto;                                         
       padding: 15px;
-      background: #E9CEB0;
+      background: var(--bop-panel);
       border-radius: 10px;                                                                                                                               
       box-shadow: 0 0 15px rgba(0,0,0,0.3);
       margin-top: 12px;                                                                                                                                  
@@ -58,7 +60,7 @@
                                                                                                                                                          
     .calculator-container h2 {                              
       text-align: center;
-      color: #333;                                                                                                                                       
+      color: var(--bop-text);                                                                                                                                       
       font-size: 30px;
       margin-bottom: 15px;                                                                                                                               
     }                                                       
@@ -92,7 +94,7 @@
     .calculator-container h3 {                                                                                                                           
       text-align: center;
       font-size: 28px;                                                                                                                                   
-      color: #333;                                          
+      color: var(--bop-text);                                          
       margin-bottom: 10px;
     }
 
@@ -107,7 +109,7 @@
     .calculator .output-section {                                                                                                                        
       background: #fff;                                     
       padding: 15px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--bop-line);
       border-radius: 8px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.3);                                                                                                             
     }
@@ -122,7 +124,7 @@
     .calculator input {                                                                                                                                  
       padding: 10px;
       margin-top: 8px;                                                                                                                                   
-      border: 1px solid #ddd;                               
+      border: 1px solid var(--bop-line);                               
       border-radius: 6px;
       font-size: 24px;                                                                                                                                   
       text-align: center;
@@ -142,17 +144,47 @@
       transition: background-color 0.3s;
       color: #fff;                                                                                                                                       
     }                                                       
-    .calculator .button-section button:first-child { background: #dc3545; }                                                                              
-    .calculator .button-section button:first-child:hover { background: #c82333; }
-    .calculator .button-section button:last-child { background: #28a745; }                                                                               
-    .calculator .button-section button:last-child:hover { background: #218838; }
+    /* Was Bootstrap red/green (#dc3545 / #28a745) - stock colours that appear
+       nowhere else on bopaero.com, sitting at the exact point of interaction.
+       Now the site's own language: a filled orange pill for the primary action,
+       a quiet outlined pill for the destructive one. */
+    .calculator .button-section button {
+      font-family: var(--bop-font-body);
+      font-weight: 600;
+      border-radius: var(--bop-radius-pill);
+      padding: 12px 26px;
+      transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+    .calculator .button-section button:last-child {           /* Calculate */
+      background: var(--bop-orange);
+      color: var(--bop-orange-ink);
+      border: 2px solid var(--bop-orange);
+    }
+    .calculator .button-section button:last-child:hover {
+      background: var(--bop-orange-hover);
+      border-color: var(--bop-orange-hover);
+    }
+    .calculator .button-section button:first-child {          /* Clear */
+      background: transparent;
+      color: var(--bop-text-muted);
+      border: 2px solid var(--bop-line);
+    }
+    .calculator .button-section button:first-child:hover {
+      background: var(--bop-orange-soft);
+      color: var(--bop-ink);
+      border-color: var(--bop-orange);
+    }
+    .calculator .button-section button:focus-visible {
+      outline: 2px solid var(--bop-focus);
+      outline-offset: 2px;
+    }
                                                                                                                                                          
     .calculator .output-item {                                                                                                                           
       display: flex;
       justify-content: space-between;                                                                                                                    
       align-items: baseline;                                
       padding: 8px 0;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--bop-line);
       color: #555;
     }
     .calculator .output-item.share-hours span {
@@ -174,18 +206,27 @@
       padding: 12px;
       font-size: 12px;
       font-style: italic;
-      color: #333;
+      color: var(--bop-text);
     }
 
     /* The prose is injected as innerHTML from addendumHtml, so its <p> children
        can pick the inherited colour back up; pin them too. */
-    .calculator .addendum p { color: #333; }                                                                                                                                                    
+    .calculator .addendum p { color: var(--bop-text); }                                                                                                                                                    
    
-    .calculator span { font-size: 16px; }                                                                                                                
+    .calculator span { font-size: 16px; }
+
+    /* The site sets headings in Archivo Black with tight negative tracking. */
+    .calculator h2, .calculator h3, .calculator .calc-heading {
+      font-family: var(--bop-font-head);
+      letter-spacing: var(--bop-head-ls);
+    }                                                                                                                
                                                             
     .second-image-mobile { display: none; }
 
-    @media (max-width: 900px) {
+    /* Container query, not a media query. These are embeds: the block can sit in a
+       narrow column on a wide screen, where @media (max-width:900px) never fires and
+       the two-column grid would be crushed. @container measures the component. */
+    @container bopcalc (max-width: 900px) {
       .calculator-grid { grid-template-columns: 1fr; }
       .image-panel .second-image-desktop { display: none; }                                                                                              
       .second-image-mobile {
@@ -219,7 +260,7 @@
   font-size: 13px;
   line-height: 1.45;
   font-style: italic;
-  color: #6b6b6b;
+  color: var(--bop-text-muted);
 }
 
 /* Shown when requested hours exceed a capped program's per-share limit. */
@@ -228,8 +269,8 @@
   padding: 10px 12px;
   font-size: 13px;
   line-height: 1.45;
-  color: #7a4a00;
-  background: #fff6e5;
-  border-left: 4px solid #e8820c;
+  color: var(--bop-warn-text);
+  background: var(--bop-warn-bg);
+  border-left: 4px solid var(--bop-warn-edge);
   border-radius: 4px;
 }

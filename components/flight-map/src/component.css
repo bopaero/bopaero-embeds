@@ -1,9 +1,13 @@
 [id^="us-flight-map"] { width:100%; height:560px; background:transparent; }
 
-  :root{
-    --accent:#FF6700;
-    --fill:rgba(255,103,0,0.14);
-    --border:#fff;
+  /* Derive from the shared tokens rather than restating the brand orange. A brand
+     tweak in _shared/tokens.css now reaches the map too, instead of leaving it on a
+     stale hex. Declared on .bop-embed, not :root, so the embed cannot leak variables
+     into the host Squarespace page. */
+  .bop-embed{
+    --accent: var(--bop-orange);
+    --fill:   color-mix(in srgb, var(--bop-orange) 14%, transparent);
+    --border: #fff;   /* white coastlines are deliberate: the map sits on navy */
   }
 
   /* --- Prevent label pile-ups --- */
