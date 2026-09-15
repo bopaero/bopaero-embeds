@@ -66,7 +66,7 @@ def main():
     print("\n=== drift: captured blocks that changed on the live site ===")
     drift = 0
     for hsh, name in known.items():
-        if reg['components'][name]['mode'] in ('vendor', 'excluded'): continue
+        if reg['components'][name]['mode'] in ('vendor', 'excluded', 'retired', 'legacy'): continue
         if hsh not in live and name not in stubbed:
             print(f"  CHANGED  {name} ({hsh}) no longer matches anything live"); drift += 1
     if not drift: print("  none")

@@ -49,14 +49,15 @@
       ]
     },
     "unnamed-ee28e3d903": {
-      "mode": "legacy",
+      "mode": "retired",
       "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "ee28e3d903",
       "chars": 9641,
       "pages": [
         "sr22t-pilots-v",
         "sr22t-pilots-v-1"
-      ]
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
     },
     "unnamed-fce2f05ba0": {
       "mode": "review",
@@ -212,22 +213,24 @@
       ]
     },
     "unnamed-4881892500": {
-      "mode": "legacy",
+      "mode": "retired",
       "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "4881892500",
       "chars": 20562,
       "pages": [
         "sr22t-pilots-v-1"
-      ]
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
     },
     "unnamed-6462e9631b": {
-      "mode": "legacy",
+      "mode": "retired",
       "description": "Unclassified small snippet On legacy sr22t-pilots-v page(s) being unpublished.",
       "block_hash": "6462e9631b",
       "chars": 19642,
       "pages": [
         "sr22t-pilots-v"
-      ]
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
     },
     "founders-circle": {
       "mode": "paste",
@@ -313,7 +316,7 @@
       ]
     },
     "sf50-calc": {
-      "mode": "live",
+      "mode": "retired",
       "description": "SF50 shared-ownership cost calculator, raw block pasted per page. Pricing lives in const PROGRAM_COST / ANNUAL_PROGRAM_FEE. To be replaced by aircraft-calc (data/aircraft/sf50.json) on loader migration.",
       "block_hash": "a74472485b",
       "chars": 30108,
@@ -321,10 +324,11 @@
         "sf50-fractional-ownership-program-nonpilots",
         "sf50-fractional-ownership-program-nonpilots-business",
         "sf50-fractional-ownership-program-pilots"
-      ]
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
     },
     "sr22t-calc": {
-      "mode": "live",
+      "mode": "retired",
       "description": "SR22T shared-ownership cost calculator, raw block pasted per page. Two live copies differ only by indentation on the ANNUAL_PROGRAM_FEE line - same values. To be replaced by aircraft-calc (data/aircraft/sr22t.json) on loader migration.",
       "block_hashes": [
         "3340ed05e7",
@@ -335,15 +339,53 @@
         "sr22t-fractional-ownership-program-nonpilots-business",
         "sr22t-fractional-ownership-program-nonpilots-personal",
         "sr22t-fractional-ownership-program-pilots"
-      ]
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
     },
     "sr22t-calc-v": {
-      "mode": "legacy",
+      "mode": "retired",
       "description": "SUPERSEDED unit-based 1/8th-share SR22T calculator (PRICE_PER_UNIT 1164.285, FEES_PER_UNIT 386.056, MAX_AVAILABLE_HOURS 1400, 4-5yr longevity). A different ownership structure and price basis from the current flat 1/16th share at $100,956 / 96-hr cap. Raymond confirmed 2026-09-14 these pages are legacy and are being unpublished. Do NOT migrate to aircraft-calc and do NOT 'correct' its numbers - retire the pages.",
       "block_hash": "fe836b05ce",
       "pages": [
         "sr22t-pilots-v",
         "sr22t-pilots-v-1"
+      ],
+      "retired": "2026-09-14: replaced by the loader, or page unpublished. Hashes kept for history."
+    },
+    "aircraft-calc-stub-sf50": {
+      "mode": "live",
+      "description": "The pasted loader stub itself. Watched so that a stray edit in Squarespace - a deleted script tag, a re-pasted raw block, a stray line above the comment - shows up as drift.",
+      "block_hash": "4f6ef19423",
+      "pages": [
+        "sf50-fractional-ownership-program-nonpilots",
+        "sf50-fractional-ownership-program-nonpilots-business",
+        "sf50-fractional-ownership-program-pilots"
+      ]
+    },
+    "aircraft-calc-stub-sr22t": {
+      "mode": "live",
+      "description": "The pasted loader stub itself. Watched so that a stray edit in Squarespace - a deleted script tag, a re-pasted raw block, a stray line above the comment - shows up as drift.",
+      "block_hash": "525fbb4e23",
+      "pages": [
+        "sr22t-fractional-ownership-program-nonpilots-business",
+        "sr22t-fractional-ownership-program-nonpilots-personal",
+        "sr22t-fractional-ownership-program-pilots"
+      ]
+    },
+    "flight-map-stub-sf50": {
+      "mode": "live",
+      "description": "The pasted loader stub itself. Watched so that a stray edit in Squarespace - a deleted script tag, a re-pasted raw block, a stray line above the comment - shows up as drift.",
+      "block_hash": "31bd8e1009",
+      "pages": [
+        "sf50-locations-with-interest"
+      ]
+    },
+    "flight-map-stub-sr22t": {
+      "mode": "live",
+      "description": "The pasted loader stub itself. Watched so that a stray edit in Squarespace - a deleted script tag, a re-pasted raw block, a stray line above the comment - shows up as drift.",
+      "block_hash": "50cd399863",
+      "pages": [
+        "sr22t-locations-with-interest"
       ]
     }
   }
