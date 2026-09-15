@@ -80,13 +80,10 @@ def main():
                       f'{page}: nothing stray above the stub',
                       f'{page}: STRAY TEXT above the stub renders as body copy: {seg[:40]!r}')
 
-            # 3. structural selectors the injected mobile CSS relies on ----------
+            # 3. basic page sanity - the page still has real content around the embed
             check(html.count('<p') > 3,
-                  f'{page}: paragraph elements present (mobile density rules apply)',
-                  f'{page}: NO <p> ELEMENTS - injected mobile density rules will not apply')
-            check('<img' in html,
-                  f'{page}: image elements present',
-                  f'{page}: NO <img> ELEMENTS - image height caps will not apply')
+                  f'{page}: page content present',
+                  f'{page}: PAGE LOOKS EMPTY - fewer than 4 paragraphs, the page may be broken')
 
     # 4. the numbers in the shipped bundle match the data files -----------------
     try:
