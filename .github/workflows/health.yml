@@ -1,0 +1,33 @@
+name: site health
+
+# Raymond is not watching the site day to day, so a failure has to come and find
+# him. A failed scheduled run e-mails the repo owner - that notification is the
+# entire point of this workflow.
+on:
+  schedule:
+    - cron: '17 13 * * *'      # 13:17 UTC daily (~09:17 ET), off the hour to dodge peak
+  push:
+    branches: [main]           # catch a bad deploy straight away
+  workflow_dispatch:           # and allow a manual run
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # On push, Pages may still be building the new bundle. Give it time before
+      # comparing served bytes against the repo, or every deploy reports a false
+      # failure and the alert stops meaning anything.
+      - name: Wait for GitHub Pages to publish
+        if: github.event_name == 'push'
+        run: sleep 180
+
+      - name: Check the live site matches this repo
+        run: python3 tools/health_check.py
