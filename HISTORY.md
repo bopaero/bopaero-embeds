@@ -88,6 +88,19 @@ maps (SF50 no circles + dashed 100°W divider; SR22T 207mi circle on hover).
 
 ---
 
+## Open to-dos
+
+- **Mobile page density is Squarespace-side, not ours.** Measured: images above the
+  calculator total 2,778px (40% of the 7,029px before it) and are `position:absolute`
+  inside wrappers Squarespace sizes, so no CSS we inject can shrink them. Reducing the
+  hero (557px) and the two large images (456px / 432px) in each image block's height
+  setting saves more than every CSS rule combined. Line-height from the bundle was
+  measured at only 253px and judged not worth styling the host page for.
+- **Move the calculator above the two mid sections** — worth 2,892px (3.4 screens),
+  the single biggest lever. Changes the narrative order, so Raymond's call.
+
+---
+
 ## Rollback
 
 ### 1. Bad build, stubs still in place (the usual case)
