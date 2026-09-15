@@ -34,7 +34,13 @@ function initFlightMap(root, spec) {
     return v || fallback || '';
   };
 
-  var map = L.map(mapEl.id, { zoomControl: false, scrollWheelZoom: false, attributionControl: false });
+  /* zoomSnap:0 lets fitBounds use a fractional zoom. At Leaflet's default of 1 the
+     fit is rounded DOWN to a whole level, so the drawn map can be far smaller than
+     its container - the SF50 filled 47% of the width on a phone while the SR22T,
+     whose bounds happened to land near a whole level, filled 94%. The difference
+     was the rounding, not the geography. */
+  var map = L.map(mapEl.id, { zoomControl: false, scrollWheelZoom: false,
+                              attributionControl: false, zoomSnap: 0 });
   L.control.zoom({ position: 'topright' }).addTo(map);
   map.doubleClickZoom.disable();
 
@@ -178,5 +184,24 @@ function initFlightMap(root, spec) {
                             paddingBottomRight: [small ? 12 : 40, small ? 56 : 40] });
   }
   refit();
-  var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(refit, 150); });
+
+  /* Re-fit whenever the CONTAINER changes size, not just the window. The mobile box
+     is sized by aspect-ratio, so its height is not final when Leaflet first measures
+     it - the map fitted to a container mid-layout and then sat small and low inside
+     the settled box, with dead space above. A window resize listener never fired
+     because the window never changed. invalidateSize() makes Leaflet re-measure
+     before re-fitting; without it the stale size is reused and nothing moves. */
+  var t;
+  function resettle() {
+    clearTimeout(t);
+    t = setTimeout(function () { map.invalidateSize({ animate: false }); refit(); }, 120);
+  }
+  window.addEventListener('resize', resettle);
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(resettle).observe(mapEl);
+  }
+  /* Belt and braces for the first paint: fonts and images landing after mount can
+     change the box one more time. */
+  setTimeout(resettle, 400);
+  window.addEventListener('load', resettle);
 }
