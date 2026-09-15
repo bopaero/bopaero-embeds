@@ -18,8 +18,20 @@ function initFlightMap(root, spec) {
 
   var cfg = (spec.map && spec.map.serviceArea) || {};
   var cities = (spec.map && spec.map.cities) || [];
-  var cssVar = function (n) {
-    return getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  /* Read tokens from the COMPONENT's own root, not from :root.
+     REGRESSION 2026-09-15: tokens moved from :root onto .bop-embed during the
+     re-skin, and this still queried document.documentElement - so every lookup
+     returned '' and Leaflet fell back to SVG defaults: black fill, no stroke. The
+     coastlines went invisible on the navy background on BOTH breakpoints, while
+     the dots (styled by CSS class) and the divider (which had a hard-coded
+     fallback) kept drawing, so the map looked half-alive rather than broken.
+     Every call now carries a fallback too: no token lookup should ever be the
+     difference between a drawn map and an invisible one. */
+  var cssVar = function (n, fallback) {
+    var scope = (mapEl.closest && mapEl.closest('.bop-embed')) || mapEl;
+    var v = getComputedStyle(scope).getPropertyValue(n).trim();
+    if (!v) v = getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+    return v || fallback || '';
   };
 
   var map = L.map(mapEl.id, { zoomControl: false, scrollWheelZoom: false, attributionControl: false });
@@ -57,8 +69,8 @@ function initFlightMap(root, spec) {
     if (!useRadius) { if (isTouch) dot.on('click', function () { dot.openTooltip(); }); return; }
 
     var circle = L.circle([city.lat, city.lng], {
-      radius: radiusMeters, color: cssVar('--accent'), weight: 2,
-      fillColor: cssVar('--fill'), fillOpacity: 1, pane: 'pane-circles'
+      radius: radiusMeters, color: cssVar('--accent', '#FF6700'), weight: 2,
+      fillColor: cssVar('--fill', 'rgba(255,103,0,0.14)'), fillOpacity: 1, pane: 'pane-circles'
     });
     var toggle = function (e) {
       if (e && e.originalEvent) { e.originalEvent.preventDefault(); e.originalEvent.stopPropagation(); }
@@ -76,7 +88,7 @@ function initFlightMap(root, spec) {
      at both ends so it reads as a divider, not a feature of the geography. */
   if (cfg.model === 'split' && cfg.dividerLongitude != null) {
     L.polyline([[15, cfg.dividerLongitude], [60, cfg.dividerLongitude]], {
-      color: cssVar('--accent') || '#e8820c',
+      color: cssVar('--accent', '#FF6700'),
       weight: 2, opacity: 0.85, dashArray: '8 8', pane: 'pane-circles', interactive: false
     }).addTo(map);
   }
@@ -87,7 +99,7 @@ function initFlightMap(root, spec) {
       .then(function (topo) {
         L.geoJSON(topojson.feature(topo, topo.objects[kind]), {
           pane: 'pane-' + kind,
-          style: { color: cssVar('--border'), weight: kind === 'nation' ? 1.6 : 1,
+          style: { color: cssVar('--border', '#fff'), weight: kind === 'nation' ? 1.6 : 1,
                    opacity: kind === 'nation' ? 0.9 : 0.8, fillOpacity: 0 }
         }).addTo(map);
       })

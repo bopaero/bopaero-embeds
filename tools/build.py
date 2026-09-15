@@ -8,7 +8,7 @@ into the mount element, then runs the component JS. Editing src and re-running
 this updates EVERY page that embeds the component, which is the whole point —
 the Squarespace blocks hold only a stub and never need touching again.
 """
-import json, os, sys, datetime, hashlib
+import json, os, re, sys, datetime, hashlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -171,6 +171,26 @@ DATA_STUB = """<!-- bop Aero embed: {name} ({aircraft})
 """
 
 
+def lint_css_var_fallbacks(name, js):
+    """Fail the build if a cssVar() lookup has no fallback.
+
+    A token lookup that returns '' hands Leaflet an empty colour and it falls back
+    to SVG defaults - black fill, no stroke - which is invisible on the navy
+    background. That shipped once: tokens moved from :root to .bop-embed during the
+    re-skin and every lookup silently returned ''. The map still drew its dots and
+    divider, so it looked half-alive rather than broken, and no DOM check caught it
+    because the paths were all present and 'visible'. A fallback makes the failure
+    cosmetic instead of invisible.
+    """
+    bad = re.findall(r"cssVar\(\s*'(--[a-z-]+)'\s*\)", js)
+    if bad:
+        raise SystemExit(
+            f"  BUILD FAILED {name}: cssVar() called without a fallback for "
+            f"{', '.join(sorted(set(bad)))}.\n"
+            f"  A missing token would render the map invisible. Pass a literal fallback."
+        )
+
+
 def build(name):
     cdir = os.path.join(ROOT, 'components', name)
     meta = json.load(open(os.path.join(cdir, 'component.json')))
@@ -180,6 +200,7 @@ def build(name):
     tokens = open(os.path.join(ROOT, 'components', '_shared', 'tokens.css'), encoding='utf-8').read()
     css  = tokens + '\n' + open(os.path.join(src, 'component.css'), encoding='utf-8').read()
     js   = open(os.path.join(src, 'component.js'),   encoding='utf-8').read()
+    lint_css_var_fallbacks(name, js)
 
     body = '\n'.join('  ' + l if l.strip() else l for l in js.splitlines())
 
