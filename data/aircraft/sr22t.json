@@ -81,5 +81,6 @@
       "dotLabel": "Owner / interest location"
     }
   },
-  "sharesRemaining": 14
+  "sharesRemaining": 14,
+  "hoursPlaceholder": "e.g., 90 hrs."
 }

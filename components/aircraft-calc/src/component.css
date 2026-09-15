@@ -135,6 +135,26 @@
       gap: 10px;
       justify-content: center;                                                                                                                           
     }
+    /* The share selector must read as a sibling of the number inputs, not as a
+       raw OS control dropped into a branded panel. */
+    .calculator select#share-count {
+      width: 100%;
+      padding: 10px;
+      font-size: 24px;
+      text-align: center;
+      font-family: var(--bop-font-body);
+      color: var(--bop-ink);
+      background: var(--bop-card);
+      border: 1px solid var(--bop-line);
+      border-radius: var(--bop-radius);
+      appearance: none;
+      cursor: pointer;
+    }
+    .calculator select#share-count:focus-visible {
+      outline: 2px solid var(--bop-focus);
+      outline-offset: 2px;
+    }
+
     .calculator .button-section button {                                                                                                                 
       padding: 10px 20px;                                   
       border: none;

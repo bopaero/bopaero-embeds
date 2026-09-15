@@ -101,7 +101,8 @@
 },
 "_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
 },
-"sharesRemaining": 8
+"sharesRemaining": 8,
+"hoursPlaceholder": "e.g., 175 hrs."
 },
 "sr22t": {
 "id": "sr22t",
@@ -186,7 +187,8 @@
 "dotLabel": "Owner / interest location"
 }
 },
-"sharesRemaining": 14
+"sharesRemaining": 14,
+"hoursPlaceholder": "e.g., 90 hrs."
 }
 };
 

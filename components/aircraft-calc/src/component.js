@@ -78,15 +78,55 @@ function initCalculator(root, spec) {
     });
   }
 
+  /* Hours placeholder comes from the data file. It used to be hard-coded at
+     "e.g., 175 hrs." on BOTH aircraft - on the SR22T that suggested a figure
+     nearly double the 96-hour per-share limit, reading as an invitation to
+     exceed the entitlement the calculator then warns about. */
+  var hoursInput = q('#hours-per-year');
+  if (hoursInput && spec.hoursPlaceholder) hoursInput.placeholder = spec.hoursPlaceholder;
+
+  /* Share selector. Capped at what is actually for sale - offering 16 when 14
+     remain would quote a position that cannot be bought. */
+  var sharesEl = q('#share-count');
+  var maxSelectable = (typeof spec.sharesRemaining === 'number' ? spec.sharesRemaining
+                      : (typeof spec.availableShares === 'number' ? spec.availableShares : 1));
+  if (sharesEl) {
+    for (var si = 1; si <= maxSelectable; si++) {
+      var op = document.createElement('option');
+      op.value = si;
+      op.textContent = si === 1 ? '1 share' : si + ' shares';
+      sharesEl.appendChild(op);
+    }
+    sharesEl.value = '1';
+  }
+  function shareCount() {
+    var n = sharesEl ? parseInt(sharesEl.value, 10) : 1;
+    return (!n || n < 1) ? 1 : n;
+  }
+
   var noteEl = q('#input-note');
   if (noteEl && spec.inputNote) { noteEl.innerText = fill(spec.inputNote); noteEl.hidden = false; }
 
   var addendumEl = root.querySelector('.addendum');
   if (addendumEl && spec.addendumHtml) addendumEl.innerHTML = fill(spec.addendumHtml);
 
-  q('#share-position').innerText     = spec.sharePositionLabel;
-  q('#program-cost').innerText       = '$' + money0(spec.programCost);
-  q('#annual-program-fee').innerText = '$' + money0(spec.annualProgramFee);
+  /* Every share-dependent figure is rendered here, from one place. Leaving the
+     static rows at one share while the per-hour figure reflected several would
+     put two different quantities of aircraft on screen at once - the same class
+     of inconsistency as the capped per-hour cost. */
+  function renderShareFigures() {
+    var n = shareCount();
+    q('#share-position').innerText =
+      n === 1 ? spec.sharePositionLabel
+              : spec.sharePositionLabel.replace(/\(per share\)/i, '(' + n + ' shares)');
+    q('#program-cost').innerText       = '$' + money0(spec.programCost * n);
+    q('#annual-program-fee').innerText = '$' + money0(spec.annualProgramFee * n);
+    var hoursRow = q('#share-hours');
+    if (hoursRow && spec.usage && spec.usage.model === 'capped') {
+      hoursRow.innerText = 'Up to ' + (spec.usage.maxHours * n) + ' hours';
+    }
+  }
+  renderShareFigures();
 
   var fuelCostEl = q('#fuel-cost');
   var fuelNoteEl = q('#fuel-note');
@@ -110,7 +150,7 @@ function initCalculator(root, spec) {
       spec.usage.schedulingHours + ' flight hours or ' +
       spec.usage.schedulingDays + ' days at one time';
   } else if (model === 'capped') {
-    q('#share-hours').innerText = 'Up to ' + spec.usage.maxHours + ' hours';
+    renderShareFigures();   /* scales the entitlement row with the selection */
   } else {
     console.warn('[bopaero:aircraft-calc] unknown usage model:', model);
   }
@@ -147,20 +187,30 @@ function initCalculator(root, spec) {
      and because the figure falls as hours rise, the error flatters the wrong
      way. Warn rather than block: needing a second share is a conversation,
      not an input error. */
-  function overCap(hoursPerYear) {
+  /* Entitlement scales with shares: N shares carry N x maxHours per year. This is
+     the same arithmetic the warning already asserted ("2 shares would be required
+     at this usage level"), now that the buyer can actually select those shares. */
+  function entitlement() {
     var cap = spec.usage && spec.usage.model === 'capped' ? spec.usage.maxHours : null;
-    return cap && hoursPerYear > cap ? cap : null;
+    return cap ? cap * shareCount() : null;
+  }
+  function overCap(hoursPerYear) {
+    var allowed = entitlement();
+    return allowed && hoursPerYear > allowed ? allowed : null;
   }
 
   function checkUsageCap(hoursPerYear) {
     if (!warnEl) return;
     var cap = spec.usage && spec.usage.model === 'capped' ? spec.usage.maxHours : null;
-    if (cap && hoursPerYear > cap) {
-      var shares = Math.ceil(hoursPerYear / cap);
+    var allowed = entitlement();
+    if (allowed && hoursPerYear > allowed) {
+      var have = shareCount();
+      var need = Math.ceil(hoursPerYear / cap);
       warnEl.innerText =
-        hoursPerYear + ' hours per year exceeds the ' + cap +
-        '-hour annual limit for a single share. ' + shares +
-        ' shares would be required at this usage level — contact us to discuss.';
+        hoursPerYear + ' hours per year exceeds the ' + allowed + '-hour annual limit for ' +
+        (have === 1 ? 'a single share' : have + ' shares') + '. ' + need +
+        (need === 1 ? ' share' : ' shares') + ' would be required at this usage level — ' +
+        'contact us to discuss.';
       warnEl.hidden = false;
     } else {
       warnEl.hidden = true;
@@ -208,7 +258,11 @@ function initCalculator(root, spec) {
       blendedEl.innerText = '-';
       if (blendedRow) blendedRow.hidden = true;
     } else {
-      var total = spec.programCost + spec.annualProgramFee * years;
+      /* ASSUMPTION, flagged to Raymond 2026-09-15: buying N shares costs N x the
+         program cost and N x the annual fee. Linear, and consistent with the cap
+         warning that already told prospects they would need a second share. If the
+         real pricing is not linear this is the one place to change it. */
+      var total = (spec.programCost + spec.annualProgramFee * years) * shareCount();
       blendedEl.innerText = '$' + money0(total / (years * hoursPerYear)) + HR;
       if (blendedRow) blendedRow.hidden = false;
     }
@@ -225,6 +279,13 @@ function initCalculator(root, spec) {
 
   var summaryEl = root.querySelector('summary');
   if (summaryEl) summaryEl.addEventListener('click', function () { root.dataset.userToggled = '1'; });
+
+  if (sharesEl) sharesEl.addEventListener('change', function () {
+    renderShareFigures();
+    /* Only recompute if the visitor has already produced a result; otherwise a
+       stale per-hour figure would appear from an empty form. */
+    if (yearsEl.value && hoursEl.value) calculate();
+  });
 
   q('#calculate-cost').addEventListener('click', calculate);
   q('#clear-calculator').addEventListener('click', clearData);
