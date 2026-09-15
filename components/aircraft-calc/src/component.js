@@ -290,6 +290,96 @@ function initCalculator(root, spec) {
     yearsEl.focus();
   }
 
+  /* ── in-page jump CTA ──────────────────────────────────────────────────
+     Delivered by the bundle rather than a Squarespace edit: the loader is already
+     on every one of these pages, so this ships to all six with one push and
+     reverts with one revert. Measured on a phone, the calculator sits ~7 screens
+     down behind 6.3 screens of copy; a visitor who has decided had no way to
+     reach it except scrolling.
+
+     Defensive by design - it touches host-page DOM, so every step is guarded and
+     any failure leaves the page exactly as it was. */
+  function mountJumpCta() {
+    try {
+      if (!('IntersectionObserver' in window)) return;   // no observer, no CTA
+      if (document.querySelector('.bop-jump')) return;    // one per page
+      if (!document.body) return;
+
+      root.id = root.id || 'bop-calculator';
+
+      var cta = document.createElement('button');
+      cta.type = 'button';
+      cta.className = 'bop-embed bop-jump';
+      cta.setAttribute('data-show', '0');
+      cta.textContent = (spec.jumpLabel || 'See your cost') + ' \u2193';
+      document.body.appendChild(cta);
+
+      cta.addEventListener('click', function () {
+        var reduce = window.matchMedia &&
+                     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        root.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        /* Land the caret in the first field: tapping the CTA is intent to use the
+           calculator, not just to look at it. Deferred so focus does not fight the
+           smooth scroll. */
+        setTimeout(function () { try { yearsEl.focus({ preventScroll: true }); } catch (e) {} }, 700);
+      });
+
+      /* Show only once the calculator is off screen AND the visitor has actually
+         started reading - otherwise it covers the hero the moment the page loads.
+
+         Both conditions are observed, not listened for. The first version keyed
+         "has scrolled" off a window scroll event and never appeared: in some
+         embedded contexts that event simply does not fire, so the CTA silently
+         never showed. A sentinel parked below the fold answers the same question
+         from layout rather than from an event, and costs no scroll handler. */
+      var calcVisible = false, scrolledEnough = false;
+      function sync() {
+        cta.setAttribute('data-show', (!calcVisible && scrolledEnough) ? '1' : '0');
+      }
+
+      var sentinel = document.createElement('div');
+      sentinel.setAttribute('aria-hidden', 'true');
+      sentinel.style.cssText =
+        'position:absolute;top:75vh;left:0;width:1px;height:1px;opacity:0;pointer-events:none';
+      document.body.appendChild(sentinel);
+
+      new IntersectionObserver(function (entries) {
+        calcVisible = entries[0].isIntersecting;
+        sync();
+      }, { threshold: 0 }).observe(root);
+
+      var ioReported = false;
+      new IntersectionObserver(function (entries) {
+        ioReported = true;
+        scrolledEnough = !entries[0].isIntersecting;   /* scrolled past the fold */
+        sync();
+      }, { threshold: 0 }).observe(sentinel);
+
+      /* Fallback. IntersectionObserver is throttled or suspended in some contexts
+         (a background tab, some embedded webviews) and then never delivers even its
+         guaranteed first callback - the CTA would simply never appear. If nothing has
+         been reported shortly after mount, drive the same two flags from geometry on
+         scroll instead. Only one path is ever active, and both write through sync(),
+         so they cannot disagree. */
+      setTimeout(function () {
+        if (ioReported) return;
+        var tick = function () {
+          var r = root.getBoundingClientRect();
+          calcVisible = r.bottom > 0 && r.top < window.innerHeight;
+          scrolledEnough = (window.scrollY || document.documentElement.scrollTop || 0)
+                           > window.innerHeight * 0.75;
+          sync();
+        };
+        window.addEventListener('scroll', tick, { passive: true });
+        window.addEventListener('resize', tick);
+        tick();
+      }, 1500);
+    } catch (e) {
+      console.warn('[bopaero:aircraft-calc] jump CTA skipped:', e.message);
+    }
+  }
+  mountJumpCta();
+
   var summaryEl = root.querySelector('summary');
   if (summaryEl) summaryEl.addEventListener('click', function () { root.dataset.userToggled = '1'; });
 

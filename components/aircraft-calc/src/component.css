@@ -135,6 +135,48 @@
       gap: 10px;
       justify-content: center;                                                                                                                           
     }
+/* ── in-page jump CTA ───────────────────────────────────────────────────────
+   Page-level UI injected by the bundle, so it needs no Squarespace work at all.
+   On a phone the calculator sits ~7 screens down behind 6.3 screens of content;
+   a decided visitor had no way to reach it but scrolling. This floats a single
+   tap straight to it and gets out of the way once the calculator is on screen.
+
+   Bottom-LEFT with the right side kept clear: the site runs a chat bubble in the
+   bottom-right corner. It does not render inside an iframe so it could not be
+   measured directly - the gap is reserved rather than assumed away.
+
+   Viewport media query, not a container query, ON PURPOSE: this is fixed to the
+   viewport and has no containing block to measure. */
+.bop-jump {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 8000;                      /* above content, below the chat widget */
+  max-width: calc(100vw - 104px);     /* never slides under the chat bubble */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border: none;
+  border-radius: var(--bop-radius-pill);
+  background: var(--bop-orange);
+  color: var(--bop-orange-ink);
+  font-family: var(--bop-font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,.28);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.bop-jump[data-show="1"] { opacity: 1; transform: none; pointer-events: auto; }
+.bop-jump:hover  { background: var(--bop-orange-hover); }
+.bop-jump:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (min-width: 901px) { .bop-jump { display: none; } }
+
     /* The share selector must read as a sibling of the number inputs, not as a
        raw OS control dropped into a branded panel. */
     .calculator select#share-count {

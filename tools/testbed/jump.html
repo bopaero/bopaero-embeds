@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>jump CTA harness</title>
+<!-- Scroll harness for the in-page jump CTA. NOTE: IntersectionObserver and scroll
+     events are throttled when the tab is not foregrounded, so the CTA's show/hide
+     cannot be verified through automation - open this by hand and scroll. The
+     component carries a geometry fallback for exactly that class of context. -->
+<style>body{margin:0;font:16px system-ui}
+.filler{height:2400px;background:linear-gradient(#123,#456);color:#fff;padding:20px}</style>
+<div class="filler">content above the calculator (simulates ~6 screens)</div>
+<div data-embed="aircraft-calc" data-aircraft="sf50"></div>
+<div class="filler">content below</div>
+<script>document.write('<scr'+'ipt src="/docs/aircraft-calc.js?nocache='+Date.now()+'" defer></scr'+'ipt>');</script>
