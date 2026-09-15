@@ -57,7 +57,13 @@
 
   /* ===== Mobile tweaks ===== */
   @media (max-width: 640px){
-    [id^="us-flight-map"]{ height:420px; }
+    /* The contiguous US is a WIDE, SHORT shape. A 420px-tall box on a ~343px-wide
+       phone is portrait, so Leaflet fits the bounds on width and then fills the
+       leftover vertical space with Canada and Alaska - the US ends up a small strip
+       and the map reads as broken. Height now tracks the shape of the thing being
+       drawn: the bounds are about 58 degrees wide by 25 tall, so ~0.62 of the width
+       plus room for the legend. */
+    [id^="us-flight-map"]{ height:auto; aspect-ratio: 1 / 0.78; min-height:280px; max-height:420px; }
     .leaflet-tooltip.city-label{ font-size:14px; padding:5px 8px; }
     .ba-legend{ font-size:14px; padding:8px 10px; }
     .ba-legend .ba-note{ font-size:11px; }

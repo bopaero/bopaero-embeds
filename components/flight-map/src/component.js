@@ -93,11 +93,48 @@ function initFlightMap(root, spec) {
     }).addTo(map);
   }
 
+  /* Raymond 2026-09-15: show the CONTIGUOUS US only - no Alaska, Hawaii or
+     territories. Filtering the geometry rather than framing them out of shot means
+     they cannot reappear at any zoom or container shape, which is what went wrong
+     on a phone: the bounds were right, but a portrait box zoomed out far enough to
+     bring Alaska into view and left the contiguous states a thin strip.
+     FIPS excluded: 02 AK, 15 HI, 60 American Samoa, 66 Guam, 69 N. Mariana Is.,
+     72 Puerto Rico, 78 US Virgin Islands. The nation outline is one multipolygon
+     covering all of it, so drop its rings by position instead of by id. */
+  var OFFSHORE_FIPS = { '02': 1, '15': 1, '60': 1, '66': 1, '69': 1, '72': 1, '78': 1 };
+  var CONUS = { west: -125.5, east: -66.0, south: 23.5, north: 49.8 };
+
+  function ringIsContiguous(ring) {
+    for (var i = 0; i < ring.length; i++) {
+      var lng = ring[i][0], lat = ring[i][1];
+      if (lng >= CONUS.west && lng <= CONUS.east && lat >= CONUS.south && lat <= CONUS.north) return true;
+    }
+    return false;
+  }
+
+  function contiguousOnly(fc) {
+    var out = [];
+    (fc.features || []).forEach(function (f) {
+      if (f.id != null && OFFSHORE_FIPS[String(f.id).padStart(2, '0')]) return;
+      var g = f.geometry;
+      if (g && g.type === 'MultiPolygon') {
+        var kept = g.coordinates.filter(function (poly) { return ringIsContiguous(poly[0]); });
+        if (!kept.length) return;
+        f = { type: 'Feature', id: f.id, properties: f.properties,
+              geometry: { type: 'MultiPolygon', coordinates: kept } };
+      } else if (g && g.type === 'Polygon') {
+        if (!ringIsContiguous(g.coordinates[0])) return;
+      }
+      out.push(f);
+    });
+    return { type: 'FeatureCollection', features: out };
+  }
+
   ['nation', 'states'].forEach(function (kind) {
     fetch('https://unpkg.com/us-atlas@3/' + kind + '-10m.json')
       .then(function (r) { return r.json(); })
       .then(function (topo) {
-        L.geoJSON(topojson.feature(topo, topo.objects[kind]), {
+        L.geoJSON(contiguousOnly(topojson.feature(topo, topo.objects[kind])), {
           pane: 'pane-' + kind,
           style: { color: cssVar('--border', '#fff'), weight: kind === 'nation' ? 1.6 : 1,
                    opacity: kind === 'nation' ? 0.9 : 0.8, fillOpacity: 0 }
@@ -132,8 +169,13 @@ function initFlightMap(root, spec) {
   function refit() {
     var small = window.matchMedia('(max-width: 640px)').matches;
     var size = map.getSize();
-    map.fitBounds(bounds, { paddingTopLeft: [small ? Math.round(Math.min(220, size.x * 0.26)) : 40, 20],
-                            paddingBottomRight: [40, 40] });
+    /* The left inset keeps the westernmost cities clear of the legend. On a phone
+       26% of the width was reserving ~89px of a 343px map, which forced the zoom
+       down far enough to bring Alaska into frame. Cap it in proportion to how much
+       room there actually is. */
+    var insetLeft = small ? Math.round(Math.min(48, size.x * 0.06)) : 40;
+    map.fitBounds(bounds, { paddingTopLeft: [insetLeft, small ? 12 : 20],
+                            paddingBottomRight: [small ? 12 : 40, small ? 56 : 40] });
   }
   refit();
   var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(refit, 150); });
