@@ -358,7 +358,11 @@
       if (DEBUG) console.log('[bop:telemetry] FLUSH', JSON.stringify(payload));
       if (!ENDPOINT) return;                    // nothing configured: collect, never send
       try {
-        var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        /* text/plain, NOT application/json. A non-safelisted content type forces a
+           CORS preflight, and sendBeacon cannot perform one - the browser drops the
+           request with no error anywhere. It reported "sent" client-side and nothing
+           ever arrived. The body is still JSON; the Worker parses it regardless. */
+        var blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
         if (!navigator.sendBeacon || !navigator.sendBeacon(ENDPOINT, blob)) {
           fetch(ENDPOINT, { method: 'POST', body: blob, keepalive: true, mode: 'no-cors' });
         }
