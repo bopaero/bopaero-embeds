@@ -42,11 +42,15 @@ def main():
             served = fetch(CDN + name + '.js')
         except Exception as e:
             fails.append(f'{name}.js: NOT SERVING over HTTPS ({e})'); continue
+        same_size = len(served) == len(local)
         check(served == local,
               f'{name}.js: served bundle matches the repo build',
               f'{name}.js: SERVED BUNDLE DIFFERS from the repo build '
-              f'(served {len(served)}B vs local {len(local)}B) - a push may have failed '
-              f'or someone deployed out of band')
+              + (f'(same size, {len(served)}B, but different content - likely a stale '
+                 f'CDN copy; retry, and check the Pages build finished)'
+                 if same_size else
+                 f'(served {len(served)}B vs local {len(local)}B - a push may have failed '
+                 f'or someone deployed out of band)'))
 
     # 2. every page still carries its stub, and only its stub -------------------
     for name, c in comps.items():
