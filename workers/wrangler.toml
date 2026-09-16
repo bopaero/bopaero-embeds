@@ -1,0 +1,23 @@
+# Separate from the TripCalc worker on purpose: different data, different
+# lifecycle, and a fault in one should not take out the other.
+name = "bopaero-telemetry"
+main = "telemetry.js"
+compatibility_date = "2026-01-01"
+
+# Created with:
+#   npx wrangler d1 create bopaero-telemetry
+# then paste the returned database_id below and apply the schema:
+#   npx wrangler d1 execute bopaero-telemetry --remote --file=./schema.sql
+[[d1_databases]]
+binding = "DB"
+database_name = "bopaero-telemetry"
+database_id = "PASTE_AFTER_CREATE"
+
+# Nightly retention sweep (90 days).
+[triggers]
+crons = ["23 4 * * *"]
+
+# REPORT_TOKEN gates /report. Set it as a secret, never in this file:
+#   npx wrangler secret put REPORT_TOKEN
+# NOTE: piping is required - `wrangler secret put` reports success on an empty
+# value when run non-interactively.
