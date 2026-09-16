@@ -8,6 +8,10 @@ compatibility_date = "2026-01-01"
 #   npx wrangler d1 create bopaero-telemetry
 # then paste the returned database_id below and apply the schema:
 #   npx wrangler d1 execute bopaero-telemetry --remote --file=./schema.sql
+# Preview URLs give every future version its own public address. The beacon
+# endpoint needs workers.dev; unreleased versions do not need to be reachable.
+preview_urls = false
+
 [[d1_databases]]
 binding = "DB"
 database_name = "bopaero-telemetry"

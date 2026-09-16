@@ -286,7 +286,7 @@
   (function () {
     if (window.__bopTelemetry) return;          // one collector per page
 
-    var ENDPOINT = null;                        // set when the Worker is deployed
+    var ENDPOINT = 'https://bopaero-telemetry.compilotrc.workers.dev/collect';
     var DEBUG = /[?&]bopdebug=1/.test(location.search);
     var GRID_X = 20, GRID_Y = 40;               // click bins: coarse on purpose
     var MILESTONES = [25, 50, 75, 100];
