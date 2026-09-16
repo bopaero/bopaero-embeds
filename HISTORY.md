@@ -157,6 +157,22 @@ after the hotfix: the share counts, the cap fix, the image fix and the styling.
 
 ---
 
+## Pending
+
+**Promote `v2026-09-16.1` to stable on or after 2026-09-17** (Raymond, 2026-09-16 — he
+asked for it to sit a day first, because that release contains a regression of mine that
+was live for a while before it was caught).
+
+Gate it, do not promote blind:
+
+    python3 tools/health_check.py            # must pass, 46/46
+    git tag -a stable-v2026-09-16.1 v2026-09-16.1 -m "Promoted after 24h clean"
+    git push origin stable-v2026-09-16.1
+
+If the health check fails, do NOT tag — report what failed instead.
+
+---
+
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
 - **No `?v=` cache buster in stubs** — the stub text must never change, or every page
