@@ -3,3 +3,9 @@ docs/*.map
 audit/pages/
 *.pyc
 __pycache__/
+
+# Never commit credentials - this repo is PUBLIC.
+*.token
+.env
+.dev.vars
+secrets.*

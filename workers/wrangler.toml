@@ -11,7 +11,7 @@ compatibility_date = "2026-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "bopaero-telemetry"
-database_id = "PASTE_AFTER_CREATE"
+database_id = "7c549939-5b38-4165-a3bf-9d1a4699bab1"
 
 # Nightly retention sweep (90 days).
 [triggers]
