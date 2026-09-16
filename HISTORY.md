@@ -104,12 +104,12 @@ Remaining: `/sf50-fractional-ownership-program-nonpilots`,
 `/sr22t-fractional-ownership-program-nonpilots-personal`,
 `/sr22t-fractional-ownership-program-nonpilots-business`.
 
-Original estimate, for reference — worth **3.43 screens** on
-mobile, more than every other density idea combined, and it moves the calculator up on
-desktop too rather than trading one against the other. One drag in the Squarespace
-editor; content unchanged, reversible, nothing to monitor. Sections are identically
-structured on all six calculator pages (hero / intro / mid / requirements / calculator
-/ form, starting at screens 0, 0.7, 3.6, 5.1, 7.0, 11.4).
+For reference: the estimate was 3.43 screens and the measured result was 3.4, so the
+remaining five pages should behave the same way. All six are identically structured
+(hero / intro / mid / requirements / calculator / form, originally starting at screens
+0, 0.7, 3.6, 5.1, 7.0, 11.4). It is one drag per page in the Squarespace editor —
+content unchanged, reversible, nothing to monitor, and it moves the calculator up on
+desktop as well rather than trading one against the other.
 
 ### Closed: mobile image trimming — NOT worth doing, do not revisit
 Raymond, 2026-09-16: Squarespace image and section settings are global, so shrinking an
