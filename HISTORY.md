@@ -90,7 +90,21 @@ maps (SF50 no circles + dashed 100°W divider; SR22T 207mi circle on hover).
 
 ## Open to-dos
 
-**Move the calculator section above sections 3 and 4** — worth **3.43 screens** on
+**Section reorder: DONE on `/sf50-fractional-ownership-program-pilots` (2026-09-16),
+five pages to go.** Measured before/after at 390x844: calculator moved from screen 8.3
+to **4.9**, desktop 3.0. Form unchanged at 11.8, page length unchanged at 13.9 — only
+the order changed. New order: Hero / HOW IT WORKS / **PRICING** / SAFETY / AIRCRAFT
+FEATURES / NEXT STEPS. Sections are labelled by their eyebrow text, which is how to
+identify them in the editor. Note the calculator sits ~1.3 screens below its section
+start because PRICING opens with explanatory copy.
+
+Remaining: `/sf50-fractional-ownership-program-nonpilots`,
+`/sf50-fractional-ownership-program-nonpilots-business`,
+`/sr22t-fractional-ownership-program-pilots`,
+`/sr22t-fractional-ownership-program-nonpilots-personal`,
+`/sr22t-fractional-ownership-program-nonpilots-business`.
+
+Original estimate, for reference — worth **3.43 screens** on
 mobile, more than every other density idea combined, and it moves the calculator up on
 desktop too rather than trading one against the other. One drag in the Squarespace
 editor; content unchanged, reversible, nothing to monitor. Sections are identically
