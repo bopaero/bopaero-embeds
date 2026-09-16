@@ -200,6 +200,28 @@ after the hotfix: the share counts, the cap fix, the image fix and the styling.
 
 ## Pending
 
+### Site copy contradicts the calculator (found 2026-09-16, Squarespace-side)
+
+Audited all 28 live pages. No stale prices anywhere — the hotfix is clean. Three copy
+problems, all in Squarespace page text rather than our embeds:
+
+1. **SF50 × 3 pages — "1/8th ownership equates to 175 hours".** The calculator on the
+   same page now says *9 total shared ownership positions*. A share is 1/9th, not
+   1/8th. The 175-hour figure is confirmed data; it is the derivation that no longer
+   follows. Suggested: "a share equates to 175 hours available for annual scheduling".
+2. **SR22T × 3 pages — "Fifteen (15) shares are available for purchase"** against the
+   calculator's *"15 available for purchase, 14 currently remaining"*. Not false, but
+   "available" carries two senses a few hundred pixels apart. Suggested: "Fifteen (15)
+   shares are offered" and let the calculator carry the live remaining count.
+3. **`/referral-program-pilot-information` — "All aircraft in our managed fleet are
+   broken into eight (8) ownership shares."** Wrong for both aircraft: SF50 is 9,
+   SR22T is 16. A fleet-wide claim that matches neither.
+
+Also: `sitemap.xml` still lists `/travel-model-test` (404) and both `/sr22t-pilots-v*`
+(301). Stale rather than harmful; Squarespace should drop them on its next crawl.
+
+
+
 **Promote `v2026-09-16.1` to stable on or after 2026-09-17** (Raymond, 2026-09-16 — he
 asked for it to sit a day first, because that release contains a regression of mine that
 was live for a while before it was caught).
