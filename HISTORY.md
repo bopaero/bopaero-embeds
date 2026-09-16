@@ -6,6 +6,47 @@ carrying the stub updates within ~10 minutes. No pasting.
 
 ---
 
+## Unreleased — inherited trackers removed, in-house telemetry
+
+### Third-party trackers
+Raymond asked for scroll/click heatmaps. The audit found **Hotjar already running**
+(site `6514913`), installed by a former administrator into an account he does not
+control. Hotjar records session replays and these pages carry contact forms, so
+visitor-entered text may have been captured with no way to audit or delete it.
+**HubSpot** (`242952665`) was also present, loading but dormant. Both lived in
+Squarespace Code Injection, not in any block this repo manages; both removed and
+verified gone at runtime across all eight pages (0 requests, `window.hj` undefined,
+external scripts 39 → 33-35). GA4 `G-WRQ5HZ3LSW` and Meta Pixel `1440364841153214`
+are Raymond's own and stay; LeadConnector (forms + chat bubble) untouched.
+
+### Telemetry, built rather than bought
+`components/_shared/telemetry.js` + `workers/`. **Aggregate only: no row anywhere
+represents a single visit.** Beacons are folded into counters on arrival and the
+payload discarded — no cookies, no session id, no form values, no replay. That keeps
+it inside the "usage data / network activity" the existing privacy notice already
+covers, so nothing needed redrafting.
+
+Collects scroll milestones, click position binned to a 20×40 grid, the named control
+clicked, and calculator milestones (opened, calculation run, share count changed, jump
+CTA). Worker at `bopaero-telemetry.compilotrc.workers.dev`, D1 `bopaero-telemetry`,
+90-day retention swept nightly, `/report` token-gated. Report format agreed as an
+artifact before any of it was deployed.
+
+### Traps worth remembering
+- **Beacons must be `text/plain`, never `application/json`.** A non-safelisted
+  Content-Type forces a CORS preflight `sendBeacon` cannot perform, so the browser
+  discards the request — no console error, no failed request in the network panel, and
+  `sendBeacon` still returns true. The first live beacon reported success and nothing
+  arrived. Only querying the database caught it.
+- **Scroll depth needs a timer as well as scroll events.** Events are throttled or
+  suppressed in background tabs, webviews and automation; depth recorded nothing at all
+  until a 1s sampler was added.
+- The `/collect` endpoint is public, so `clean()` is the security boundary and is
+  tested against hostile input, not the happy path — including an event named
+  `DROP TABLE metrics` that must never become a stored value.
+
+---
+
 ## v2026-09-15.2 — design system, share selector, in-page CTA
 
 ### Design
