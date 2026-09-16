@@ -7,16 +7,13 @@ The output is a self-mounting script: it injects the CSS once, renders the HTML
 into the mount element, then runs the component JS. Editing src and re-running
 this updates EVERY page that embeds the component, which is the whole point —
 the Squarespace blocks hold only a stub and never need touching again.
-"""
-"""Build the embed bundles from components/ into docs/.
 
 BUILDS ARE BYTE-REPRODUCIBLE ON PURPOSE. The header used to carry the build DATE,
-which meant the same source produced different bytes on a different day - so
-tools/health_check.py, which compares the served bundle against the repo build
-byte for byte, reported a failure after any rebuild that changed nothing. An
-alert that cries wolf gets ignored, and this one is the only thing watching the
-live site. Version identity comes from the content hash printed at build time,
-which is what actually identifies a build.
+so the same source produced different bytes on a different day, and
+tools/health_check.py - which compares the served bundle against the repo build
+byte for byte - reported a failure after any rebuild that changed nothing. An
+alert that cries wolf gets ignored, and it is the only thing watching the live
+site. Version identity comes from the content hash printed at build time.
 """
 import json, os, re, sys, hashlib
 
@@ -211,6 +208,12 @@ def build(name):
     css  = tokens + '\n' + open(os.path.join(src, 'component.css'), encoding='utf-8').read()
     js   = open(os.path.join(src, 'component.js'),   encoding='utf-8').read()
     lint_css_var_fallbacks(name, js)
+
+    # The collector leads every component's JS. It guards itself so it runs once
+    # per page even when several embeds are present.
+    telemetry = open(os.path.join(ROOT, 'components', '_shared', 'telemetry.js'),
+                     encoding='utf-8').read()
+    js = telemetry + '\n' + js
 
     body = '\n'.join('  ' + l if l.strip() else l for l in js.splitlines())
 

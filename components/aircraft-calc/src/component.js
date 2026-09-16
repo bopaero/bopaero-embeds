@@ -236,6 +236,13 @@ function initCalculator(root, spec) {
      re-triggering guarantees the fetch.
      MUST run at init as well as on toggle: the accordion now ships open, so the
      toggle event never fires on load and the images would never wake. */
+  /* Milestones, not behaviour tracking: each is a yes/no about whether the
+     pricing tool was used, which is the question the reorder was meant to move. */
+  function track(name, data) {
+    try { if (window.__bopTelemetry) window.__bopTelemetry.event(name, data); } catch (e) {}
+  }
+  track('calc_present', { aircraft: spec.id });
+
   function wakeImages(scope) {
     scope.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
       img.loading = 'eager';
@@ -249,7 +256,10 @@ function initCalculator(root, spec) {
     wakeImages(this);
     /* Only pull the page to the calculator when the USER opened it. Doing this on
        an accordion that ships open would yank the page on load. */
-    if (this.dataset.userToggled) this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (this.dataset.userToggled) {
+      track('calc_opened', { aircraft: spec.id });
+      this.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   });
 
   function calculate() {
@@ -280,6 +290,8 @@ function initCalculator(root, spec) {
       if (blendedRow) blendedRow.hidden = false;
     }
     checkUsageCap(hoursPerYear);
+    track('calc_run', { aircraft: spec.id, years: years, hours: hoursPerYear,
+                        shares: shareCount(), overCap: !!cap });
   }
 
   function clearData() {
@@ -317,6 +329,7 @@ function initCalculator(root, spec) {
       cta.addEventListener('click', function () {
         var reduce = window.matchMedia &&
                      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        track('jump_cta', { aircraft: spec.id });
         root.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
         /* Land the caret in the first field: tapping the CTA is intent to use the
            calculator, not just to look at it. Deferred so focus does not fight the
@@ -384,6 +397,7 @@ function initCalculator(root, spec) {
   if (summaryEl) summaryEl.addEventListener('click', function () { root.dataset.userToggled = '1'; });
 
   if (sharesEl) sharesEl.addEventListener('change', function () {
+    track('shares_changed', { aircraft: spec.id, shares: shareCount() });
     renderShareFigures();
     /* Only recompute if the visitor has already produced a result; otherwise a
        stale per-hour figure would appear from an empty form. */

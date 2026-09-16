@@ -1,0 +1,9 @@
+<!doctype html><meta charset="utf-8"><title>telemetry harness</title>
+<!-- Proves the collector's data shape with NOTHING deployed: ENDPOINT is null,
+     so events are gathered and can be dumped but never leave the page.
+     Open with ?bopdebug=1 to log each event as it happens. -->
+<style>body{margin:0;font:14px system-ui}.pad{height:1800px;background:linear-gradient(#123,#456)}</style>
+<div class="pad" style="color:#fff;padding:16px">scroll area above the calculator</div>
+<div data-embed="aircraft-calc" data-aircraft="sf50"></div>
+<div class="pad"></div>
+<script>document.write('<scr'+'ipt src="/docs/aircraft-calc.js?nc='+Date.now()+'" defer></scr'+'ipt>');</script>
