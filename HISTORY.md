@@ -90,14 +90,26 @@ maps (SF50 no circles + dashed 100°W divider; SR22T 207mi circle on hover).
 
 ## Open to-dos
 
-- **Mobile page density is Squarespace-side, not ours.** Measured: images above the
-  calculator total 2,778px (40% of the 7,029px before it) and are `position:absolute`
-  inside wrappers Squarespace sizes, so no CSS we inject can shrink them. Reducing the
-  hero (557px) and the two large images (456px / 432px) in each image block's height
-  setting saves more than every CSS rule combined. Line-height from the bundle was
-  measured at only 253px and judged not worth styling the host page for.
-- **Move the calculator above the two mid sections** — worth 2,892px (3.4 screens),
-  the single biggest lever. Changes the narrative order, so Raymond's call.
+**Move the calculator section above sections 3 and 4** — worth **3.43 screens** on
+mobile, more than every other density idea combined, and it moves the calculator up on
+desktop too rather than trading one against the other. One drag in the Squarespace
+editor; content unchanged, reversible, nothing to monitor. Sections are identically
+structured on all six calculator pages (hero / intro / mid / requirements / calculator
+/ form, starting at screens 0, 0.7, 3.6, 5.1, 7.0, 11.4).
+
+### Closed: mobile image trimming — NOT worth doing, do not revisit
+Raymond, 2026-09-16: Squarespace image and section settings are global, so shrinking an
+image for mobile also shrinks it on desktop. Doing it mobile-only from CSS is worse:
+the three stacked images in section 4 are placed by Squarespace's fluid engine through
+per-block rules keyed to GENERATED ids (`.fe-block-ea4e8f1eaf20cf105620 { grid-area:
+19/2/30/10 }`) which change whenever the section is edited — the override would break
+silently on exactly the edit that caused it.
+
+Measured, for the record: image heights above the calculator total 2,778px (40% of the
+7,029px). Section heights come from per-section inline padding and background-image
+sections, NOT from anything blanket CSS can reach — three separate attempts to trim
+from the bundle each made the page LONGER. Line-height from the bundle saves only
+253px and was judged not worth styling the host page for.
 
 ---
 
