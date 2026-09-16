@@ -90,26 +90,23 @@ maps (SF50 no circles + dashed 100°W divider; SR22T 207mi circle on hover).
 
 ## Open to-dos
 
-**Section reorder: DONE on `/sf50-fractional-ownership-program-pilots` (2026-09-16),
-five pages to go.** Measured before/after at 390x844: calculator moved from screen 8.3
-to **4.9**, desktop 3.0. Form unchanged at 11.8, page length unchanged at 13.9 — only
-the order changed. New order: Hero / HOW IT WORKS / **PRICING** / SAFETY / AIRCRAFT
-FEATURES / NEXT STEPS. Sections are labelled by their eyebrow text, which is how to
-identify them in the editor. Note the calculator sits ~1.3 screens below its section
-start because PRICING opens with explanatory copy.
+### Closed: section reorder — DONE on all six pages (2026-09-16)
+PRICING moved above SAFETY everywhere. Final order on all six:
+Hero / HOW IT WORKS / **PRICING** / SAFETY / AIRCRAFT FEATURES / NEXT STEPS.
 
-Remaining: `/sf50-fractional-ownership-program-nonpilots`,
-`/sf50-fractional-ownership-program-nonpilots-business`,
-`/sr22t-fractional-ownership-program-pilots`,
-`/sr22t-fractional-ownership-program-nonpilots-personal`,
-`/sr22t-fractional-ownership-program-nonpilots-business`.
+Measured after, calculator position:
 
-For reference: the estimate was 3.43 screens and the measured result was 3.4, so the
-remaining five pages should behave the same way. All six are identically structured
-(hero / intro / mid / requirements / calculator / form, originally starting at screens
-0, 0.7, 3.6, 5.1, 7.0, 11.4). It is one drag per page in the Squarespace editor —
-content unchanged, reversible, nothing to monitor, and it moves the calculator up on
-desktop as well rather than trading one against the other.
+| page | mobile (390x844) | desktop (1280x900) |
+|---|---|---|
+| sf50-pilots | 4.9 | 2.8 |
+| sf50-nonpilots | 4.5 | 2.9 |
+| sf50-nonpilots-business | 5.1 | 2.8 |
+| sr22t-pilots | 5.2 | 3.1 |
+| sr22t-nonpilots-personal | 4.3 | 3.0 |
+| sr22t-nonpilots-business | 5.3 | 3.5 |
+
+Was 8.3 screens on mobile. Form position and page length unchanged — only the order.
+Calculators verified working after the move on every page, both widths.
 
 ### Closed: mobile image trimming — NOT worth doing, do not revisit
 Raymond, 2026-09-16: Squarespace image and section settings are global, so shrinking an
