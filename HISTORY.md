@@ -200,41 +200,33 @@ after the hotfix: the share counts, the cap fix, the image fix and the styling.
 
 ## Pending
 
-### Site copy contradicts the calculator (found 2026-09-16, Squarespace-side)
+### Closed: site copy audit (2026-09-16) — all three fixed and verified
 
-Audited all 28 live pages. No stale prices anywhere — the hotfix is clean. Three copy
-problems, all in Squarespace page text rather than our embeds:
+Audited all 28 live pages. **No stale prices anywhere** — the hotfix is clean. Three
+contradictions found in Squarespace page copy (not our embeds), all now corrected:
 
-1. **SF50 × 3 pages — "1/8th ownership equates to 175 hours".** The calculator on the
-   same page now says *9 total shared ownership positions*. A share is 1/9th, not
-   1/8th. The 175-hour figure is confirmed data; it is the derivation that no longer
-   follows. Suggested: "a share equates to 175 hours available for annual scheduling".
-2. **SR22T × 3 pages — "Fifteen (15) shares are available for purchase"** against the
-   calculator's *"15 available for purchase, 14 currently remaining"*. Not false, but
-   "available" carries two senses a few hundred pixels apart. Suggested: "Fifteen (15)
-   shares are offered" and let the calculator carry the live remaining count.
-3. **`/referral-program-pilot-information` — "All aircraft in our managed fleet are
-   broken into eight (8) ownership shares."** Wrong for both aircraft: SF50 is 9,
-   SR22T is 16. A fleet-wide claim that matches neither.
+1. **SF50 × 3 — "1/8th ownership"** against a calculator saying 9 total positions.
+   Now "a single share equates to 175 hours available for annual scheduling" — the
+   fraction dropped rather than corrected to 1/9th, so it cannot break again if the
+   position count changes.
+2. **SR22T × 3 — "Fifteen (15) shares are available for purchase"** collided with the
+   calculator's "15 available for purchase, 14 currently remaining". Now "Fifteen (15)
+   of the sixteen (16) positions are offered for sale" — "available" now belongs only
+   to the calculator, which tracks the live count.
+3. **`/referral-program-pilot-information` — "broken into eight (8) ownership shares"**,
+   true of neither aircraft. Now "divided into multiple ownership shares", carrying no
+   number at all: this page is about recruiting pilots, and every duplicated figure is
+   one that can drift.
 
-Also: `sitemap.xml` still lists `/travel-model-test` (404) and both `/sr22t-pilots-v*`
-(301). Stale rather than harmful; Squarespace should drop them on its next crawl.
+**Watch for over-deletion when replacing Squarespace copy — it happened twice here.**
+The SF50 edit also removed "You may purchase as many positions…", the only prose
+inviting multi-share purchase, days after the share selector shipped to serve exactly
+that buyer; restored on all six as "You may purchase more than one position, up to the
+number offered at the time of purchase". The referral edit removed four sentences of
+the pitch, leaving the section a non-sequitur; restored. Squarespace shows no diff, so
+compare before and after.
 
-
-
-**Promote `v2026-09-16.1` to stable on or after 2026-09-17** (Raymond, 2026-09-16 — he
-asked for it to sit a day first, because that release contains a regression of mine that
-was live for a while before it was caught).
-
-Gate it, do not promote blind:
-
-    python3 tools/health_check.py            # must pass, 46/46
-    git tag -a stable-v2026-09-16.1 v2026-09-16.1 -m "Promoted after 24h clean"
-    git push origin stable-v2026-09-16.1
-
-If the health check fails, do NOT tag — report what failed instead.
-
----
+Final copy verified on all seven pages.
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
