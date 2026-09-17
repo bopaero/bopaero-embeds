@@ -200,6 +200,36 @@ after the hotfix: the share counts, the cap fix, the image fix and the styling.
 
 ## Pending
 
+### Deduplicate the shared half of the program pages — WAIT FOR TELEMETRY FIRST
+
+Raymond asked (2026-09-17) whether the three audience variants per aircraft
+(pilot / non-pilot / business) should be consolidated into one. **Recommendation:
+keep all three.** Measured overlap:
+
+| | sentences per page | shared by all three | overlap |
+|---|---|---|---|
+| SF50  | 32 / 35 / 36 | 15 | ~47% |
+| SR22T | 35 / 38 / 36 | 18 | ~51% |
+
+About half of each page is genuinely unique and makes a different argument: pilots get
+ownership structures, experience requirements and the flight deck; non-pilots get the
+"private aviation for the general public" case and cabin comfort; business gets
+productivity 4:1, "time is money" and the 3,000-airports comparison. Three buyers,
+three objections. Separate pages also serve Meta Ads targeting and three distinct
+search intents better than one self-select page.
+
+**The real problem is that the shared half is copy-pasted, not shared** — the 2026-09-16
+copy audit needed the same sentence edited on six pages, twice over. Fix: move the
+shared sections (HOW IT WORKS, the pricing intro, SAFETY) into the loader as embeds, so
+they are edited once in this repo and live everywhere, exactly as the calculators are.
+
+**Deliberately deferred**: telemetry started collecting 2026-09-16. Give it a week — if
+one variant converts far better, that changes what the structure should be, and it
+would be a waste to restructure the week before the data lands. Revisit alongside the
+first real weekly report.
+
+
+
 ### Closed: site copy audit (2026-09-16) — all three fixed and verified
 
 Audited all 28 live pages. **No stale prices anywhere** — the hotfix is clean. Three
