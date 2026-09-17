@@ -193,6 +193,11 @@ code block and the page is self-contained again, no dependency on `embeds.bopaer
 so restoring one does not reintroduce the understated figures. It does lose everything
 after the hotfix: the share counts, the cap fix, the image fix and the styling.
 
+### Tagging note
+Annotated tags must point at the **commit**, not at another tag:
+`git tag -a stable-x v2026-09-16.1^{}` — without `^{}` you get a nested tag, and
+`git show <tag>:<path>` then returns nothing, which silently breaks rollback path 2.
+
 ### 3. Verify whatever you did
     python3 tools/audit_site.py          # drift vs baseline; --refresh to re-baseline
 
