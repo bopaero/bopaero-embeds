@@ -10,6 +10,15 @@ on:
     branches: [main]           # catch a bad deploy straight away
   workflow_dispatch:           # and allow a manual run
 
+# Only the newest push matters. Without this, two pushes inside the 3-minute Pages
+# wait guarantee a false failure on the earlier one: the CDN always holds the latest
+# deploy, so the older run compares it against a commit that is no longer live. That
+# happened on 2026-09-16 (226406e failed, 5820069 two minutes later passed) and sent
+# an alert about a site that was fine. A monitor that cries wolf gets ignored.
+concurrency:
+  group: site-health
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
