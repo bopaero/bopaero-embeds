@@ -54,6 +54,18 @@ function initNews(root, items, opts) {
     return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
+  /* The page heading ships with the component so /news has no Squarespace title to
+     keep in sync. data-heading="Latest news" retitles it; data-heading="" drops it,
+     which is what a teaser mount under its own section header wants. */
+  var headingAttr = root.getAttribute('data-heading');
+  var headingText = headingAttr === null ? 'News' : headingAttr;
+  if (headingText) {
+    var h = document.createElement('h2');
+    h.className = 'news-heading';
+    h.textContent = headingText;
+    listEl.parentNode.insertBefore(h, listEl);
+  }
+
   var posts = items.filter(function (p) {
     return !opts.tag || String(p.tag || '').toLowerCase() === opts.tag.toLowerCase();
   });

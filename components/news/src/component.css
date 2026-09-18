@@ -57,3 +57,14 @@
   .news-item.has-image { grid-template-columns: 1fr; }
   .news-title { font-size: 19px; }
 }
+
+.news-heading {
+  font-family: var(--bop-font-head);
+  font-size: 30px;
+  line-height: 1.15;
+  margin: 0 0 18px;
+  color: var(--bop-text);
+}
+@container bopnews (max-width: 520px) {
+  .news-heading { font-size: 24px; }
+}
