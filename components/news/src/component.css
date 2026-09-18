@@ -1,0 +1,59 @@
+/* ---- News list ------------------------------------------------------------
+   Sits on the navy news section, so it inherits the same surface tokens the
+   calculator uses - one palette, one place to change it. */
+.news-root { font-family: var(--bop-font-body); color: var(--bop-text);
+  /* The page block runs the full content width, but a 1400px line of body copy is
+     unreadable. Cap the measure and centre it; narrower mounts are unaffected. */
+  max-width: 860px; margin-inline: auto; }
+
+.news-list { display: flex; flex-direction: column; gap: 14px; }
+
+.news-item {
+  background: var(--bop-surface);
+  border-radius: var(--bop-radius);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.news-item.has-image { grid-template-columns: 220px 1fr; align-items: start; }
+
+.news-item img {
+  width: 100%; height: auto; display: block;
+  border-radius: 6px; background: rgba(255,255,255,.06);
+}
+
+.news-meta {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--bop-text-muted);
+}
+.news-tag {
+  border: 1px solid var(--bop-line); border-radius: var(--bop-radius-pill);
+  padding: 2px 10px; letter-spacing: .06em;
+}
+.news-title {
+  font-family: var(--bop-font-head); letter-spacing: var(--bop-head-ls);
+  font-size: 21px; line-height: 1.25; margin: 0; color: var(--bop-text);
+}
+.news-body { margin: 0; font-size: 15px; line-height: 1.55; color: var(--bop-text); }
+.news-body p { margin: 0 0 10px; }
+.news-body p:last-child { margin-bottom: 0; }
+.news-body a, .news-more { color: var(--bop-orange); }
+
+.news-more {
+  display: inline-block; margin-top: 4px; font-weight: 600;
+  text-decoration: none; border-bottom: 1px solid currentColor;
+}
+.news-more:hover { color: var(--bop-orange-hover); }
+.news-item :focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.news-empty { color: var(--bop-text-muted); font-style: italic; }
+
+/* Container query, not a viewport one: the list can sit in a narrow column on a
+   wide page (a teaser beside other content), where a media query never fires. */
+.news-root { container-type: inline-size; container-name: bopnews; }
+@container bopnews (max-width: 560px) {
+  .news-item.has-image { grid-template-columns: 1fr; }
+  .news-title { font-size: 19px; }
+}

@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><title>news component</title>
+<style>body{margin:0;font:14px system-ui;background:#003767}
+body>h3{margin:0;padding:10px 16px;font:600 13px system-ui;background:#111;color:#fff}
+.sec{padding:20px}
+.narrow{max-width:420px}</style>
+<h3>full list (as /news would render it)</h3>
+<div class="sec"><div data-embed="news"></div></div>
+<h3>teaser: data-limit="2", in a narrow column</h3>
+<div class="sec narrow"><div data-embed="news" data-limit="2"></div></div>
+<script>document.write('<scr'+'ipt src="/docs/news.js?nc='+Date.now()+'" defer></scr'+'ipt>');</script>

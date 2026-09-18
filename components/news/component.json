@@ -1,0 +1,7 @@
+{
+  "collection": true,
+  "dataDir": "data/news",
+  "entry": "initNews",
+  "description": "Company news. One JSON file per post in data/news/. Renders newest first; data-limit and data-tag let the same posts appear as a teaser elsewhere.",
+  "pages": ["news"]
+}
