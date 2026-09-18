@@ -31,6 +31,9 @@ QUERIES = [
     '"bop Aero"',
     '"BOP AERO SERVICES"',
     '"bop Aero" (site:prnewswire.com OR site:businesswire.com OR site:globenewswire.com OR site:accesswire.com)',
+    # Partner coverage, but only where we are actually named - both phrases are
+    # required, so Elite's own news does not arrive here unless it concerns us.
+    '"Elite Aircraft Services" "bop Aero"',
 ]
 # Must return results. If it does not, the pipeline is broken, not the news quiet.
 CONTROL_QUERY = '"Cirrus Aircraft"'
