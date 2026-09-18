@@ -31,6 +31,16 @@
       font-weight: 500;
       opacity: .85;                                                                                                                                      
     }
+
+    /* The label says what a tap DOES, not what the thing is. It is generated from
+       the [open] attribute the browser itself maintains, rather than set by script
+       on a toggle event: there is no handler to miss, it is already correct on
+       first paint - which matters because this accordion ships open - and the word
+       can never disagree with the actual state. aria-hidden because <summary>
+       already exposes expanded/collapsed to assistive tech; without it a screen
+       reader would hear the state twice, once as "Close" and once as "expanded". */
+    .summary-hint::after { content: 'Open'; }
+    .calc-accordion[open] .summary-hint::after { content: 'Close'; }
     .summary-caret {                                                                                                                                     
       width: 10px;                                          
       height: 10px;
