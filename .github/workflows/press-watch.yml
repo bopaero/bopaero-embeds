@@ -1,0 +1,42 @@
+name: press watch
+
+# Looks for press that mentions bop Aero and opens an issue for Raymond to review.
+# Nothing is published here - see press-publish.yml for what the `publish` label does.
+on:
+  schedule:
+    - cron: '43 14 * * *'      # 14:43 UTC daily (~10:43 ET), clear of the health run
+  workflow_dispatch:
+
+concurrency:
+  group: press-watch
+  cancel-in-progress: false    # unlike health, a skipped run means a missed mention
+
+permissions:
+  contents: write              # to commit data/press-seen.json
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure labels exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create press-watch --color 0E4D8C --description "Press mention found by the watcher" || true
+          gh label create publish --color FF6700 --description "Approved: add this to bopaero.com/news" || true
+      - name: Look for mentions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/press_watch.py
+      - name: Record what has been seen
+        run: |
+          if ! git diff --quiet -- data/press-seen.json; then
+            git config user.name  "press-watch"
+            git config user.email "raymond@bopaero.com"
+            git add data/press-seen.json
+            git commit -m "press watch: record reviewed mentions"
+            git pull --rebase
+            git push
+          fi

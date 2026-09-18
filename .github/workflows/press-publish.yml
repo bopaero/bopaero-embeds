@@ -1,0 +1,42 @@
+name: press publish
+
+# The approval half: adding the `publish` label to a press-watch issue turns its
+# post block into data/news/<date>-<slug>.json, rebuilds, and pushes. The build's
+# own lint has the last word, so a bad field fails here instead of on the live site.
+on:
+  issues:
+    types: [labeled]
+
+concurrency:
+  group: press-publish         # serialised: two approvals must not race the same push
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    if: github.event.label.name == 'publish'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the post
+        id: post
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/press_publish.py ${{ github.event.issue.number }}
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name  "press-publish"
+          git config user.email "raymond@bopaero.com"
+          git add data/news docs/news.js snippets/news.html
+          git commit -m "news: ${{ steps.post.outputs.title }}
+
+          Published from issue #${{ github.event.issue.number }} after review."
+          git pull --rebase
+          git push
+          gh issue close ${{ github.event.issue.number }} --comment \
+            "Published. It is live at https://bopaero.com/news#${{ steps.post.outputs.slug }} once the CDN cache turns over (up to 10 minutes)."
