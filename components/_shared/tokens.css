@@ -27,7 +27,12 @@
      of the page rather than a tan island in it. The card surface is only one step
      lighter on purpose - enough to separate, not enough to stripe. */
   --bop-panel:         #003767;   /* was #E9CEB0 tan */
-  --bop-surface:       #0A4478;   /* cards sitting on the panel */
+  /* Cards carry ALL the structure now. Raymond made the PRICING section the same
+     navy as the panel, so the panel's frame and shadow no longer separate anything
+     and #0A4478 was doing that job at 1.21:1 - which would vanish on a phone in
+     daylight. #0E4D8C is 1.41:1 against the panel: still one family, but each block
+     reads as its own surface. White stays 8.54:1 on it, muted 5.55:1, both AA. */
+  --bop-surface:       #0E4D8C;   /* cards sitting on the panel */
   --bop-card:          #fff;      /* INPUT fields stay white: legible, and obviously editable */
   --bop-line:          rgba(255,255,255,.18);
 
