@@ -6,6 +6,102 @@ carrying the stub updates within ~10 minutes. No pasting.
 
 ---
 
+## Unreleased — /news, press watcher, scheduled publishing
+
+### /news, run from the repo
+`components/news/` + `data/news/*.json`. First **collection** component: one mount
+renders many data entries. `COLLECTION_TEMPLATE`/`COLLECTION_STUB` in `build.py`,
+newest-first ordering decided at build time so a post cannot be filed out of order by
+hand, and the filename becomes the slug and the deep-link anchor
+(`bopaero.com/news#2026-09-18-...`), which is what gets pasted into an email.
+
+Adding a post = committing one JSON file. Raymond removed the Squarespace page title
+and the heading now ships with the component, so heading and content live in one place.
+
+**Tags are a controlled vocabulary** — `Program, Aircraft, Event, Press, Community`,
+enforced by `lint_news()` at build time. Raymond exports to LeadConnector and
+QuickBooks Online, both tag-aware; free text would hand them "Event"/"event"/"Events"
+as three categories. The lint was tested by breaking it: bad tag, bad date, missing
+title all abort the build.
+
+Post bodies are authored HTML, so `richText()` runs a DOM-based allow-list
+(`p|br|strong|b|em|i|ul|ol|li|a|span`, `on*` handlers and `javascript:` URLs stripped).
+The files are ours, but a component that injects arbitrary HTML into a customer page is
+a habit worth not forming — and a stray unclosed tag now damages one post, not the page.
+
+### Press watcher — `tools/press_watch.py` + two workflows
+Daily. Exact-phrase Google News queries for `"bop Aero"` and `"BOP AERO SERVICES"`,
+wire-scoped variants, plus a co-mention query requiring both `"Elite Aircraft Services"`
+and `"bop Aero"` so a partner's own news does not arrive unless it concerns us. A hit
+opens a `press-watch` issue; adding the **`publish`** label runs `press_publish.py`,
+which writes the post, rebuilds and pushes. Closing the issue does nothing.
+
+**The company has no indexed press coverage** (checked 2026-09-18: exact phrase returns
+0, control phrases return 100). So this watcher is silent by design, which is also what
+a broken watcher looks like. Two guards:
+- a **control query every run** — if a phrase guaranteed to have coverage returns
+  nothing, the job FAILS. A changed feed or query syntax cannot read as "no news".
+- a **Monday heartbeat** comment on one long-lived status issue, so a schedule that
+  stops firing is visible without an issue per day.
+
+Only a summary and a link are ever published from a third-party mention, never the
+release text. Publishing is **refused** while `link:` is a Google News URL — those are
+JS-only redirects that do not resolve server-side, so they must not sit on the live site.
+
+### Traps worth remembering
+- **Loose matches must not open issues.** The partner query's first live run returned
+  a sports-car story naming none of our terms. An issue a day of that teaches the label
+  to be ignored, which costs the real mention its notification. Items whose headline and
+  summary never say "bop aero" are now summarised, not notified — and deliberately NOT
+  recorded as seen, so the same story can still become an issue if our name appears in
+  it later.
+- **Google's `<description>` is usually just the headline again.** Using it as a summary
+  puts the title on the page twice. Drafts now leave it blank with a prompt.
+- **A teaser must not render the full post.** The first homepage mock rendered the
+  entire press release and buried every section below it. `data-limit`/`data-more` now
+  imply excerpt mode: one paragraph, title linking to the post's anchor.
+- **A string match that fails silently is a wasted build.** Two `component.js` patches
+  no-opped because the file uses a literal `→`, not `\u2192`. Only the one with an
+  `assert` reported it. Assert on every scripted replacement.
+
+### Scheduled publishing — `tools/news_schedule.py`
+Built for a release timed against another company's announcement. A post in
+`data/news/_pending/` carries `publishAt` (timezone offset **required** — "1 PM" in
+whose zone?) and is genuinely absent from the bundle, not hidden inside it, so the text
+is not on a public URL before its time. Checked every 5 minutes through the day;
+`workflow_dispatch` with a slug publishes early, deleting the file cancels.
+
+Every pending post is validated on **every** run, so a bad field fails days early
+rather than silently at the moment it was meant to go out. Verified against seven
+cases: five refused, one held, one published.
+
+**Timing is approximate and cannot be made exact.** GitHub cron runs late under load
+and `news.js` is CDN-cached for 10 minutes. Only pre-shipping the text inside the
+bundle would be precise, and that leaks the release. Actual result on the first live
+run: dispatched 13:00:12 EDT, live on the CDN 13:01:15.
+
+### First real post — Elite Aircraft Services, 2026-09-18 13:00 EDT
+bop Aero named Elite Aircraft Services preferred SF50 training provider; timed to
+Elite's own release. Published in full — our own release, unlike a third-party mention.
+GitHub's cron is unreliable at :00, so a precise local trigger fired the publish and the
+cron stood as backstop; a double-fire is harmless (the second finds nothing pending).
+
+The sample placeholder was removed in the same change — "Sample post — replace me" must
+not sit beside a press release when press traffic arrives.
+
+Raised before publication: the About boilerplate describes bop Aero as SF50-only while
+the site carries a full SR22T program, and that paragraph is what journalists copy
+verbatim. **Raymond declined — the Elite agreement is SF50-limited. Released as written.**
+
+### Placement — settled
+Teaser rejected for the home page (it is a video) and for Overview: a press release is
+news to someone who already knows you and an interruption to a first-time visitor.
+Settled instead on discoverability — Raymond put **News** under the **Company** nav
+folder and **Latest News** in the footer (both verified live). Teaser capability is
+built and pushed but **inert**; Members page is the candidate if `/news` shows traffic.
+
+---
+
 ## Unreleased — inherited trackers removed, in-house telemetry
 
 ### Third-party trackers
@@ -130,6 +226,17 @@ maps (SF50 no circles + dashed 100°W divider; SR22T 207mi circle on hover).
 ---
 
 ## Open to-dos
+
+### Open: news follow-ups (2026-09-18)
+- **Members-page teaser** — stub ready, nothing pasted. Decide once `/news` has traffic.
+- **`summary` field for teasers** — a press release's dateline currently becomes the
+  blurb ("FLORENCE, Ky. — September 18, 2026 — ..."). Only matters once a teaser mounts.
+- **Ask Elite to link back** to the post anchor — a co-mention is exactly what the
+  watcher now looks for, and it would be the first live end-to-end test of the
+  issue → `publish` label → post chain on a real mention.
+- **`press-publish.yml` commit/push step is still unexercised.** The refusal path ran
+  for real (issue #1); the success path has only run locally. Approving the first
+  genuine mention through the label will prove it.
 
 ### Closed: section reorder — DONE on all six pages (2026-09-16)
 PRICING moved above SAFETY everywhere. Final order on all six:
