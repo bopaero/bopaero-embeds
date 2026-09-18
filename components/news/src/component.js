@@ -47,6 +47,19 @@ function initNews(root, items, opts) {
     return doc.innerHTML;
   }
 
+  /* A teaser is a pointer. Rendering a full press release on the home page - which
+     is what happened the first time this was built - buries everything below it. */
+  function excerpt(html, max) {
+    var d = document.createElement('div');
+    d.innerHTML = String(html == null ? '' : html);
+    var first = d.querySelector('p') || d;
+    var text = (first.textContent || '').replace(/\s+/g, ' ').trim();
+    if (text.length <= max) return esc(text);
+    var cut = text.slice(0, max);
+    cut = cut.slice(0, Math.max(cut.lastIndexOf(' '), max - 20));
+    return esc(cut.replace(/[\s,;:.\u2014-]+$/, '') + '\u2026');
+  }
+
   function fmtDate(iso) {
     /* Noon, so a timezone offset cannot roll the displayed day backwards. */
     var d = new Date(iso + 'T12:00:00');
@@ -57,6 +70,7 @@ function initNews(root, items, opts) {
   /* The page heading ships with the component so /news has no Squarespace title to
      keep in sync. data-heading="Latest news" retitles it; data-heading="" drops it,
      which is what a teaser mount under its own section header wants. */
+  var more = root.getAttribute('data-more');
   var headingAttr = root.getAttribute('data-heading');
   var headingText = headingAttr === null ? 'News' : headingAttr;
   if (headingText) {
@@ -69,6 +83,9 @@ function initNews(root, items, opts) {
     h.textContent = headingText;
     listEl.parentNode.insertBefore(h, listEl);
   }
+
+  /* Teaser mode: one-paragraph preview, title links through to the full post. */
+  var isTeaser = root.getAttribute('data-excerpt') !== '0' && (opts.limit > 0 || !!more);
 
   var posts = items.filter(function (p) {
     return !opts.tag || String(p.tag || '').toLowerCase() === opts.tag.toLowerCase();
@@ -94,14 +111,31 @@ function initNews(root, items, opts) {
                 esc(fmtDate(p.date)) + '</time>' +
                 (p.tag ? '<span class="news-tag">' + esc(p.tag) + '</span>' : '') +
               '</div>' +
-              '<h3 class="news-title">' + esc(p.title) + '</h3>' +
-              '<div class="news-body">' + richText(p.body) + '</div>' +
-              (p.link ? '<a class="news-more" href="' + esc(p.link) + '">' +
-                        esc(p.linkText || 'Read more') + ' →</a>' : '') +
+              '<h3 class="news-title">' +
+                (isTeaser && more
+                  ? '<a href="' + esc(more) + '#' + esc(p.slug) + '">' + esc(p.title) + '</a>'
+                  : esc(p.title)) +
+              '</h3>' +
+              (isTeaser
+                ? '<p class="news-body">' + excerpt(p.body, 190) + '</p>'
+                : '<div class="news-body">' + richText(p.body) + '</div>') +
+              (!isTeaser && p.link
+                ? '<a class="news-more" href="' + esc(p.link) + '">' +
+                  esc(p.linkText || 'Read more') + ' →</a>' : '') +
             '</div>';
     art.innerHTML = html;
     listEl.appendChild(art);
   });
+
+  /* A teaser mount is a pointer, not the archive: data-more="/news" closes it with
+     a link to the full page. The full page itself passes no data-more. */
+  if (more) {
+    var a = document.createElement('a');
+    a.className = 'news-more-all';
+    a.href = more;
+    a.textContent = 'See all news \u2192';
+    listEl.parentNode.appendChild(a);
+  }
 
   /* Deep link: if the page was opened at #slug, bring that post into view. */
   if (location.hash && window.CSS && CSS.escape) {
