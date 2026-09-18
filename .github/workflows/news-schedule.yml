@@ -1,0 +1,41 @@
+name: news schedule
+
+# Publishes a post held in data/news/_pending/ when its publishAt time arrives.
+# Runs every 5 minutes through the working day: a timed release is usually tied to
+# someone else's announcement, and an hourly check would miss it by up to an hour.
+# With nothing pending the job exits in seconds.
+on:
+  schedule:
+    - cron: '*/5 11-23 * * *'   # 07:00-19:55 ET, 5-minute resolution
+    - cron: '25 2 * * *'        # one overnight pass, so an off-hours time still lands
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Slug to publish immediately, ignoring its publishAt'
+        required: false
+
+concurrency:
+  group: news-schedule
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the queue
+        id: sched
+        run: |
+          python3 tools/news_schedule.py ${{ inputs.force && format('--force {0}', inputs.force) || '' }}
+      - name: Publish
+        if: steps.sched.outputs.published != ''
+        run: |
+          git config user.name  "news-schedule"
+          git config user.email "raymond@bopaero.com"
+          git add data/news docs/news.js
+          git commit -m "news: publish ${{ steps.sched.outputs.published }} (scheduled)"
+          git pull --rebase
+          git push
