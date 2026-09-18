@@ -107,7 +107,7 @@
     .calculator .input-section,                                                                                                                          
     .calculator .button-section,
     .calculator .output-section {                                                                                                                        
-      background: #fff;                                     
+      background: var(--bop-surface);                                     
       padding: 15px;
       border: 1px solid var(--bop-line);
       border-radius: 8px;
@@ -119,10 +119,14 @@
       flex-direction: column;                                                                                                                            
       font-size: 18px;                                      
       font-weight: bold;
-      color: #555;
+      color: var(--bop-label);
     }
     .calculator input {                                                                                                                                  
       padding: 10px;
+      /* Fields stay WHITE on the navy card. A navy field on a navy card reads as
+         decoration; a white one reads as somewhere to type. 13.9:1 for the value. */
+      background: var(--bop-card);
+      color: var(--bop-ink);
       margin-top: 8px;                                                                                                                                   
       border: 1px solid var(--bop-line);                               
       border-radius: 6px;
@@ -277,10 +281,20 @@
    
     .calculator span { font-size: 16px; }
 
+    /* ...but NOT a span inside the footnote. `.calculator span { font-size:16px }`
+       is meant for the output rows; the share-count phrase added on 2026-09-15 is a
+       span inside 12px footnote prose, so it rendered a third larger than the
+       sentence around it. Inherit there instead. */
+    .calculator .addendum span { font-size: inherit; font-style: inherit; }
+
     /* The site sets headings in Archivo Black with tight negative tracking. */
     .calculator h2, .calculator h3, .calculator .calc-heading {
       font-family: var(--bop-font-head);
       letter-spacing: var(--bop-head-ls);
+      /* Headings inherited Squarespace's dark ink, which vanished on navy. Every
+         piece of text in here now names its own colour - inheriting from the host
+         page is exactly what produced the orange footnote and usage note earlier. */
+      color: var(--bop-text);
     }                                                                                                                
                                                             
     .second-image-mobile { display: none; }
@@ -336,3 +350,8 @@
   border-left: 4px solid var(--bop-warn-edge);
   border-radius: 4px;
 }
+
+/* Output table and the share-position heading sit on the navy card. */
+.calculator #share-position,
+.calculator .output-item,
+.calculator .output-item span { color: var(--bop-text); }

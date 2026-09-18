@@ -22,13 +22,22 @@
   --bop-ink:           #282D30;
 
   /* surfaces --------------------------------------------------------------- */
-  --bop-panel:         #E9CEB0;   /* the established embed panel - kept for continuity */
-  --bop-card:          #fff;
-  --bop-line:          #e3e3e3;
+  /* Raymond 2026-09-18: the calculator now wears the same navy the narrative
+     sections use (measured #003767 on the live pages), so the embed reads as part
+     of the page rather than a tan island in it. The card surface is only one step
+     lighter on purpose - enough to separate, not enough to stripe. */
+  --bop-panel:         #003767;   /* was #E9CEB0 tan */
+  --bop-surface:       #0A4478;   /* cards sitting on the panel */
+  --bop-card:          #fff;      /* INPUT fields stay white: legible, and obviously editable */
+  --bop-line:          rgba(255,255,255,.18);
 
   /* text ------------------------------------------------------------------- */
-  --bop-text:          #333;
-  --bop-text-muted:    #6b6b6b;
+  /* Contrast measured against the surface, not guessed: white 9.95:1, muted
+     6.46:1. Orange is 3.41:1 there, which is large-text only - so it is used for
+     buttons and marks, never for body copy. */
+  --bop-text:          #FFFFFF;
+  --bop-text-muted:    #C3D2E2;
+  --bop-label:         #DCE6F1;
 
   /* type ------------------------------------------------------------------- */
   --bop-font-head: "Archivo Black", "Arial Black", system-ui, sans-serif;
