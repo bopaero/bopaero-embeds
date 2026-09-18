@@ -66,8 +66,11 @@ def fetch(query):
 
 def mentions_us(item):
     """Google's quoted search is not always strict, so confirm the phrase ourselves.
-    An item that fails this is still reported - a real release could word the name
-    differently in the headline - but it is flagged so Raymond knows to look twice."""
+    An item that fails this does NOT open an issue: on 2026-09-18 the partner query
+    returned a sports-car story that names none of our terms, and an issue per day
+    of that teaches Raymond to ignore the label. Unconfirmed items are listed in the
+    run summary and counted in the weekly heartbeat instead, so they are visible
+    without being a notification."""
     hay = re.sub(r'[^a-z ]+', ' ', (item['title'] + ' ' + item['desc']).lower())
     hay = re.sub(r'\s+', ' ', hay)
     return 'bop aero' in hay
@@ -113,7 +116,7 @@ def iso_date(pub):
     return datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
 
-def issue_body(item, confirmed):
+def issue_body(item, confirmed=True):
     date = iso_date(item['pub'])
     title = re.sub(r'\s+-\s+[^-]+$', '', item['title']).strip()   # drop " - Publisher"
 
@@ -192,15 +195,22 @@ def main():
     fresh = [(k, it) for k, it in items if k not in seen]
     today = datetime.now(timezone.utc).strftime('%Y-%m-%d')
 
+    opened, unconfirmed = [], []
     print('control: %d items | matches: %d | new: %d' % (len(control), len(items), len(fresh)))
     for k, it in fresh:
-        confirmed = mentions_us(it)
-        print('  NEW%s %s' % ('' if confirmed else ' (unconfirmed)', it['title'][:90]))
+        if not mentions_us(it):
+            # Not recorded as seen: if the same story later turns up with our name in
+            # the summary, it should still be able to become an issue.
+            unconfirmed.append(it)
+            print('  skip (name not present) %s' % it['title'][:85])
+            continue
+        opened.append(it)
+        print('  NEW %s' % it['title'][:90])
         if not dry:
             gh('issue', 'create',
                '--title', 'Press mention: ' + it['title'][:200],
                '--label', 'press-watch',
-               '--body', issue_body(it, confirmed))
+               '--body', issue_body(it, True))
         seen[k] = today
 
     if not dry:
@@ -210,14 +220,21 @@ def main():
             n = ensure_status_issue()
             gh('issue', 'comment', n, '--body',
                'Ran %s. Control query returned %d items, so the feed is healthy. '
-               'Matches for bop Aero: %d (%d new).'
-               % (today, len(control), len(items), len(fresh)))
+               'Matches for bop Aero: %d, of which %d opened an issue. '
+               'Skipped as loose matches (our name nowhere in the headline or '
+               'summary): %d.'
+               % (today, len(control), len(items), len(opened), len(unconfirmed)))
 
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a') as f:
             f.write('### Press watch %s\n\n- control: %d items (healthy)\n- matches: %d\n'
-                    '- new issues opened: %d\n' % (today, len(control), len(items), len(fresh)))
+                    '- issues opened: %d\n' % (today, len(control), len(items), len(opened)))
+            if unconfirmed:
+                f.write('\nSkipped as loose matches - our name appears nowhere in the '
+                        'headline or summary:\n\n')
+                for it in unconfirmed:
+                    f.write('- %s (%s)\n' % (it['title'], it['source'] or '?'))
 
 
 if __name__ == '__main__':
