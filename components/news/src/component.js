@@ -60,7 +60,11 @@ function initNews(root, items, opts) {
   var headingAttr = root.getAttribute('data-heading');
   var headingText = headingAttr === null ? 'News' : headingAttr;
   if (headingText) {
-    var h = document.createElement('h2');
+    /* h1 by default: with the Squarespace page title removed, this IS the page's
+       top-level heading, and /news would otherwise have none. A teaser mount sits
+       inside a page that already has an h1, so it passes data-level="2". */
+    var tag = root.getAttribute('data-level') === '2' ? 'h2' : 'h1';
+    var h = document.createElement(tag);
     h.className = 'news-heading';
     h.textContent = headingText;
     listEl.parentNode.insertBefore(h, listEl);
