@@ -699,8 +699,10 @@
     }
     renderShareFigures();
 
-    /* Feature notes (SF50: connectivity, Garmin Safe Return), edited with the costing
-       in the costing editor and shown for the selected program. */
+    /* Features (SF50: connectivity, Garmin Safe Return), edited with the costing in
+       the costing editor and shown for the selected program. The wording (`text`) is
+       produced by the costing's own costing.js from the status plus an optional
+       detail, so it always agrees with the mark. `note` is the pre-2026-10-02.3 shape. */
     var featuresEl = q('#program-features');
     var FEATURE_MARK = { included: '\u2713', depends: '~', excluded: '\u2715' };
     function renderFeatures() {
@@ -714,7 +716,7 @@
         var name = document.createElement('span');
         var mark = document.createElement('b'); mark.className = 'feature-mark'; mark.textContent = FEATURE_MARK[f[k].status] || '';
         name.appendChild(mark); name.appendChild(document.createTextNode(' ' + labels[k] + ':'));
-        var val = document.createElement('span'); val.textContent = f[k].note;
+        var val = document.createElement('span'); val.textContent = f[k].text || f[k].note;
         row.appendChild(name); row.appendChild(val);
         featuresEl.appendChild(row);
       });

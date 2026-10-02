@@ -457,6 +457,11 @@ replacing the aircraft with another new aircraft", matching the program document
   costing.json are fetched with `?m=<current minute>`: GitHub Pages' CDN caches for
   10 minutes per URL, so a minute key makes the calculator at most ~1 minute behind
   the published site while staying cacheable.
+- **Feature wording comes from the status** (Raymond, 2026-10-02): a separate status and
+  note let a test publish show ✕ next to "aircraft-dependent". Costing v2026-10-02.3
+  replaces `note` with an optional `detail`; costing.js `featureText()` gives each
+  feature a `text` ("Depends on aircraft · standard from 2020") that the document and
+  this calculator show. The calculator reads `text`, falling back to `note` (the old shape).
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
