@@ -201,8 +201,8 @@
 "programNote": "Connectivity is aircraft-dependent. If the selected aircraft cannot support connectivity, the recurring internet service expense is removed from the final Annual Program Fee; any required aftermarket installation cost is added to program capitalization.",
 "features": {
 "connectivity": {
-"status": "excluded",
-"text": "Not included \u00b7 aftermarket if capable",
+"status": "depends",
+"text": "Depends on aircraft \u00b7 aftermarket if capable",
 "detail": "aftermarket if capable"
 },
 "safeReturn": {
