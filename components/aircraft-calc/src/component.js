@@ -23,6 +23,40 @@ function initCalculator(root, spec) {
     return Math.round(pricePerGal * spec.fuel.gph + spec.fuel.oilPerHour);
   }
 
+  /* ── programs ──────────────────────────────────────────────────────────
+     An aircraft can offer several ownership programs (SF50: new G3 plus
+     pre-owned G2+, G2, G1 - Raymond 2026-10-02). Each entry in spec.programs
+     carries that program's figures, heading and footnote; useProgram() copies
+     the chosen one onto spec, so everything below reads one current program.
+     A costing-driven aircraft with no `programs` is treated as one program;
+     an aircraft with neither (SR22T) skips all of this. */
+  var PROGRAM_FIELDS = ['heading', 'programCost', 'annualProgramFee', 'totalShares',
+                        'availableShares', 'sharesRemaining', 'approx', 'programNote'];
+  var programs = Array.isArray(spec.programs) && spec.programs.length ? spec.programs : null;
+  if (!programs && spec.costing) {
+    var only = { key: spec.costing.program };
+    PROGRAM_FIELDS.forEach(function (f) { only[f] = spec[f]; });
+    programs = [only];
+  }
+  var currentKey = programs ? (spec.defaultProgram || programs[0].key) : null;
+  function programByKey(key) {
+    for (var i = 0; i < programs.length; i++) if (programs[i].key === key) return programs[i];
+    return programs[0];
+  }
+  function useProgram(key) {
+    var pr = programByKey(key);
+    currentKey = pr.key;
+    PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx') spec[f] = undefined; });
+    if (spec.addenda && pr.addendum) spec.addendumHtml = spec.addenda[pr.addendum];
+    /* Scheduling scales with the number of owners: the aircraft's yearly hours
+       and days divided by the shares offered (Raymond 2026-10-02, proportional). */
+    if (spec.usage && spec.usage.aircraftHours && spec.availableShares) {
+      spec.usage.schedulingHours = Math.round(spec.usage.aircraftHours / spec.availableShares);
+      spec.usage.schedulingDays = Math.round(spec.usage.aircraftDays / spec.availableShares);
+    }
+  }
+  if (programs) useProgram(currentKey);
+
   /* ── static content from the data file ─────────────────────────────── */
   var titleEl = q('.summary-title'); if (titleEl) titleEl.innerText = spec.summaryTitle;
   var headEl  = q('h2');             if (headEl)  headEl.innerText  = spec.heading;
@@ -67,7 +101,8 @@ function initCalculator(root, spec) {
       schedulingDays: spec.usage && spec.usage.schedulingDays,
       fuelLabel: spec.fuel && spec.fuel.label,
       gph: spec.fuel && spec.fuel.gph,
-      taxRate: typeof spec.taxRate === 'number' ? String(+(spec.taxRate * 100).toFixed(2)) + '%' : undefined
+      taxRate: typeof spec.taxRate === 'number' ? String(+(spec.taxRate * 100).toFixed(2)) + '%' : undefined,
+      programNote: spec.programNote
     };
     return text.replace(/\{\{(\w+)\}\}/g, function (whole, key) {
       var v = map[key];
@@ -84,22 +119,26 @@ function initCalculator(root, spec) {
      nearly double the 96-hour per-share limit, reading as an invitation to
      exceed the entitlement the calculator then warns about. */
   var hoursInput = q('#hours-per-year');
-  if (hoursInput && spec.hoursPlaceholder) hoursInput.placeholder = spec.hoursPlaceholder;
+  if (hoursInput && spec.hoursPlaceholder) hoursInput.placeholder = fill(spec.hoursPlaceholder);
 
   /* Share selector. Capped at what is actually for sale - offering 16 when 14
      remain would quote a position that cannot be bought. */
   var sharesEl = q('#share-count');
-  var maxSelectable = (typeof spec.sharesRemaining === 'number' ? spec.sharesRemaining
-                      : (typeof spec.availableShares === 'number' ? spec.availableShares : 1));
-  if (sharesEl) {
+  function buildShareOptions() {
+    if (!sharesEl) return;
+    var maxSelectable = (typeof spec.sharesRemaining === 'number' ? spec.sharesRemaining
+                        : (typeof spec.availableShares === 'number' ? spec.availableShares : 1));
+    var keep = parseInt(sharesEl.value, 10) || 1;
+    sharesEl.innerHTML = '';
     for (var si = 1; si <= maxSelectable; si++) {
       var op = document.createElement('option');
       op.value = si;
       op.textContent = si === 1 ? '1 share' : si + ' shares';
       sharesEl.appendChild(op);
     }
-    sharesEl.value = '1';
+    sharesEl.value = String(keep <= maxSelectable ? keep : 1);
   }
+  buildShareOptions();
   function shareCount() {
     var n = sharesEl ? parseInt(sharesEl.value, 10) : 1;
     return (!n || n < 1) ? 1 : n;
@@ -120,7 +159,9 @@ function initCalculator(root, spec) {
     q('#share-position').innerText =
       n === 1 ? spec.sharePositionLabel
               : spec.sharePositionLabel.replace(/\(per share\)/i, '(' + n + ' shares)');
-    q('#program-cost').innerText       = '$' + money0(spec.programCost * n);
+    /* Pre-owned figures are planning values - "~" on the capital side only, as in
+       the program document (the Annual Program Fee is not approximate). */
+    q('#program-cost').innerText       = (spec.approx ? '~' : '') + '$' + money0(spec.programCost * n);
     q('#annual-program-fee').innerText = '$' + money0(spec.annualProgramFee * n);
     var hoursRow = q('#share-hours');
     if (hoursRow && spec.usage && spec.usage.model === 'capped') {
@@ -199,35 +240,23 @@ function initCalculator(root, spec) {
      jumps or blanks while loading, and kept current daily by the costing-sync
      workflow. If the costing cannot load, visitors still see sound figures. */
   function applyCosting(costing) {
-    var cfg = spec.costing;
     var problems = window.SF50Costing.validate(costing);
     if (problems.length) throw new Error('costing invalid: ' + problems.join('; '));
     var d = window.SF50Costing.derive(costing);
-    var p = d.byKey[cfg.program];
-    if (!p) throw new Error('program ' + cfg.program + ' is not in the costing');
-    var next = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
-                 totalShares: p.interests, availableShares: p.shares, taxRate: d.common.taxRate };
-    var changed = Object.keys(next).some(function (k) { return Math.abs((spec[k] || 0) - next[k]) > 0.005; });
-    if (!changed) return;
-    Object.keys(next).forEach(function (k) { spec[k] = next[k]; });
-    /* Never offer more shares than the program now has for sale */
-    if (typeof spec.sharesRemaining === 'number' && spec.sharesRemaining > spec.availableShares) {
-      spec.sharesRemaining = spec.availableShares;
-    }
-    if (sharesEl) {
-      Array.prototype.slice.call(sharesEl.options).forEach(function (o) { if (+o.value > remaining()) o.remove(); });
-    }
-    /* Footnotes quote these numbers. Re-rendering the block replaces #fuel-note,
-       so re-find it and put the live fuel price back. */
-    if (addendumEl && spec.addendumHtml) {
-      addendumEl.innerHTML = fill(spec.addendumHtml);
-      fuelNoteEl = q('#fuel-note');
-      if (fuelNoteEl && lastFuelNote) fuelNoteEl.innerText = lastFuelNote;
-    }
-    if (noteEl && spec.inputNote) noteEl.innerText = fill(spec.inputNote);
-    renderShareFigures();
-    if (sharesRow && !sharesRow.hidden) q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
-    if (yearsEl.value && hoursEl.value) calculate();
+    var changed = false;
+    programs.forEach(function (pr) {
+      var c = d.byKey[pr.key];
+      if (!c) { console.warn('[bopaero:aircraft-calc] ' + spec.id + ' program ' + pr.key + ' is not in the costing'); return; }
+      var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
+                   totalShares: c.interests, availableShares: c.shares, approx: c.approx };
+      Object.keys(next).forEach(function (k) {
+        if (typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005 : pr[k] !== next[k]) { pr[k] = next[k]; changed = true; }
+      });
+      /* Never offer more shares than the program now has for sale */
+      if (typeof pr.sharesRemaining === 'number' && pr.sharesRemaining > pr.availableShares) { pr.sharesRemaining = pr.availableShares; changed = true; }
+    });
+    if (Math.abs((spec.taxRate || 0) - d.common.taxRate) > 1e-9) { spec.taxRate = d.common.taxRate; changed = true; }
+    if (changed) refreshProgram();
   }
 
   function loadCostingLib(url) {
@@ -250,6 +279,50 @@ function initCalculator(root, spec) {
       .catch(function (e) {
         console.warn('[bopaero:aircraft-calc] ' + spec.id + ' live costing unavailable, showing built-in figures:', e.message);
       });
+  }
+
+  /* Re-render everything that depends on the current program. Footnotes quote
+     its numbers, and re-injecting the footnote block replaces #fuel-note, so
+     re-find it and put the live fuel price back. */
+  function refreshProgram() {
+    if (programs) useProgram(currentKey);
+    if (headEl) headEl.innerText = spec.heading;
+    if (hoursInput && spec.hoursPlaceholder) hoursInput.placeholder = fill(spec.hoursPlaceholder);
+    buildShareOptions();
+    if (addendumEl && spec.addendumHtml) {
+      addendumEl.innerHTML = fill(spec.addendumHtml);
+      fuelNoteEl = q('#fuel-note');
+      if (fuelNoteEl && lastFuelNote) fuelNoteEl.innerText = lastFuelNote;
+    }
+    if (noteEl && spec.inputNote) noteEl.innerText = fill(spec.inputNote);
+    renderShareFigures();
+    if (sharesRow && !sharesRow.hidden) q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
+    renderPicker();
+    if (yearsEl && hoursEl && yearsEl.value && hoursEl.value) calculate();
+  }
+
+  var pickerEl = q('#program-picker');
+  function renderPicker() {
+    if (!pickerEl || !programs || programs.length < 2) return;
+    pickerEl.innerHTML = '';
+    programs.forEach(function (pr) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'program-option';
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', pr.key === currentKey ? 'true' : 'false');
+      var k = document.createElement('span'); k.className = 'program-key'; k.textContent = pr.label || pr.key;
+      var sub = document.createElement('span'); sub.className = 'program-sub'; sub.textContent = pr.sublabel || '';
+      b.appendChild(k); b.appendChild(sub);
+      b.addEventListener('click', function () {
+        if (pr.key === currentKey) return;
+        currentKey = pr.key;
+        track('program_changed', { aircraft: spec.id, program: pr.key });
+        refreshProgram();
+      });
+      pickerEl.appendChild(b);
+    });
+    pickerEl.hidden = false;
   }
 
   /* ── interaction ───────────────────────────────────────────────────── */
@@ -351,7 +424,7 @@ function initCalculator(root, spec) {
          warning that already told prospects they would need a second share. If the
          real pricing is not linear this is the one place to change it. */
       var total = (spec.programCost + spec.annualProgramFee * years) * shareCount();
-      blendedEl.innerText = '$' + money0(total / (years * hoursPerYear)) + HR;
+      blendedEl.innerText = (spec.approx ? '~' : '') + '$' + money0(total / (years * hoursPerYear)) + HR;
       if (blendedRow) blendedRow.hidden = false;
     }
     checkUsageCap(hoursPerYear);
@@ -469,6 +542,7 @@ function initCalculator(root, spec) {
     if (yearsEl.value && hoursEl.value) calculate();
   });
 
+  renderPicker();
   q('#calculate-cost').addEventListener('click', calculate);
   q('#clear-calculator').addEventListener('click', clearData);
 

@@ -403,6 +403,31 @@ the editor moves the document and all three SF50 pages together, with no rebuild
 - Freshness: GitHub Pages caches costing.json for up to 10 minutes, so the calculator
   can trail a publish by that long.
 
+## SF50 calculator offers four programs (2026-10-02)
+
+The SF50 calculator now lets a visitor choose the **ownership program**: **G3** (new,
+8 shares, default), **G2+**, **G2** (pre-owned, 4 shares) and **G1** (pre-owned, 2 shares)
+— the programs in the SF50 Ownership Program Options document.
+
+- `data/aircraft/sf50.json` → `programs[]` (key, label, sublabel, heading, figures,
+  sharesRemaining, approx, addendum, programNote), `defaultProgram`, and `addenda`
+  {new, preowned}. Every figure comes from the SF50 costing per key; top-level figures
+  mirror the default program (health check and older readers use them).
+- **Scheduling scales with owners** (Raymond: proportional) — `usage.aircraftHours` 1,400
+  / `aircraftDays` 280 divided by the program's shares: G3 175 h / 35 d, G2 & G2+ 350 /
+  70, G1 700 / 140. Placeholder and input note follow.
+- Pre-owned figures show **"~"** on Program Cost and the per-hour estimate (capital side
+  only, like the document — the Annual Program Fee is firm). The pre-owned footnote
+  replaces G3's ten-year longevity sentence with the document's planning-value and
+  used-to-used refresh wording, plus each program's own note from the document.
+- Engine: one `refreshProgram()` path serves the picker and the live costing; the share
+  selector is rebuilt per program and keeps the visitor's count when it still fits.
+  An aircraft with no `programs` (SR22T) shows no picker and is unchanged.
+- `tools/sync_costing.py` now refreshes every program's fallback.
+- Verified in the testbed: all four programs + switching back (figures, headings,
+  scheduling, share options, footnotes, live fuel note); a wrong G1 fallback corrected
+  by the live costing; phone width 2×2 with no sideways scroll; SR22T unchanged.
+
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
 - **No `?v=` cache buster in stubs** — the stub text must never change, or every page

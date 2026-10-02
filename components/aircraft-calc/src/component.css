@@ -365,3 +365,29 @@
 .calculator #share-position,
 .calculator .output-item,
 .calculator .output-item span { color: var(--bop-text); }
+
+    /* Ownership program picker (SF50: G3 new, G2+ / G2 / G1 pre-owned). Four equal
+       choices in one row on desktop, two by two on a phone. The chosen program is
+       the site's filled orange; the rest read as quiet cards on the navy panel. */
+    .calculator .program-label { display: none; }
+    .calculator .program-picker:not([hidden]) { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 0 0 14px; }
+    .calculator .input-section:has(.program-picker:not([hidden])) .program-label {
+      display: block; font-family: var(--bop-font-body); font-weight: 600; color: var(--bop-label, #DCE6F1); margin-bottom: 6px;
+    }
+    .calculator .program-option {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 9px 6px; cursor: pointer; font-family: var(--bop-font-body);
+      color: var(--bop-text, #fff); background: var(--bop-surface, #0E4D8C);
+      border: 1px solid var(--bop-line, rgba(255,255,255,.18)); border-radius: var(--bop-radius, 10px);
+      transition: background .15s ease, border-color .15s ease;
+    }
+    .calculator .program-option:hover { border-color: var(--bop-orange, #FF6700); }
+    .calculator .program-option[aria-checked="true"] {
+      background: var(--bop-orange, #FF6700); border-color: var(--bop-orange, #FF6700); color: var(--bop-orange-ink, #fff);
+    }
+    .calculator .program-option:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .calculator .program-key { font-size: 18px; font-weight: 700; line-height: 1.1; }
+    .calculator .program-sub { font-size: 11px; opacity: .85; line-height: 1.2; text-align: center; }
+    @media (max-width: 600px) {
+      .calculator .program-picker:not([hidden]) { grid-template-columns: repeat(2, 1fr); }
+    }

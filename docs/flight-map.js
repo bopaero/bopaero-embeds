@@ -26,6 +26,8 @@
 },
 "usage": {
 "model": "unlimited",
+"aircraftHours": 1400,
+"aircraftDays": 280,
 "schedulingHours": 175,
 "schedulingDays": 35
 },
@@ -102,13 +104,75 @@
 "_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
 },
 "sharesRemaining": 8,
-"hoursPlaceholder": "e.g., 175 hrs.",
+"hoursPlaceholder": "e.g., {{schedulingHours}} hrs.",
 "taxRate": 0.07,
 "costing": {
 "program": "G3",
 "url": "https://sf50program.bopaero.com/data/costing.json",
 "lib": "https://sf50program.bopaero.com/assets/costing.js",
-"_note": "Live source of truth: the SF50 costing published from the private costing editor. programCost, annualProgramFee, totalShares, availableShares and taxRate in this file are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. sharesRemaining is sales status and stays in this file."
+"_note": "Live source of truth: the SF50 costing published from the private costing editor. Each entry in `programs` takes programCost, annualProgramFee, totalShares, availableShares and approx from the costing program with the same key (taxRate from the costing too). The figures stored here are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml; the top-level programCost etc. mirror defaultProgram. Edit costing in the editor, never here. sharesRemaining (sales status), labels, headings and footnotes are edited here."
+},
+"programs": [
+{
+"key": "G3",
+"label": "G3",
+"sublabel": "New \u00b7 8 shares",
+"heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
+"programCost": 542793.75,
+"annualProgramFee": 136278.5,
+"totalShares": 9,
+"availableShares": 8,
+"sharesRemaining": 8,
+"approx": false,
+"addendum": "new"
+},
+{
+"key": "G2+",
+"label": "G2+",
+"sublabel": "Pre-owned \u00b7 4 shares",
+"heading": "Cirrus SF50 G2+ Vision Jet \u2014 Four-Share Later-Generation Pre-Owned Program",
+"programCost": 929100,
+"annualProgramFee": 194802,
+"totalShares": 5,
+"availableShares": 4,
+"sharesRemaining": 4,
+"approx": true,
+"addendum": "preowned",
+"programNote": "G2+ combines the four-share high-access structure with later-generation pre-owned aircraft and standard connectivity."
+},
+{
+"key": "G2",
+"label": "G2",
+"sublabel": "Pre-owned \u00b7 4 shares",
+"heading": "Cirrus SF50 G2 Vision Jet \u2014 Four-Share High-Access Program",
+"programCost": 820350,
+"annualProgramFee": 194802,
+"totalShares": 5,
+"availableShares": 4,
+"sharesRemaining": 4,
+"approx": true,
+"addendum": "preowned",
+"programNote": "Every G2 program aircraft will have in-flight connectivity. If not already equipped, the approved aftermarket installation is completed before entry into service and capitalized into the program."
+},
+{
+"key": "G1",
+"label": "G1",
+"sublabel": "Pre-owned \u00b7 2 shares",
+"heading": "Cirrus SF50 G1 Vision Jet \u2014 Two-Share Near-Exclusive Program",
+"programCost": 1216200,
+"annualProgramFee": 362104,
+"totalShares": 3,
+"availableShares": 2,
+"sharesRemaining": 2,
+"approx": true,
+"addendum": "preowned",
+"programNote": "Connectivity is aircraft-dependent. If the selected aircraft cannot support connectivity, the recurring internet service expense is removed from the final Annual Program Fee; any required aftermarket installation cost is added to program capitalization."
+}
+],
+"defaultProgram": "G3",
+"addenda": {
+"new": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"preowned": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Pre-owned program figures (~) are illustrative planning values, finalized from the selected aircraft, tax jurisdiction, JetStream status, connectivity configuration and transaction-specific costs. The refresh reserve is designed to support the gap between the net resale proceeds of the existing aircraft and the cost of acquiring a newer pre-owned replacement. {{programNote}} The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>"
 }
 },
 "sr22t": {
