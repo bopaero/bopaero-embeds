@@ -31,7 +31,7 @@ function initCalculator(root, spec) {
      A costing-driven aircraft with no `programs` is treated as one program;
      an aircraft with neither (SR22T) skips all of this. */
   var PROGRAM_FIELDS = ['heading', 'programCost', 'annualProgramFee', 'totalShares',
-                        'availableShares', 'sharesRemaining', 'approx', 'programNote'];
+                        'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features'];
   var programs = Array.isArray(spec.programs) && spec.programs.length ? spec.programs : null;
   if (!programs && spec.costing) {
     var only = { key: spec.costing.program };
@@ -46,7 +46,7 @@ function initCalculator(root, spec) {
   function useProgram(key) {
     var pr = programByKey(key);
     currentKey = pr.key;
-    PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx') spec[f] = undefined; });
+    PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx' || f === 'features') spec[f] = undefined; });
     if (spec.addenda && pr.addendum) spec.addendumHtml = spec.addenda[pr.addendum];
     /* Scheduling scales with the number of owners: the aircraft's yearly hours
        and days divided by the shares offered (Raymond 2026-10-02, proportional). */
@@ -185,6 +185,29 @@ function initCalculator(root, spec) {
   }
   renderShareFigures();
 
+  /* Feature notes (SF50: connectivity, Garmin Safe Return), edited with the costing
+     in the costing editor and shown for the selected program. */
+  var featuresEl = q('#program-features');
+  var FEATURE_MARK = { included: '\u2713', depends: '~', excluded: '\u2715' };
+  function renderFeatures() {
+    if (!featuresEl) return;
+    var labels = spec.featureLabels || {}, f = spec.features || {};
+    var keys = Object.keys(labels).filter(function (k) { return f[k]; });
+    featuresEl.innerHTML = '';
+    keys.forEach(function (k) {
+      var row = document.createElement('div');
+      row.className = 'output-item feature feature-' + f[k].status;
+      var name = document.createElement('span');
+      var mark = document.createElement('b'); mark.className = 'feature-mark'; mark.textContent = FEATURE_MARK[f[k].status] || '';
+      name.appendChild(mark); name.appendChild(document.createTextNode(' ' + labels[k] + ':'));
+      var val = document.createElement('span'); val.textContent = f[k].note;
+      row.appendChild(name); row.appendChild(val);
+      featuresEl.appendChild(row);
+    });
+    featuresEl.hidden = !keys.length;
+  }
+  renderFeatures();
+
   var fuelCostEl = q('#fuel-cost');
   var fuelNoteEl = q('#fuel-note');
   fuelCostEl.innerText = '$' + money0(spec.fuel.fallbackCostPerHour) + HR;
@@ -248,14 +271,17 @@ function initCalculator(root, spec) {
       var c = d.byKey[pr.key];
       if (!c) { console.warn('[bopaero:aircraft-calc] ' + spec.id + ' program ' + pr.key + ' is not in the costing'); return; }
       var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
-                   totalShares: c.interests, availableShares: c.shares, approx: c.approx };
+                   totalShares: c.interests, availableShares: c.shares, approx: c.approx, features: c.features };
       Object.keys(next).forEach(function (k) {
-        if (typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005 : pr[k] !== next[k]) { pr[k] = next[k]; changed = true; }
+        var differs = typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005
+                    : JSON.stringify(pr[k]) !== JSON.stringify(next[k]);
+        if (differs) { pr[k] = next[k]; changed = true; }
       });
       /* Never offer more shares than the program now has for sale */
       if (typeof pr.sharesRemaining === 'number' && pr.sharesRemaining > pr.availableShares) { pr.sharesRemaining = pr.availableShares; changed = true; }
     });
     if (Math.abs((spec.taxRate || 0) - d.common.taxRate) > 1e-9) { spec.taxRate = d.common.taxRate; changed = true; }
+    if (JSON.stringify(spec.featureLabels) !== JSON.stringify(d.featureLabels)) { spec.featureLabels = d.featureLabels; changed = true; }
     if (changed) refreshProgram();
   }
 
@@ -271,9 +297,13 @@ function initCalculator(root, spec) {
     });
   }
 
+  /* A publish in the costing editor must reach the calculator promptly (Raymond,
+     2026-10-02). GitHub Pages' CDN caches files for 10 minutes, so ask for a copy
+     keyed to the current minute: at most a minute stale, and still cacheable. */
+  function fresh(url) { return url + (url.indexOf('?') < 0 ? '?' : '&') + 'm=' + Math.floor(Date.now() / 60000); }
   if (spec.costing) {
-    loadCostingLib(spec.costing.lib)
-      .then(function () { return fetch(spec.costing.url, { cache: 'no-cache' }); })
+    loadCostingLib(fresh(spec.costing.lib))
+      .then(function () { return fetch(fresh(spec.costing.url), { cache: 'no-cache' }); })
       .then(function (r) { if (!r.ok) throw new Error('costing HTTP ' + r.status); return r.json(); })
       .then(applyCosting)
       .catch(function (e) {
@@ -296,6 +326,7 @@ function initCalculator(root, spec) {
     }
     if (noteEl && spec.inputNote) noteEl.innerText = fill(spec.inputNote);
     renderShareFigures();
+    renderFeatures();
     if (sharesRow && !sharesRow.hidden) q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
     renderPicker();
     if (yearsEl && hoursEl && yearsEl.value && hoursEl.value) calculate();

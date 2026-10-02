@@ -398,3 +398,10 @@
       margin: 8px 0 0; font-size: 14px; line-height: 1.35; font-family: var(--bop-font-body);
       color: var(--bop-orange-soft, #FFE9DB);
     }
+
+    /* Program feature notes: included / depends on the aircraft / not included */
+    .calculator .program-features { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--bop-line, rgba(255,255,255,.18)); }
+    .calculator .feature .feature-mark { display: inline-block; width: 1.1em; text-align: center; }
+    .calculator .feature-included .feature-mark { color: #7CE38B; }
+    .calculator .feature-depends  .feature-mark { color: var(--bop-orange, #FF6700); }
+    .calculator .feature-excluded .feature-mark { color: #FF8A80; }

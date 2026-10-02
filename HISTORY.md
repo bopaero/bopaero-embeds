@@ -443,6 +443,21 @@ reads "The Future Value Reserve is designed to support a five-year replacement c
 replacing the aircraft with another new aircraft", matching the program document
 (Raymond). The SF50 pages' own copy never mentioned the cycle.
 
+## SF50 feature notes + fresher costing (2026-10-02)
+
+- **Feature notes per program** — in-flight connectivity and Garmin Safe Return — now
+  live in the SF50 costing (edited in the costing editor) and show under the cost
+  figures for the selected program: ✓ included, ~ depends on the aircraft, ✕ not
+  included. G1: connectivity aircraft-dependent, Safe Return not available. G2:
+  connectivity required aftermarket, Safe Return aircraft-dependent (standard from
+  2020 — Raymond chose a note over restricting G2 to 2020–2021). G2+ / G3: both
+  included. Fallback copies (`programs[].features`, `featureLabels`) are synced by
+  tools/sync_costing.py like the figures.
+- **A publish must reach the calculator promptly** (Raymond). costing.js and
+  costing.json are fetched with `?m=<current minute>`: GitHub Pages' CDN caches for
+  10 minutes per URL, so a minute key makes the calculator at most ~1 minute behind
+  the published site while staying cacheable.
+
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
 - **No `?v=` cache buster in stubs** — the stub text must never change, or every page

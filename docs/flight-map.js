@@ -124,7 +124,17 @@
 "availableShares": 8,
 "sharesRemaining": 8,
 "approx": false,
-"addendum": "new"
+"addendum": "new",
+"features": {
+"connectivity": {
+"status": "included",
+"note": "Included"
+},
+"safeReturn": {
+"status": "included",
+"note": "Included"
+}
+}
 },
 {
 "key": "G2+",
@@ -138,7 +148,17 @@
 "sharesRemaining": 4,
 "approx": true,
 "addendum": "preowned",
-"programNote": "G2+ combines the four-share high-access structure with later-generation pre-owned aircraft and standard connectivity."
+"programNote": "G2+ combines the four-share high-access structure with later-generation pre-owned aircraft and standard connectivity.",
+"features": {
+"connectivity": {
+"status": "included",
+"note": "Included"
+},
+"safeReturn": {
+"status": "included",
+"note": "Included"
+}
+}
 },
 {
 "key": "G2",
@@ -152,7 +172,17 @@
 "sharesRemaining": 4,
 "approx": true,
 "addendum": "preowned",
-"programNote": "Every G2 program aircraft will have in-flight connectivity. If not already equipped, the approved aftermarket installation is completed before entry into service and capitalized into the program."
+"programNote": "Every G2 program aircraft will have in-flight connectivity. If not already equipped, the approved aftermarket installation is completed before entry into service and capitalized into the program.",
+"features": {
+"connectivity": {
+"status": "included",
+"note": "Required aftermarket"
+},
+"safeReturn": {
+"status": "depends",
+"note": "Aircraft-dependent (standard from 2020)"
+}
+}
 },
 {
 "key": "G1",
@@ -166,13 +196,27 @@
 "sharesRemaining": 2,
 "approx": true,
 "addendum": "preowned",
-"programNote": "Connectivity is aircraft-dependent. If the selected aircraft cannot support connectivity, the recurring internet service expense is removed from the final Annual Program Fee; any required aftermarket installation cost is added to program capitalization."
+"programNote": "Connectivity is aircraft-dependent. If the selected aircraft cannot support connectivity, the recurring internet service expense is removed from the final Annual Program Fee; any required aftermarket installation cost is added to program capitalization.",
+"features": {
+"connectivity": {
+"status": "depends",
+"note": "Aircraft-dependent; aftermarket if capable"
+},
+"safeReturn": {
+"status": "excluded",
+"note": "Not available"
+}
+}
 }
 ],
 "defaultProgram": "G3",
 "addenda": {
 "new": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. The Future Value Reserve is designed to support a five-year replacement cycle, replacing the aircraft with another new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
 "preowned": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Pre-owned program figures (~) are illustrative planning values, finalized from the selected aircraft, tax jurisdiction, JetStream status, connectivity configuration and transaction-specific costs. The refresh reserve is designed to support the gap between the net resale proceeds of the existing aircraft and the cost of acquiring a newer pre-owned replacement. {{programNote}} The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>"
+},
+"featureLabels": {
+"connectivity": "In-flight connectivity",
+"safeReturn": "Garmin Safe Return emergency autoland"
 }
 },
 "sr22t": {

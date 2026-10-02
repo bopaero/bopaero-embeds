@@ -23,7 +23,7 @@ import tempfile
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'approx')
+FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'approx', 'features')
 
 NODE = r"""
 const [lib, data] = process.argv.slice(1);
@@ -33,8 +33,9 @@ if (problems.length) { console.error('costing invalid: ' + problems.join('; '));
 const d = C.derive(costing);
 const programs = {};
 for (const p of d.programs) programs[p.key] = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
-                                                totalShares: p.interests, availableShares: p.shares, approx: p.approx };
-console.log(JSON.stringify({ version: d.version, taxRate: d.common.taxRate, programs }));
+                                                totalShares: p.interests, availableShares: p.shares, approx: p.approx,
+                                                features: p.features || null };
+console.log(JSON.stringify({ version: d.version, taxRate: d.common.taxRate, featureLabels: d.featureLabels || null, programs }));
 """
 
 
@@ -80,9 +81,9 @@ def main():
                              % (name, e['key'], e['sharesRemaining'], live['version'], lp['availableShares']))
             # Top level mirrors the default program (the health check and older readers use it)
             default = spec.get('defaultProgram') or cfg['program']
-            top = dict(live['programs'][default], taxRate=live['taxRate'])
+            top = dict(live['programs'][default], taxRate=live['taxRate'], featureLabels=live['featureLabels'])
             for f, v in top.items():
-                if f in spec and spec.get(f) != v:
+                if (f in spec or f == 'featureLabels') and spec.get(f) != v:
                     diffs.append(('(top level)', f, spec.get(f), v))
             if not diffs:
                 print('%s: fallback matches costing %s' % (name, live['version']))
@@ -94,7 +95,7 @@ def main():
                 for e in spec.get('programs') or []:
                     e.update({f: live['programs'][e['key']][f] for f in FIELDS})
                 for f, v in top.items():
-                    if f in spec:
+                    if f in spec or f == 'featureLabels':
                         spec[f] = v
                 with open(path, 'w') as fh:
                     json.dump(spec, fh, indent=2, ensure_ascii=False)
