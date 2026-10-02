@@ -128,11 +128,11 @@
 "features": {
 "connectivity": {
 "status": "included",
-"note": "Included"
+"text": "Included"
 },
 "safeReturn": {
 "status": "included",
-"note": "Included"
+"text": "Included"
 }
 }
 },
@@ -152,11 +152,11 @@
 "features": {
 "connectivity": {
 "status": "included",
-"note": "Included"
+"text": "Included"
 },
 "safeReturn": {
 "status": "included",
-"note": "Included"
+"text": "Included"
 }
 }
 },
@@ -176,11 +176,13 @@
 "features": {
 "connectivity": {
 "status": "included",
-"note": "Required aftermarket"
+"text": "Included \u00b7 aftermarket install, cost in program",
+"detail": "aftermarket install, cost in program"
 },
 "safeReturn": {
 "status": "depends",
-"note": "Aircraft-dependent (standard from 2020)"
+"text": "Depends on aircraft \u00b7 standard from 2020",
+"detail": "standard from 2020"
 }
 }
 },
@@ -199,12 +201,13 @@
 "programNote": "Connectivity is aircraft-dependent. If the selected aircraft cannot support connectivity, the recurring internet service expense is removed from the final Annual Program Fee; any required aftermarket installation cost is added to program capitalization.",
 "features": {
 "connectivity": {
-"status": "depends",
-"note": "Aircraft-dependent; aftermarket if capable"
+"status": "excluded",
+"text": "Not included \u00b7 aftermarket if capable",
+"detail": "aftermarket if capable"
 },
 "safeReturn": {
 "status": "excluded",
-"note": "Not available"
+"text": "Not included"
 }
 }
 }
