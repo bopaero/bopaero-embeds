@@ -15,8 +15,8 @@
 "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
 "sharePositionLabel": "Ownership Costs (per share)",
 "totalShares": 9,
-"programCost": 544375,
-"annualProgramFee": 136178.438,
+"programCost": 542793.75,
+"annualProgramFee": 136278.5,
 "fuel": {
 "label": "JET-A",
 "priceKey": "jet_a",
@@ -40,8 +40,8 @@
 }
 ],
 "availableShares": 8,
-"_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed.",
-"addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"_dataVerified": "2026-10-02: programCost / annualProgramFee / shares / taxRate now come from the SF50 costing (G3: capital per share incl. est. tax, Annual Program Fee per owner) - Raymond chose the tax-included figure so the calculator matches the program document. Previously $544,375 (tax excluded) / $136,178.438.",
+"addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
 "inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time.",
 "map": {
 "cities": [
@@ -102,7 +102,14 @@
 "_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
 },
 "sharesRemaining": 8,
-"hoursPlaceholder": "e.g., 175 hrs."
+"hoursPlaceholder": "e.g., 175 hrs.",
+"taxRate": 0.07,
+"costing": {
+"program": "G3",
+"url": "https://sf50program.bopaero.com/data/costing.json",
+"lib": "https://sf50program.bopaero.com/assets/costing.js",
+"_note": "Live source of truth: the SF50 costing published from the private costing editor. programCost, annualProgramFee, totalShares, availableShares and taxRate in this file are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. sharesRemaining is sales status and stays in this file."
+}
 },
 "sr22t": {
 "id": "sr22t",
@@ -465,7 +472,8 @@
         schedulingHours: spec.usage && spec.usage.schedulingHours,
         schedulingDays: spec.usage && spec.usage.schedulingDays,
         fuelLabel: spec.fuel && spec.fuel.label,
-        gph: spec.fuel && spec.fuel.gph
+        gph: spec.fuel && spec.fuel.gph,
+        taxRate: typeof spec.taxRate === 'number' ? String(+(spec.taxRate * 100).toFixed(2)) + '%' : undefined
       };
       return text.replace(/\{\{(\w+)\}\}/g, function (whole, key) {
         var v = map[key];
@@ -568,13 +576,13 @@
     }
 
     /* ── live fuel price ───────────────────────────────────────────────── */
+    var lastFuelNote = null;   /* kept so a re-rendered footnote can get it back */
     function applyFuelPrice(pricePerGal, updated) {
       fuelCostEl.innerText = '$' + money0(fuelCostPerHour(pricePerGal)) + HR;
-      if (fuelNoteEl) {
-        fuelNoteEl.innerText =
-          '***' + spec.fuel.label + ' $' + pricePerGal.toFixed(2) + '/gal (national avg, AirNav.com' +
-          (updated ? ', updated ' + updated : '') + ') × ' + spec.fuel.gph + ' gph + oil.';
-      }
+      lastFuelNote =
+        '***' + spec.fuel.label + ' $' + pricePerGal.toFixed(2) + '/gal (national avg, AirNav.com' +
+        (updated ? ', updated ' + updated : '') + ') × ' + spec.fuel.gph + ' gph + oil.';
+      if (fuelNoteEl) fuelNoteEl.innerText = lastFuelNote;
     }
     fetch(FUEL_PRICES_URL + '?v=' + new Date().toISOString().slice(0, 10))
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -585,6 +593,70 @@
       .catch(function (e) {
         console.warn('[bopaero:aircraft-calc] ' + spec.id + ' fuel price fetch failed:', e.message);
       });
+
+    /* ── live costing ──────────────────────────────────────────────────────
+       A program with a `costing` block takes its figures from the costing
+       published in the private SF50 costing editor - the same costing.json the
+       SF50 Ownership Program Options document reads, calculated by the same
+       costing.js. One source of truth: a publish there updates the document and
+       every calculator page, with no rebuild here (Raymond, 2026-10-02).
+
+       The figures in the data file are a FALLBACK: shown immediately, so nothing
+       jumps or blanks while loading, and kept current daily by the costing-sync
+       workflow. If the costing cannot load, visitors still see sound figures. */
+    function applyCosting(costing) {
+      var cfg = spec.costing;
+      var problems = window.SF50Costing.validate(costing);
+      if (problems.length) throw new Error('costing invalid: ' + problems.join('; '));
+      var d = window.SF50Costing.derive(costing);
+      var p = d.byKey[cfg.program];
+      if (!p) throw new Error('program ' + cfg.program + ' is not in the costing');
+      var next = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
+                   totalShares: p.interests, availableShares: p.shares, taxRate: d.common.taxRate };
+      var changed = Object.keys(next).some(function (k) { return Math.abs((spec[k] || 0) - next[k]) > 0.005; });
+      if (!changed) return;
+      Object.keys(next).forEach(function (k) { spec[k] = next[k]; });
+      /* Never offer more shares than the program now has for sale */
+      if (typeof spec.sharesRemaining === 'number' && spec.sharesRemaining > spec.availableShares) {
+        spec.sharesRemaining = spec.availableShares;
+      }
+      if (sharesEl) {
+        Array.prototype.slice.call(sharesEl.options).forEach(function (o) { if (+o.value > remaining()) o.remove(); });
+      }
+      /* Footnotes quote these numbers. Re-rendering the block replaces #fuel-note,
+         so re-find it and put the live fuel price back. */
+      if (addendumEl && spec.addendumHtml) {
+        addendumEl.innerHTML = fill(spec.addendumHtml);
+        fuelNoteEl = q('#fuel-note');
+        if (fuelNoteEl && lastFuelNote) fuelNoteEl.innerText = lastFuelNote;
+      }
+      if (noteEl && spec.inputNote) noteEl.innerText = fill(spec.inputNote);
+      renderShareFigures();
+      if (sharesRow && !sharesRow.hidden) q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
+      if (yearsEl.value && hoursEl.value) calculate();
+    }
+
+    function loadCostingLib(url) {
+      if (window.SF50Costing) return Promise.resolve();
+      return new Promise(function (resolve, reject) {
+        var s = document.querySelector('script[data-sf50-costing]');
+        var fresh = !s;
+        if (fresh) { s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-sf50-costing', ''); }
+        s.addEventListener('load', function () { window.SF50Costing ? resolve() : reject(new Error('costing.js loaded without SF50Costing')); });
+        s.addEventListener('error', function () { reject(new Error('costing.js did not load')); });
+        if (fresh) document.head.appendChild(s);
+      });
+    }
+
+    if (spec.costing) {
+      loadCostingLib(spec.costing.lib)
+        .then(function () { return fetch(spec.costing.url, { cache: 'no-cache' }); })
+        .then(function (r) { if (!r.ok) throw new Error('costing HTTP ' + r.status); return r.json(); })
+        .then(applyCosting)
+        .catch(function (e) {
+          console.warn('[bopaero:aircraft-calc] ' + spec.id + ' live costing unavailable, showing built-in figures:', e.message);
+        });
+    }
 
     /* ── interaction ───────────────────────────────────────────────────── */
     var yearsEl = q('#ownership-years');

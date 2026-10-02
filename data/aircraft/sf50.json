@@ -4,8 +4,8 @@
   "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
   "sharePositionLabel": "Ownership Costs (per share)",
   "totalShares": 9,
-  "programCost": 544375,
-  "annualProgramFee": 136178.438,
+  "programCost": 542793.75,
+  "annualProgramFee": 136278.5,
   "fuel": {
     "label": "JET-A",
     "priceKey": "jet_a",
@@ -29,8 +29,8 @@
     }
   ],
   "availableShares": 8,
-  "_dataVerified": "Annual program fee corrected by Raymond 2026-09-12 (per share). totalShares 9 / availableShares 8 also confirmed by Raymond. Program cost, usage and fuel figures carried from live and NOT re-confirmed.",
-  "addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+  "_dataVerified": "2026-10-02: programCost / annualProgramFee / shares / taxRate now come from the SF50 costing (G3: capital per share incl. est. tax, Annual Program Fee per owner) - Raymond chose the tax-included figure so the calculator matches the program document. Previously $544,375 (tax excluded) / $136,178.438.",
+  "addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Program longevity for each aircraft is approximately ten (10) years. The aircraft will then be sold and the proceeds used to purchase a new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>",
   "inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time.",
   "map": {
     "cities": [
@@ -88,8 +88,15 @@
       ],
       "legendNote": "The aircraft stays where the last owner left it and repositions to the next owner, avoiding empty repositioning cycles."
     },
-    "_note": "Cities are LOCATIONS SHOWING INTEREST \u2014 that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
+    "_note": "Cities are LOCATIONS SHOWING INTEREST — that is the purpose of this map (Raymond, 2026-09-12). Only Denver currently sits west of the divider; that imbalance is real data, NOT a bug. Do not invent western cities to balance it. Divider is the 100th meridian, confirmed by Raymond."
   },
   "sharesRemaining": 8,
-  "hoursPlaceholder": "e.g., 175 hrs."
+  "hoursPlaceholder": "e.g., 175 hrs.",
+  "taxRate": 0.07,
+  "costing": {
+    "program": "G3",
+    "url": "https://sf50program.bopaero.com/data/costing.json",
+    "lib": "https://sf50program.bopaero.com/assets/costing.js",
+    "_note": "Live source of truth: the SF50 costing published from the private costing editor. programCost, annualProgramFee, totalShares, availableShares and taxRate in this file are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. sharesRemaining is sales status and stays in this file."
+  }
 }

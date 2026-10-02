@@ -1,0 +1,35 @@
+name: costing sync
+
+# Keeps the calculators' BUILT-IN figures equal to the live SF50 costing.
+# The live calculator already reads the costing at page load; this only
+# refreshes the fallback shown first (and if the costing can't load), so it
+# never drifts for more than a day. Runs before the daily site-health check.
+on:
+  schedule:
+    - cron: '47 12 * * *'      # 12:47 UTC (~08:47 ET), 30 min before site health
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: costing-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare the fallback with the live costing
+        run: python3 tools/sync_costing.py
+      - name: Rebuild and publish if it moved
+        run: |
+          if git diff --quiet data/aircraft; then echo "Fallback already current."; exit 0; fi
+          python3 tools/build.py
+          for f in docs/*.js; do node --check "$f"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/aircraft docs snippets
+          git commit -m "Sync calculator fallback figures with the SF50 costing"
+          git pull --rebase -q && git push -q

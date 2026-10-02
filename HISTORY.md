@@ -370,6 +370,39 @@ compare before and after.
 
 Final copy verified on all seven pages.
 
+## SF50 calculator reads the SF50 costing (2026-10-02)
+
+**The SF50 calculator's figures now come from the SF50 costing**, the single source
+of truth Raymond edits in the private costing editor (sf50Program repo,
+sf50-costing.compilotrc.workers.dev). It is the same `costing.json` the SF50 Ownership
+Program Options document reads, calculated by the same `costing.js`, so a publish in
+the editor moves the document and all three SF50 pages together, with no rebuild here.
+
+- **Raymond's call: tax included**, so the calculator matches the document to the
+  dollar: G3 program cost **$542,794** per share (was $544,375, tax excluded) and Annual
+  Program Fee **$136,279** (was $136,178.438). The footnote now says the Program Cost
+  includes estimated sales tax of {{taxRate}} (7%), varying by jurisdiction.
+- `data/aircraft/sf50.json` → `costing: {program: "G3", url, lib}`. The engine shows
+  the data file's figures first, then loads `costing.js` + `costing.json` from
+  sf50program.bopaero.com and replaces programCost, annualProgramFee, totalShares,
+  availableShares and taxRate. It re-renders the footnotes and restores the live fuel
+  note (re-injecting the addendum replaces `#fuel-note`). If the costing can't load,
+  the built-in figures stay and a console warning names why.
+- **The data file's figures are now a FALLBACK.** `tools/sync_costing.py` (runs
+  costing.js under Node, so no second implementation of the math) plus
+  `.github/workflows/costing-sync.yml` (daily 12:47 UTC, before site health) keep them
+  equal to the live costing, rebuild and push when they move. `--check` exits 1 when
+  stale. It never touches `sharesRemaining` (sales status) and FAILS if the costing now
+  offers fewer shares than are recorded as remaining.
+- Verified in the testbed with three bundles: real data (correct); a WRONG fallback
+  ($111,111) with the real costing URL → page showed $542,794 (live costing wins);
+  wrong fallback with a broken costing URL → page showed the fallback (degrades safely).
+  Rebuilt bundle byte-identical to the verified build.
+- Scope: **G3 only**, the program on offer. G1/G2/G2+ get added to the calculator when
+  Raymond publicly offers them.
+- Freshness: GitHub Pages caches costing.json for up to 10 minutes, so the calculator
+  can trail a publish by that long.
+
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
 - **No `?v=` cache buster in stubs** — the stub text must never change, or every page
