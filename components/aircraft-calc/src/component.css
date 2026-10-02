@@ -231,21 +231,21 @@
       padding: 12px 26px;
       transition: background .15s ease, color .15s ease, border-color .15s ease;
     }
-    .calculator .button-section button:last-child {           /* Calculate */
+    .calculator .button-section #calculate-cost {
       background: var(--bop-orange);
       color: var(--bop-orange-ink);
       border: 2px solid var(--bop-orange);
     }
-    .calculator .button-section button:last-child:hover {
+    .calculator .button-section #calculate-cost:hover {
       background: var(--bop-orange-hover);
       border-color: var(--bop-orange-hover);
     }
-    .calculator .button-section button:first-child {          /* Clear */
+    .calculator .button-section #clear-calculator {
       background: transparent;
       color: var(--bop-text-muted);
       border: 2px solid var(--bop-line);
     }
-    .calculator .button-section button:first-child:hover {
+    .calculator .button-section #clear-calculator:hover {
       background: var(--bop-orange-soft);
       color: var(--bop-ink);
       border-color: var(--bop-orange);
@@ -390,4 +390,11 @@
     .calculator .program-sub { font-size: 11px; opacity: .85; line-height: 1.2; text-align: center; }
     @media (max-width: 600px) {
       .calculator .program-picker:not([hidden]) { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Results update as the visitor types; an incomplete or out-of-range entry gets
+       this quiet line instead of the old alert() pop-ups. */
+    .calculator .input-error {
+      margin: 8px 0 0; font-size: 14px; line-height: 1.35; font-family: var(--bop-font-body);
+      color: var(--bop-orange-soft, #FFE9DB);
     }

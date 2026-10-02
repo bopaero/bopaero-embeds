@@ -400,15 +400,35 @@ function initCalculator(root, spec) {
     }
   });
 
+  /* Results update as the visitor types (Raymond 2026-10-02: the Calculate button
+     was removed - leaving a field, Enter, the share count and the program already
+     recalculated, so the button only mattered if nothing else was touched). An
+     incomplete entry shows "-"; an out-of-range one gets a quiet inline line in
+     place of the old alert() pop-ups, which fired on every blur mid-typing. */
+  var errorEl = q('#input-error');
+  function showInputError(msg) {
+    if (!errorEl) return;
+    errorEl.textContent = msg || '';
+    errorEl.hidden = !msg;
+  }
+  function noResult(msg) {
+    blendedEl.innerText = '-';
+    if (blendedRow) blendedRow.hidden = false;
+    if (warnEl) warnEl.hidden = true;
+    showInputError(msg);
+  }
+  var trackTimer = null, lastTracked = null;
   function calculate() {
+    if (!yearsEl.value || !hoursEl.value) return noResult('');
     var years = Number(yearsEl.value);
     var hoursPerYear = Number(hoursEl.value);
     if (!Number.isInteger(years) || years < 1 || years > 20) {
-      alert('Please enter Years of Ownership as a whole number between 1 and 20.'); return;
+      return noResult('Enter Years of Ownership as a whole number from 1 to 20.');
     }
     if (!Number.isFinite(hoursPerYear) || hoursPerYear < 1) {
-      alert('Please enter estimated annual flying hours greater than zero.'); return;
+      return noResult('Enter estimated flying hours per year greater than zero.');
     }
+    showInputError('');
     /* Above the cap the per-hour figure is not just unhelpful, it is wrong in the
        flattering direction: it divides ONE share's cost by hours that one share is
        not entitled to fly, so the rate falls as the overage grows. Raymond's call
@@ -428,15 +448,19 @@ function initCalculator(root, spec) {
       if (blendedRow) blendedRow.hidden = false;
     }
     checkUsageCap(hoursPerYear);
-    track('calc_run', { aircraft: spec.id, years: years, hours: hoursPerYear,
-                        shares: shareCount(), overCap: !!cap });
+    /* One calc_run per settled entry, not one per keystroke now that results are live */
+    var run = { aircraft: spec.id, years: years, hours: hoursPerYear, shares: shareCount(), overCap: !!cap };
+    if (currentKey) run.program = currentKey;
+    var runKey = JSON.stringify(run);
+    clearTimeout(trackTimer);
+    trackTimer = setTimeout(function () {
+      if (runKey !== lastTracked) { lastTracked = runKey; track('calc_run', run); }
+    }, 1500);
   }
 
   function clearData() {
     yearsEl.value = ''; hoursEl.value = '';
-    blendedEl.innerText = '-';
-    if (blendedRow) blendedRow.hidden = false;
-    if (warnEl) warnEl.hidden = true;
+    noResult('');
     yearsEl.focus();
   }
 
@@ -543,10 +567,13 @@ function initCalculator(root, spec) {
   });
 
   renderPicker();
-  q('#calculate-cost').addEventListener('click', calculate);
   q('#clear-calculator').addEventListener('click', clearData);
 
+  var calcTimer = null;
+  function scheduleCalculate() { clearTimeout(calcTimer); calcTimer = setTimeout(calculate, 200); }
+
   [yearsEl, hoursEl].forEach(function (el) {
+    el.addEventListener('input', scheduleCalculate);
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { e.preventDefault(); calculate(); el.blur(); }
     });

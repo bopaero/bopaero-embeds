@@ -428,6 +428,21 @@ The SF50 calculator now lets a visitor choose the **ownership program**: **G3** 
   scheduling, share options, footnotes, live fuel note); a wrong G1 fallback corrected
   by the live costing; phone width 2×2 with no sideways scroll; SR22T unchanged.
 
+## Calculators update as you type; Calculate button removed (2026-10-02)
+
+Raymond noticed the Calculate button seemed to do nothing. It nearly didn't: leaving a
+field, Enter, the share count and the program picker already recalculated, so it only
+mattered if a visitor typed and touched nothing else. Removed from BOTH calculators (one
+engine). Results now update 200 ms after typing stops. An incomplete entry shows "-",
+an out-of-range one a quiet inline line (`#input-error`) instead of the old `alert()`
+pop-ups. `calc_run` telemetry fires once per settled entry (1.5 s), not per keystroke,
+so the funnel stays comparable. Button CSS now targets ids, not :first/:last-child.
+
+Also: the SF50 G3 footnote's "Program longevity … approximately ten (10) years" now
+reads "The Future Value Reserve is designed to support a five-year replacement cycle,
+replacing the aircraft with another new aircraft", matching the program document
+(Raymond). The SF50 pages' own copy never mentioned the cycle.
+
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
 - **No `?v=` cache buster in stubs** — the stub text must never change, or every page
