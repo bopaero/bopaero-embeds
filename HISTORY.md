@@ -462,6 +462,10 @@ replacing the aircraft with another new aircraft", matching the program document
   replaces `note` with an optional `detail`; costing.js `featureText()` gives each
   feature a `text` ("Depends on aircraft · standard from 2020") that the document and
   this calculator show. The calculator reads `text`, falling back to `note` (the old shape).
+- **Annual Program Fee footnote names the reserve** (Raymond, 2026-10-03): the fee
+  includes the reserve (costing annualTotal = fixed cost + management + reserve) but the
+  ** footnote left it out. New programs: "the Future Value Reserve"; pre-owned: "the
+  refresh reserve" (matching each addendum's * footnote). SR22T unchanged (no reserve).
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
