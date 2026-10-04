@@ -134,7 +134,9 @@
 "status": "included",
 "text": "Included"
 }
-}
+},
+"schedulingHours": 175,
+"schedulingDays": 35
 },
 {
 "key": "G2+",
@@ -158,7 +160,9 @@
 "status": "included",
 "text": "Included"
 }
-}
+},
+"schedulingHours": 350,
+"schedulingDays": 70
 },
 {
 "key": "G2",
@@ -184,7 +188,9 @@
 "text": "Depends on aircraft \u00b7 standard from 2020",
 "detail": "standard from 2020"
 }
-}
+},
+"schedulingHours": 350,
+"schedulingDays": 70
 },
 {
 "key": "G1",
@@ -209,7 +215,9 @@
 "status": "excluded",
 "text": "Not included"
 }
-}
+},
+"schedulingHours": 700,
+"schedulingDays": 140
 }
 ],
 "defaultProgram": "G3",
