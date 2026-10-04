@@ -49,8 +49,13 @@ function initCalculator(root, spec) {
     PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx' || f === 'features') spec[f] = undefined; });
     if (spec.addenda && pr.addendum) spec.addendumHtml = spec.addenda[pr.addendum];
     /* Scheduling scales with the number of owners: the aircraft's yearly hours
-       and days divided by the shares offered (Raymond 2026-10-02, proportional). */
-    if (spec.usage && spec.usage.aircraftHours && spec.availableShares) {
+       and days divided by the shares offered (Raymond 2026-10-02, proportional).
+       Costing-driven programs carry it ready-made (costing.js, since costing
+       v2026-10-04.1); otherwise it is worked out here. */
+    if (spec.usage && pr.schedulingHours) {
+      spec.usage.schedulingHours = pr.schedulingHours;
+      spec.usage.schedulingDays = pr.schedulingDays;
+    } else if (spec.usage && spec.usage.aircraftHours && spec.availableShares) {
       spec.usage.schedulingHours = Math.round(spec.usage.aircraftHours / spec.availableShares);
       spec.usage.schedulingDays = Math.round(spec.usage.aircraftDays / spec.availableShares);
     }
@@ -274,6 +279,8 @@ function initCalculator(root, spec) {
       if (!c) { console.warn('[bopaero:aircraft-calc] ' + spec.id + ' program ' + pr.key + ' is not in the costing'); return; }
       var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
                    totalShares: c.interests, availableShares: c.shares, approx: c.approx, features: c.features };
+      /* Shares remaining and scheduling are in the costing since v2026-10-04.1 */
+      ['sharesRemaining', 'schedulingHours', 'schedulingDays'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
       Object.keys(next).forEach(function (k) {
         var differs = typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005
                     : JSON.stringify(pr[k]) !== JSON.stringify(next[k]);

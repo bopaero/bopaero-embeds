@@ -10,9 +10,8 @@ fallback shown first and used if the costing can't be reached. This keeps them
 equal to the live costing, using the costing's OWN costing.js through Node, so
 there is still exactly one implementation of the program math.
 
-sharesRemaining is sales status, not costing: it is never written here, but if
-the costing now offers fewer shares than sharesRemaining says remain, this
-fails so a person decides.
+Shares remaining and scheduling (hours/days per share, from the aircraft's
+yearly hours/days) are kept in the costing too, since costing v2026-10-04.1.
 """
 import glob
 import json
@@ -23,7 +22,8 @@ import tempfile
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'approx', 'features')
+FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'sharesRemaining',
+          'schedulingHours', 'schedulingDays', 'approx', 'features')
 
 NODE = r"""
 const [lib, data] = process.argv.slice(1);
@@ -34,8 +34,10 @@ const d = C.derive(costing);
 const programs = {};
 for (const p of d.programs) programs[p.key] = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
                                                 totalShares: p.interests, availableShares: p.shares, approx: p.approx,
-                                                features: p.features || null };
-console.log(JSON.stringify({ version: d.version, taxRate: d.common.taxRate, featureLabels: d.featureLabels || null, programs }));
+                                                features: p.features || null, sharesRemaining: p.sharesRemaining,
+                                                schedulingHours: p.schedulingHours, schedulingDays: p.schedulingDays };
+console.log(JSON.stringify({ version: d.version, taxRate: d.common.taxRate, featureLabels: d.featureLabels || null,
+                             aircraftHours: d.common.aircraftHours, aircraftDays: d.common.aircraftDays, programs }));
 """
 
 
@@ -74,17 +76,22 @@ def main():
                 if lp is None:
                     sys.exit('costing-sync FAILED: %s program %s is not in costing %s' % (name, e['key'], live['version']))
                 for f in FIELDS:
-                    if e.get(f) != lp[f]:
+                    if f in lp and e.get(f) != lp[f]:
                         diffs.append((e['key'], f, e.get(f), lp[f]))
-                if isinstance(e.get('sharesRemaining'), int) and e['sharesRemaining'] > lp['availableShares']:
-                    sys.exit('costing-sync FAILED: %s %s says %d shares remain but costing %s offers %d — update sharesRemaining by hand'
-                             % (name, e['key'], e['sharesRemaining'], live['version'], lp['availableShares']))
             # Top level mirrors the default program (the health check and older readers use it)
             default = spec.get('defaultProgram') or cfg['program']
             top = dict(live['programs'][default], taxRate=live['taxRate'], featureLabels=live['featureLabels'])
+            scheduling = {}
+            if 'aircraftHours' in live and isinstance(spec.get('usage'), dict):
+                d = live['programs'][default]
+                scheduling = {'aircraftHours': live['aircraftHours'], 'aircraftDays': live['aircraftDays'],
+                              'schedulingHours': d['schedulingHours'], 'schedulingDays': d['schedulingDays']}
             for f, v in top.items():
                 if (f in spec or f == 'featureLabels') and spec.get(f) != v:
                     diffs.append(('(top level)', f, spec.get(f), v))
+            for f, v in scheduling.items():
+                if spec['usage'].get(f) != v:
+                    diffs.append(('(usage)', f, spec['usage'].get(f), v))
             if not diffs:
                 print('%s: fallback matches costing %s' % (name, live['version']))
                 continue
@@ -93,7 +100,8 @@ def main():
                 print('%s %s: %s %s -> %s (costing %s)' % (name, k, f, a_, b_, live['version']))
             if not check_only:
                 for e in spec.get('programs') or []:
-                    e.update({f: live['programs'][e['key']][f] for f in FIELDS})
+                    e.update({f: live['programs'][e['key']][f] for f in FIELDS if f in live['programs'][e['key']]})
+                spec.get('usage', {}).update(scheduling)
                 for f, v in top.items():
                     if f in spec or f == 'featureLabels':
                         spec[f] = v

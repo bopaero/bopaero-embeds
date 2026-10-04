@@ -466,6 +466,13 @@ replacing the aircraft with another new aircraft", matching the program document
   includes the reserve (costing annualTotal = fixed cost + management + reserve) but the
   ** footnote left it out. New programs: "the Future Value Reserve"; pre-owned: "the
   refresh reserve" (matching each addendum's * footnote). SR22T unchanged (no reserve).
+- **Shares remaining + scheduling moved into the SF50 costing** (Raymond, 2026-10-04):
+  costing v2026-10-04.1 holds common.aircraftHours/aircraftDays (1,400 / 280) and each
+  program's sharesRemaining; costing.js derives schedulingHours/Days per share. The
+  calculator takes all three from the costing when present (its own math/values stay as
+  the fallback), and sync_costing.py now syncs them (it no longer refuses on
+  sharesRemaining — costing.js rejects remaining > available). Verified with a test
+  costing: G3 7 of 9 remaining, 1,600 h → 200 / 400 / 800 h per share.
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
