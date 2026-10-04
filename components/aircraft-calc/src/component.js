@@ -31,7 +31,7 @@ function initCalculator(root, spec) {
      A costing-driven aircraft with no `programs` is treated as one program;
      an aircraft with neither (SR22T) skips all of this. */
   var PROGRAM_FIELDS = ['heading', 'programCost', 'annualProgramFee', 'totalShares',
-                        'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features'];
+                        'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features', 'maxHours'];
   var programs = Array.isArray(spec.programs) && spec.programs.length ? spec.programs : null;
   if (!programs && spec.costing) {
     var only = { key: spec.costing.program };
@@ -48,6 +48,8 @@ function initCalculator(root, spec) {
     currentKey = pr.key;
     PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx' || f === 'features') spec[f] = undefined; });
     if (spec.addenda && pr.addendum) spec.addendumHtml = spec.addenda[pr.addendum];
+    /* Capped programs (SR22T): the yearly flying hours per share come from the costing */
+    if (spec.usage && typeof pr.maxHours === 'number') spec.usage.maxHours = pr.maxHours;
     /* Scheduling scales with the number of owners: the aircraft's yearly hours
        and days divided by the shares offered (Raymond 2026-10-02, proportional).
        Costing-driven programs carry it ready-made (costing.js, since costing
@@ -269,10 +271,14 @@ function initCalculator(root, spec) {
      The figures in the data file are a FALLBACK: shown immediately, so nothing
      jumps or blanks while loading, and kept current daily by the costing-sync
      workflow. If the costing cannot load, visitors still see sound figures. */
+  /* Each aircraft's costing.js exposes its own global (SF50Costing, SR22TCosting)
+     so both calculators can share a page without one library replacing the other. */
+  var COSTING_GLOBAL = (spec.costing && spec.costing.global) || 'SF50Costing';
   function applyCosting(costing) {
-    var problems = window.SF50Costing.validate(costing);
+    var lib = window[COSTING_GLOBAL];
+    var problems = lib.validate(costing);
     if (problems.length) throw new Error('costing invalid: ' + problems.join('; '));
-    var d = window.SF50Costing.derive(costing);
+    var d = lib.derive(costing);
     var changed = false;
     programs.forEach(function (pr) {
       var c = d.byKey[pr.key];
@@ -280,7 +286,7 @@ function initCalculator(root, spec) {
       var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
                    totalShares: c.interests, availableShares: c.shares, approx: c.approx, features: c.features };
       /* Shares remaining and scheduling are in the costing since v2026-10-04.1 */
-      ['sharesRemaining', 'schedulingHours', 'schedulingDays'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
+      ['sharesRemaining', 'schedulingHours', 'schedulingDays', 'maxHours'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
       Object.keys(next).forEach(function (k) {
         var differs = typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005
                     : JSON.stringify(pr[k]) !== JSON.stringify(next[k]);
@@ -295,12 +301,12 @@ function initCalculator(root, spec) {
   }
 
   function loadCostingLib(url) {
-    if (window.SF50Costing) return Promise.resolve();
+    if (window[COSTING_GLOBAL]) return Promise.resolve();
     return new Promise(function (resolve, reject) {
-      var s = document.querySelector('script[data-sf50-costing]');
+      var s = document.querySelector('script[data-costing-lib="' + COSTING_GLOBAL + '"]');
       var fresh = !s;
-      if (fresh) { s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-sf50-costing', ''); }
-      s.addEventListener('load', function () { window.SF50Costing ? resolve() : reject(new Error('costing.js loaded without SF50Costing')); });
+      if (fresh) { s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-costing-lib', COSTING_GLOBAL); }
+      s.addEventListener('load', function () { window[COSTING_GLOBAL] ? resolve() : reject(new Error('costing.js loaded without ' + COSTING_GLOBAL)); });
       s.addEventListener('error', function () { reject(new Error('costing.js did not load')); });
       if (fresh) document.head.appendChild(s);
     });

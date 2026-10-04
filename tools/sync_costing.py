@@ -23,7 +23,7 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'sharesRemaining',
-          'schedulingHours', 'schedulingDays', 'approx', 'features')
+          'schedulingHours', 'schedulingDays', 'maxHours', 'approx', 'features')
 
 NODE = r"""
 const [lib, data] = process.argv.slice(1);
@@ -35,7 +35,8 @@ const programs = {};
 for (const p of d.programs) programs[p.key] = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
                                                 totalShares: p.interests, availableShares: p.shares, approx: p.approx,
                                                 features: p.features || null, sharesRemaining: p.sharesRemaining,
-                                                schedulingHours: p.schedulingHours, schedulingDays: p.schedulingDays };
+                                                schedulingHours: p.schedulingHours, schedulingDays: p.schedulingDays,
+                                                maxHours: p.maxHours };
 console.log(JSON.stringify({ version: d.version, taxRate: d.common.taxRate, featureLabels: d.featureLabels || null,
                              aircraftHours: d.common.aircraftHours, aircraftDays: d.common.aircraftDays, programs }));
 """
@@ -89,6 +90,15 @@ def main():
             for f, v in top.items():
                 if (f in spec or f == 'featureLabels') and spec.get(f) != v:
                     diffs.append(('(top level)', f, spec.get(f), v))
+            # A single-program aircraft (SR22T) keeps its figures at the top level and
+            # its yearly hours cap in usage.maxHours
+            single = not spec.get('programs')
+            if single:
+                for f in FIELDS:
+                    if f in top and f not in spec and top[f] is not None:
+                        diffs.append(('(top level)', f, None, top[f]))
+                if isinstance(top.get('maxHours'), int) and isinstance(spec.get('usage'), dict):
+                    scheduling['maxHours'] = top['maxHours']
             for f, v in scheduling.items():
                 if spec['usage'].get(f) != v:
                     diffs.append(('(usage)', f, spec['usage'].get(f), v))
@@ -103,7 +113,7 @@ def main():
                     e.update({f: live['programs'][e['key']][f] for f in FIELDS if f in live['programs'][e['key']]})
                 spec.get('usage', {}).update(scheduling)
                 for f, v in top.items():
-                    if f in spec or f == 'featureLabels':
+                    if f in spec or f == 'featureLabels' or (single and f in FIELDS and v is not None):
                         spec[f] = v
                 with open(path, 'w') as fh:
                     json.dump(spec, fh, indent=2, ensure_ascii=False)

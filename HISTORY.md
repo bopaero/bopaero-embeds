@@ -473,6 +473,16 @@ replacing the aircraft with another new aircraft", matching the program document
   the fallback), and sync_costing.py now syncs them (it no longer refuses on
   sharesRemaining — costing.js rejects remaining > available). Verified with a test
   costing: G3 7 of 9 remaining, 1,600 h → 200 / 400 / 800 h per share.
+- **SR22T calculator reads the SR22T costing** (Raymond, 2026-10-04): new repo
+  `bopaero/sr22tProgram` (document + costing + editor at
+  sf50-costing.compilotrc.workers.dev/sr22t) set up like the SF50. sr22t.json gets a
+  `costing` block (global `SR22TCosting` — each aircraft's costing.js has its own global
+  so both calculators can share a page). Program cost, fee, shares, remaining, features,
+  usage.maxHours and taxRate come from the costing; the stored figures are the fallback
+  (sync_costing.py now handles single-program aircraft and maxHours). Footnotes fixed to
+  match the costing: the Program Cost INCLUDES 7.8% use tax (it said taxes were not
+  included), and the Annual Program Fee names the Future Value Reserve. Verified with a
+  test costing (13 of 16, 100 h cap, higher price) and both calculators on one page.
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.

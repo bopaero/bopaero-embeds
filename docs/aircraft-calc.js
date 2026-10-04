@@ -234,10 +234,18 @@
 "id": "sr22t",
 "summaryTitle": "Cirrus SR22T Shared Ownership Cost Calculator",
 "heading": "2026 Cirrus SR22T G7+ GTS Shared Ownership Program",
+"costing": {
+"program": "G7+",
+"url": "https://bopaero.github.io/sr22tProgram/data/costing.json",
+"lib": "https://bopaero.github.io/sr22tProgram/assets/costing.js",
+"global": "SR22TCosting",
+"_note": "Live source of truth: the SR22T costing published from the private costing editor (https://sf50-costing.compilotrc.workers.dev/sr22t), set up 2026-10-04 like the SF50. programCost, annualProgramFee, totalShares, availableShares, sharesRemaining, approx, features, usage.maxHours and taxRate come from it; the figures stored here are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. Labels, headings and footnotes are edited here. Switch url/lib to https://sr22tprogram.bopaero.com once that DNS record exists."
+},
 "sharePositionLabel": "Ownership Cost (per share)",
 "totalShares": 16,
-"programCost": 100955.996,
-"annualProgramFee": 33975.783,
+"programCost": 100956,
+"annualProgramFee": 33975.8,
+"taxRate": 0.078,
 "fuel": {
 "label": "100LL",
 "priceKey": "avgas_100ll",
@@ -260,8 +268,8 @@
 }
 ],
 "availableShares": 15,
-"_dataVerified": "All figures confirmed by Raymond 2026-09-12. Program cost and annual fee corrected this session (per share; stored at full precision, engine rounds for display). totalShares 16 / availableShares 15 confirmed. FUEL AND USAGE FIGURES ARE CORRECT AND CONSERVATIVE BY DESIGN \u2014 18 gph, $2.00/hr oil, $110/hr fallback, 96-hour annual cap per share. Do NOT \"correct\" them upward to match book performance figures; the conservatism is intentional.",
-"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. Each share permits up to {{maxHours}} flying hours per year. Applicable taxes related to the aircraft purchase are not included.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
+"_dataVerified": "All figures confirmed by Raymond 2026-09-12. Program cost and annual fee corrected this session (per share; stored at full precision, engine rounds for display). totalShares 16 / availableShares 15 confirmed. FUEL AND USAGE FIGURES ARE CORRECT AND CONSERVATIVE BY DESIGN \u2014 18 gph, $2.00/hr oil, $110/hr fallback, 96-hour annual cap per share. Do NOT \"correct\" them upward to match book performance figures; the conservatism is intentional. \u2014 2026-10-04: figures now come from the SR22T costing (sr22tProgram), which reproduces these exactly ($1,514,340 / 15 = $100,956; $509,637 / 15 = $33,976).",
+"addendumHtml": "<p>The initial Program aircraft may be a Cirrus SR22T GTS G6 or G7, depending on availability. The spec'd aircraft will be acquired when a\n 2026 (or newer) aircraft becomes available from Cirrus Aircraft.</p> \n <p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. Each share permits up to {{maxHours}} flying hours per year. The Program Cost includes estimated use tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the Future Value Reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p> \n <p id=\"fuel-note\">***{{fuelLabel}} national avg \u00d7 {{gph}} gph + oil. TKS Anti-ice fluid additional when used.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner\u2019s realized net cost.</p>",
 "map": {
 "cities": [
 {
@@ -325,7 +333,24 @@
 }
 },
 "sharesRemaining": 14,
-"hoursPlaceholder": "e.g., 90 hrs."
+"hoursPlaceholder": "e.g., 90 hrs.",
+"approx": false,
+"features": {
+"connectivity": {
+"status": "included",
+"text": "Included \u00b7 Starlink",
+"detail": "Starlink"
+},
+"safeReturn": {
+"status": "included",
+"text": "Included"
+}
+},
+"maxHours": 96,
+"featureLabels": {
+"connectivity": "In-flight connectivity",
+"safeReturn": "Garmin Safe Return emergency autoland"
+}
 }
 };
 
@@ -556,7 +581,7 @@
        A costing-driven aircraft with no `programs` is treated as one program;
        an aircraft with neither (SR22T) skips all of this. */
     var PROGRAM_FIELDS = ['heading', 'programCost', 'annualProgramFee', 'totalShares',
-                          'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features'];
+                          'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features', 'maxHours'];
     var programs = Array.isArray(spec.programs) && spec.programs.length ? spec.programs : null;
     if (!programs && spec.costing) {
       var only = { key: spec.costing.program };
@@ -573,6 +598,8 @@
       currentKey = pr.key;
       PROGRAM_FIELDS.forEach(function (f) { if (pr[f] !== undefined) spec[f] = pr[f]; else if (f === 'programNote' || f === 'approx' || f === 'features') spec[f] = undefined; });
       if (spec.addenda && pr.addendum) spec.addendumHtml = spec.addenda[pr.addendum];
+      /* Capped programs (SR22T): the yearly flying hours per share come from the costing */
+      if (spec.usage && typeof pr.maxHours === 'number') spec.usage.maxHours = pr.maxHours;
       /* Scheduling scales with the number of owners: the aircraft's yearly hours
          and days divided by the shares offered (Raymond 2026-10-02, proportional).
          Costing-driven programs carry it ready-made (costing.js, since costing
@@ -794,10 +821,14 @@
        The figures in the data file are a FALLBACK: shown immediately, so nothing
        jumps or blanks while loading, and kept current daily by the costing-sync
        workflow. If the costing cannot load, visitors still see sound figures. */
+    /* Each aircraft's costing.js exposes its own global (SF50Costing, SR22TCosting)
+       so both calculators can share a page without one library replacing the other. */
+    var COSTING_GLOBAL = (spec.costing && spec.costing.global) || 'SF50Costing';
     function applyCosting(costing) {
-      var problems = window.SF50Costing.validate(costing);
+      var lib = window[COSTING_GLOBAL];
+      var problems = lib.validate(costing);
       if (problems.length) throw new Error('costing invalid: ' + problems.join('; '));
-      var d = window.SF50Costing.derive(costing);
+      var d = lib.derive(costing);
       var changed = false;
       programs.forEach(function (pr) {
         var c = d.byKey[pr.key];
@@ -805,7 +836,7 @@
         var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
                      totalShares: c.interests, availableShares: c.shares, approx: c.approx, features: c.features };
         /* Shares remaining and scheduling are in the costing since v2026-10-04.1 */
-        ['sharesRemaining', 'schedulingHours', 'schedulingDays'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
+        ['sharesRemaining', 'schedulingHours', 'schedulingDays', 'maxHours'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
         Object.keys(next).forEach(function (k) {
           var differs = typeof next[k] === 'number' ? Math.abs((pr[k] || 0) - next[k]) > 0.005
                       : JSON.stringify(pr[k]) !== JSON.stringify(next[k]);
@@ -820,12 +851,12 @@
     }
 
     function loadCostingLib(url) {
-      if (window.SF50Costing) return Promise.resolve();
+      if (window[COSTING_GLOBAL]) return Promise.resolve();
       return new Promise(function (resolve, reject) {
-        var s = document.querySelector('script[data-sf50-costing]');
+        var s = document.querySelector('script[data-costing-lib="' + COSTING_GLOBAL + '"]');
         var fresh = !s;
-        if (fresh) { s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-sf50-costing', ''); }
-        s.addEventListener('load', function () { window.SF50Costing ? resolve() : reject(new Error('costing.js loaded without SF50Costing')); });
+        if (fresh) { s = document.createElement('script'); s.src = url; s.async = true; s.setAttribute('data-costing-lib', COSTING_GLOBAL); }
+        s.addEventListener('load', function () { window[COSTING_GLOBAL] ? resolve() : reject(new Error('costing.js loaded without ' + COSTING_GLOBAL)); });
         s.addEventListener('error', function () { reject(new Error('costing.js did not load')); });
         if (fresh) document.head.appendChild(s);
       });
