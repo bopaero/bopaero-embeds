@@ -236,10 +236,10 @@
 "heading": "2026 Cirrus SR22T G7+ GTS Shared Ownership Program",
 "costing": {
 "program": "G7+",
-"url": "https://bopaero.github.io/sr22tProgram/data/costing.json",
-"lib": "https://bopaero.github.io/sr22tProgram/assets/costing.js",
+"url": "https://sr22tprogram.bopaero.com/data/costing.json",
+"lib": "https://sr22tprogram.bopaero.com/assets/costing.js",
 "global": "SR22TCosting",
-"_note": "Live source of truth: the SR22T costing published from the private costing editor (https://sf50-costing.compilotrc.workers.dev/sr22t), set up 2026-10-04 like the SF50. programCost, annualProgramFee, totalShares, availableShares, sharesRemaining, approx, features, usage.maxHours and taxRate come from it; the figures stored here are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. Labels, headings and footnotes are edited here. Switch url/lib to https://sr22tprogram.bopaero.com once that DNS record exists."
+"_note": "Live source of truth: the SR22T costing published from the private costing editor (https://sf50-costing.compilotrc.workers.dev/sr22t), set up 2026-10-04 like the SF50. programCost, annualProgramFee, totalShares, availableShares, sharesRemaining, approx, features, usage.maxHours and taxRate come from it; the figures stored here are the built-in FALLBACK, refreshed daily by .github/workflows/costing-sync.yml. Edit costing in the editor, never here. Labels, headings and footnotes are edited here."
 },
 "sharePositionLabel": "Ownership Cost (per share)",
 "totalShares": 16,
