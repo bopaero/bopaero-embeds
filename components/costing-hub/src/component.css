@@ -1,0 +1,30 @@
+.bop-hub { font-family: var(--bop-font, inherit); color: var(--bop-ink, #282D30); }
+.bop-hub .hub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.bop-hub .hub-card { min-width: 0; background: #fff; border: 1px solid #e3e5e8; border-top: 4px solid var(--bop-orange, #FF6700);
+  border-radius: 8px; padding: 18px 20px; box-shadow: var(--bop-shadow, 0 1px 3px rgba(0,0,0,.1)); }
+.bop-hub h3 { margin: 0 0 2px; font-size: 20px; color: var(--bop-navy, #003767); }
+.bop-hub .hub-sub { margin: 0 0 12px; font-size: 13px; color: #6b6b70; }
+.bop-hub .hub-ver { font-size: 13px; margin: 0 0 4px; }
+.bop-hub .hub-ver b { color: var(--bop-navy, #003767); }
+.bop-hub .hub-note { font-size: 13px; color: #444; margin: 0 0 12px; font-style: italic; }
+.bop-hub table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 4px 0 12px; }
+.bop-hub th { text-align: right; font-size: 12px; color: #6b6b70; font-weight: 600; padding: 4px 6px; border-bottom: 1px solid #e3e5e8; }
+.bop-hub th:first-child, .bop-hub td:first-child { text-align: left; }
+.bop-hub td { text-align: right; padding: 5px 6px; border-bottom: 1px solid #f0f1f3; white-space: nowrap; }
+.bop-hub td:first-child { font-weight: 700; }
+.bop-hub .hub-market { font-size: 13px; padding: 8px 10px; border-radius: 5px; background: #f3f4f6; margin: 0 0 14px; }
+.bop-hub .hub-market.attn { background: var(--bop-warn-bg, #fff6e5); color: var(--bop-warn-text, #7a4a00); border-left: 3px solid var(--bop-warn-edge, #e8820c); }
+.bop-hub .hub-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.bop-hub .hub-btn { display: inline-block; background: var(--bop-orange, #FF6700); color: #fff !important; text-decoration: none !important;
+  font-weight: 700; font-size: 14px; padding: 9px 16px; border-radius: 5px; }
+.bop-hub .hub-btn:hover { background: var(--bop-orange-hover, #e05a00); }
+.bop-hub .hub-link { font-size: 13px; color: var(--bop-navy, #003767) !important; }
+.bop-hub .hub-err { color: #b91c1c; font-size: 13px; }
+.bop-hub .hub-foot { font-size: 12px; color: #6b6b70; margin: 14px 0 0; }
+/* Phones: the card fits the screen; the table scrolls sideways if it must */
+.bop-hub .hub-tw { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+@media (max-width: 520px) {
+  .bop-hub .hub-card { padding: 14px 14px; }
+  .bop-hub table { font-size: 13px; }
+  .bop-hub th, .bop-hub td { padding: 4px 4px; }
+}

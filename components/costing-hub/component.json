@@ -1,0 +1,7 @@
+{
+  "name": "costing-hub",
+  "mode": "loader",
+  "entry": "initCostingHub",
+  "description": "Private costing dashboard (Raymond's password-protected page): per aircraft, the live published costing (version, date, change note, per-program Program Cost / Annual Program Fee / shares remaining), the latest market check, document + PDF links, and an Open editor button (the editors stay behind Cloudflare Access).",
+  "pages": []
+}

@@ -277,6 +277,12 @@
         "win-a-day-at-the-masters-sweepstakes"
       ]
     },
+    "costing-hub": {
+      "mode": "loader",
+      "description": "Private costing dashboard for Raymond's password-protected page: per aircraft the live published costing (version, date, note, per-program Program Cost / Annual Fee / remaining), latest market check, document + PDF links, Open editor. Read-only; editors stay behind Cloudflare Access.",
+      "pages": [],
+      "_private": "Its page is behind a Squarespace password, so only the bundle is health-checked (a page fetch sees the password form). Its telemetry arrives under that page's path."
+    },
     "lease-rates": {
       "mode": "loader",
       "description": "SR22T Leasing Program rates + footnotes, live from the SR22T costing's bridge aircraft lease terms (private costing editor). Replaces the two typed text blocks on sr22t-leasing-program.",

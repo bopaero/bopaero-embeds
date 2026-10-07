@@ -495,6 +495,13 @@ replacing the aircraft with another new aircraft", matching the program document
   photo grow ~60px). sync_costing.py + costing-sync.yml now cover data/lease. The build
   writes one stub per part (`snippets/lease-rates-sr22t-{rates,notes}.html`); stub
   comments now name the component's own data dir. Registry: pages [] until pasted.
+- **Private costing dashboard** `costing-hub` (Raymond, 2026-10-07) for a password-
+  protected Squarespace page: one card per aircraft with the PUBLISHED costing read live
+  through each aircraft's own costing.js (version, date, change note, per-program Program
+  Cost / Annual Fee / shares remaining), the market check read from raw GitHub (the check
+  saves with [skip ci], so the document sites' copies are stale), document/PDF links and an
+  Open editor button. The editors are NOT embedded: Cloudflare Access cookies don't survive
+  in a frame (Safari) and the editors send frame-ancestors 'none' on purpose.
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.
