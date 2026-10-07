@@ -280,9 +280,8 @@
     "lease-rates": {
       "mode": "loader",
       "description": "SR22T Leasing Program rates + footnotes, live from the SR22T costing's bridge aircraft lease terms (private costing editor). Replaces the two typed text blocks on sr22t-leasing-program.",
-      "pages": [],
-      "pending_pages": ["sr22t-leasing-program"],
-      "_pending": "Stub not pasted yet (2026-10-07). Move the page into `pages` once Raymond pastes snippets/lease-rates-sr22t.html, so the health check watches it."
+      "pages": ["sr22t-leasing-program"],
+      "_pasted": "2026-10-07: Raymond pasted snippets/lease-rates-sr22t-rates.html and -notes.html into two code blocks, replacing the typed rates and footnote text blocks."
     },
     "aircraft-calc": {
       "mode": "loader",
