@@ -277,6 +277,11 @@
         "win-a-day-at-the-masters-sweepstakes"
       ]
     },
+    "private-calculators": {
+      "mode": "private",
+      "description": "Raymond's password-protected Squarespace page with both calculators (snippets/calculators-private-page.html): the aircraft-calc loader, sf50 + sr22t, identical to the public pages. NOT health-checked - the page is behind a Squarespace password, so a fetch only sees the password form. Its telemetry arrives under that page's path.",
+      "pages": []
+    },
     "lease-rates": {
       "mode": "loader",
       "description": "SR22T Leasing Program rates + footnotes, live from the SR22T costing's bridge aircraft lease terms (private costing editor). Replaces the two typed text blocks on sr22t-leasing-program.",
