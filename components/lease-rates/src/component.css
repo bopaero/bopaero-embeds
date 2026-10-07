@@ -1,0 +1,11 @@
+/* Inherits the page's own Squarespace type (h3, .sqsrte-large, body p) through the
+   classes in component.html; only the spacing the two original blocks had between
+   them is set here. */
+.bop-lease .bop-lease-rates + .bop-lease-notes { margin-top: 2em; }   /* both parts in one mount */
+.bop-lease [hidden] { display: none !important; }
+.bop-lease [data-f] { white-space: nowrap; }
+/* Squarespace text blocks drop the first element's top margin and the last
+   element's bottom margin; the parts are wrapped, so do the same here or the
+   block grows ~15px and the layout grid (and the photo beside it) grows with it. */
+.bop-lease .bop-lease-rates > :first-child, .bop-lease .bop-lease-notes > :first-child { margin-top: 0; }
+.bop-lease .bop-lease-rates > :last-child, .bop-lease .bop-lease-notes > :last-child { margin-bottom: 0; }

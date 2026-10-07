@@ -25,11 +25,11 @@ jobs:
         run: python3 tools/sync_costing.py
       - name: Rebuild and publish if it moved
         run: |
-          if git diff --quiet data/aircraft; then echo "Fallback already current."; exit 0; fi
+          if git diff --quiet data/aircraft data/lease; then echo "Fallback already current."; exit 0; fi
           python3 tools/build.py
           for f in docs/*.js; do node --check "$f"; done
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/aircraft docs snippets
+          git add data/aircraft data/lease docs snippets
           git commit -m "Sync calculator fallback figures with the SF50 costing"
           git pull --rebase -q && git push -q

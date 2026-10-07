@@ -1,0 +1,14 @@
+{
+  "id": "sr22t",
+  "heading": "2026 Lease Rates",
+  "costing": {
+    "url": "https://sr22tprogram.bopaero.com/data/costing.json",
+    "_note": "Live source of truth: the SR22T costing's bridge aircraft lease terms (leaseMonthly, leaseIncludedHours, leaseExtraHourRate, leaseHourlyRate), edited in the private costing editor at https://sf50-costing.compilotrc.workers.dev/sr22t (Raymond 2026-10-07). The figures under `lease` are the FALLBACK shown first and if the costing can't load, kept current daily by tools/sync_costing.py. Edit rates in the editor, never here; the heading and wording are edited in the component."
+  },
+  "lease": {
+    "leaseMonthly": 5208,
+    "leaseIncludedHours": 14,
+    "leaseExtraHourRate": 372,
+    "leaseHourlyRate": 410
+  }
+}

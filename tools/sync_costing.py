@@ -12,6 +12,9 @@ there is still exactly one implementation of the program math.
 
 Shares remaining and scheduling (hours/days per share, from the aircraft's
 yearly hours/days) are kept in the costing too, since costing v2026-10-04.1.
+
+data/lease/<id>.json (the Leasing Program rates embed) is refreshed the same way
+from the costing's bridge aircraft lease terms (since 2026-10-07).
 """
 import glob
 import json
@@ -22,6 +25,7 @@ import tempfile
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LEASE_FIELDS = ('leaseMonthly', 'leaseIncludedHours', 'leaseExtraHourRate', 'leaseHourlyRate')
 FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'sharesRemaining',
           'schedulingHours', 'schedulingDays', 'maxHours', 'approx', 'features')
 
@@ -118,6 +122,30 @@ def main():
                 with open(path, 'w') as fh:
                     json.dump(spec, fh, indent=2, ensure_ascii=False)
                     fh.write('\n')
+    # Leasing Program rates (data/lease/<id>.json): the bridge aircraft's lease terms
+    for path in sorted(glob.glob(os.path.join(ROOT, 'data', 'lease', '*.json'))):
+        spec = json.load(open(path))
+        cfg = spec.get('costing')
+        if not cfg:
+            continue
+        costing = json.loads(get(cfg['url']))
+        bridge = costing.get('bridge') or {}
+        name = os.path.basename(path)
+        live = {f: bridge.get(f) for f in LEASE_FIELDS}
+        if not all(isinstance(v, (int, float)) for v in live.values()):
+            sys.exit('costing-sync FAILED: %s: costing %s has no complete bridge lease terms' % (name, costing.get('version')))
+        diffs = [(f, (spec.get('lease') or {}).get(f), v) for f, v in live.items() if (spec.get('lease') or {}).get(f) != v]
+        if not diffs:
+            print('%s: lease rates match costing %s' % (name, costing.get('version')))
+            continue
+        stale += 1
+        for f, a_, b_ in diffs:
+            print('%s lease: %s %s -> %s (costing %s)' % (name, f, a_, b_, costing.get('version')))
+        if not check_only:
+            spec['lease'] = live
+            with open(path, 'w') as fh:
+                json.dump(spec, fh, indent=2, ensure_ascii=False)
+                fh.write('\n')
     if check_only and stale:
         sys.exit(1)
 

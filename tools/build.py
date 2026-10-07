@@ -231,7 +231,7 @@ COLLECTION_STUB = """<!-- bop Aero embed: {name}
 
 DATA_STUB = """<!-- bop Aero embed: {name} ({aircraft})
      Managed in the bopaero-embeds repo — do not paste component code here.
-     Edit components/{name}/src/ or data/aircraft/{aircraft}.json, run tools/build.py, push.
+     Edit components/{name}/src/ or {ddir}/{aircraft}.json, run tools/build.py, push.
      Every page showing this aircraft updates. -->
 <div data-embed="{name}" data-aircraft="{aircraft}"></div>
 <script src="https://embeds.bopaero.com/{name}.js" defer></script>
@@ -344,8 +344,15 @@ def build(name):
         ver = hashlib.sha256(out.encode()).hexdigest()[:8]
         os.makedirs(os.path.join(ROOT, 'snippets'), exist_ok=True)
         for a in specs:
-            open(os.path.join(ROOT, 'snippets', f'{name}-{a}.html'), 'w').write(
-                DATA_STUB.format(name=name, aircraft=a, ver=ver))
+            stub = DATA_STUB.format(name=name, aircraft=a, ver=ver, ddir=meta.get('dataDir', 'data/aircraft'))
+            if meta.get('parts'):
+                # One stub per part, each pasted into the block it replaces (lease-rates)
+                for part in meta['parts']:
+                    open(os.path.join(ROOT, 'snippets', f'{name}-{a}-{part}.html'), 'w').write(
+                        stub.replace(f'data-aircraft="{a}"></div>', f'data-aircraft="{a}" data-part="{part}"></div>')
+                            .replace(f'({a})', f'({a}, {part})'))
+            else:
+                open(os.path.join(ROOT, 'snippets', f'{name}-{a}.html'), 'w').write(stub)
         print(f"  built docs/{name}.js  {len(out):,} bytes  v={ver}  aircraft: {', '.join(specs)}")
         return ver
 

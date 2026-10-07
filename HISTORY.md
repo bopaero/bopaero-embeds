@@ -483,6 +483,18 @@ replacing the aircraft with another new aircraft", matching the program document
   match the costing: the Program Cost INCLUDES 7.8% use tax (it said taxes were not
   included), and the Annual Program Fee names the Future Value Reserve. Verified with a
   test costing (13 of 16, 100 h cap, higher price) and both calculators on one page.
+- **Leasing page rates from the SR22T costing** (Raymond, 2026-10-07): new loader
+  embed `lease-rates` (data/lease/sr22t.json = wording + fallback). The rates are the
+  SR22T costing's bridge aircraft lease terms (leaseMonthly 5,208 incl. 14 hours,
+  leaseExtraHourRate 372, leaseHourlyRate 410 — Raymond confirmed the page's rates are
+  current), edited in the private costing editor. Two parts (`data-part="rates"` /
+  `"notes"`) replace the page's two typed text blocks so the layout (rates beside the
+  photo, footnotes full-width) is unchanged; every figure, including "fourteen (14)"
+  in the footnote, is filled from the costing. Matches Squarespace type by reusing its
+  classes; first/last-child margins zeroed like a text block (else the grid row and the
+  photo grow ~60px). sync_costing.py + costing-sync.yml now cover data/lease. The build
+  writes one stub per part (`snippets/lease-rates-sr22t-{rates,notes}.html`); stub
+  comments now name the component's own data dir. Registry: pages [] until pasted.
 
 ## Conventions
 - **Tags are incremental.** Raymond promotes a release to `stable-*` manually.

@@ -1,0 +1,11 @@
+{
+  "name": "lease-rates",
+  "mode": "loader",
+  "entry": "initLeaseRates",
+  "dataDir": "data/lease",
+  "parts": ["rates", "notes"],
+  "description": "Leasing Program rates + footnotes. Live from the aircraft's costing (the bridge aircraft's lease terms, edited in the private costing editor); data/lease/<id>.json holds the wording and the fallback figures.",
+  "instances": {
+    "sr22t": ["sr22t-leasing-program"]
+  }
+}
