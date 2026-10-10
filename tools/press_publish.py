@@ -67,6 +67,12 @@ def main():
             fail(issue, '`%s` still holds the placeholder text.' % f)
     if not re.match(r'^\d{4}-\d{2}-\d{2}$', post['date']):
         fail(issue, '`date` must be YYYY-MM-DD, got `%s`.' % post['date'])
+    # Everything raised by the watcher is someone else's coverage, so the link is
+    # not optional here: without it the post would be a summary of nothing. The
+    # length of the summary is enforced by the build (lint_summary_link).
+    if not post.get('link'):
+        fail(issue, "Missing `link`. A press mention is published as a short summary "
+                    "plus a link to the publisher's article.")
     if post.get('link') and 'news.google.com' in post['link']:
         fail(issue, '`link` is still a Google News redirect. It only resolves in a '
                     'browser, so it must not go on the live site - paste the '

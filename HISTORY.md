@@ -48,6 +48,17 @@ Only a summary and a link are ever published from a third-party mention, never t
 release text. Publishing is **refused** while `link:` is a Google News URL — those are
 JS-only redirects that do not resolve server-side, so they must not sit on the live site.
 
+**The summary-and-link rule is enforced by the build** (2026-10-10, `lint_summary_link()`
+in `build.py`). Until then it was only a sentence in the issue template: nothing stopped
+a whole article being pasted into `body:`, or a JSON file committed by hand. Now any post
+whose `link` leaves bopaero.com must have `linkText`, a publisher address rather than a
+Google or Bing redirect, and at most 600 characters of visible text. The check sits in
+`lint_news()` because all three routes to the page pass through it: a hand-committed
+file, a scheduled post, and the `publish` label. `press_publish.py` additionally refuses
+a press mention with no `link` at all. Our own releases are exempt - no `link`, or a
+link to bopaero.com - and run in full; to cite an outside page from one, put an `<a>`
+in the body. First post under the rule: the AIN article, 2026-10-01.
+
 ### Traps worth remembering
 - **Loose matches must not open issues.** The partner query's first live run returned
   a sports-car story naming none of our terms. An issue a day of that teaches the label
