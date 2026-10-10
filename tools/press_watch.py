@@ -163,8 +163,9 @@ gets published, verbatim. To skip it, just close this issue.
 News redirect that only resolves in a browser, so it is not fit to sit on the live
 site. Publishing is refused until it is changed.
 
-Only a summary and a link are published, never the release text, which is not ours to
-reproduce. Write `body:` in your own words.
+Only a summary and a link are published, never the article text, which is not ours to
+reproduce. Write `body:` in your own words, 600 characters at most - publishing is
+refused if it is longer.
 
 ```post
 date: {date}

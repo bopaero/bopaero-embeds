@@ -240,6 +240,55 @@ DATA_STUB = """<!-- bop Aero embed: {name} ({aircraft})
 
 NEWS_TAGS = ('Program', 'Aircraft', 'Event', 'Press', 'Community')
 
+# Someone else's coverage is published as a short summary and a link, never as their
+# text. A post whose `link` leaves these hosts is treated as that coverage. Our own
+# releases carry no `link` (or one to our own site) and may run in full.
+OWN_HOSTS = ('bopaero.com',)
+SUMMARY_MAX = 600             # characters of visible text; the AIN post is 299
+# Search-engine redirects: they resolve only in a browser, or not for long.
+REDIRECT_HOSTS = ('news.google.com', 'google.com', 'bing.com')
+
+
+def _host_in(host, names):
+    return any(host == n or host.endswith('.' + n) for n in names)
+
+
+def lint_summary_link(key, it):
+    """The summary-and-link rule, for every route a post can take to the page.
+
+    It lives in the build because all three routes end here: a JSON file committed
+    by hand, a scheduled post (news_schedule.py lints before releasing) and an
+    approved press-watch issue (press_publish.py runs this build). Raymond asked on
+    2026-10-10 that an article about us never be reprinted on our page: the text
+    belongs to the publisher. A length cap cannot tell a summary from a paste, but a
+    whole article does not fit in 600 characters, and that is the mistake to stop.
+    """
+    import html as htmllib
+    from urllib.parse import urlparse
+    link = str(it.get('link') or '').strip()
+    if not link:
+        return []
+    u = urlparse(link)
+    host = (u.hostname or '').lower()
+    if u.scheme not in ('http', 'https') or not host:
+        return [f'{key}: link {link!r} is not a full web address (https://...)']
+    if _host_in(host, OWN_HOSTS):
+        return []
+    problems = []
+    if _host_in(host, REDIRECT_HOSTS):
+        problems.append(f"{key}: link goes to {host}, a search-engine redirect. "
+                        f"Use the publisher's own address.")
+    if not str(it.get('linkText') or '').strip():
+        problems.append(f'{key}: a post that links to outside coverage needs linkText')
+    text = re.sub(r'\s+', ' ', htmllib.unescape(
+        re.sub(r'<[^>]+>', ' ', str(it.get('body') or '')))).strip()
+    if len(text) > SUMMARY_MAX:
+        problems.append(
+            f"{key}: body is {len(text)} characters and the post links to {host}. "
+            f"Outside coverage is published as a summary of at most {SUMMARY_MAX} "
+            f"characters plus the link - their article is not ours to reprint.")
+    return problems
+
 
 def lint_news(items):
     """Fail the build on a malformed post.
@@ -264,6 +313,7 @@ def lint_news(items):
         tag = it.get('tag')
         if tag and tag not in NEWS_TAGS:
             problems.append(f"{key}: tag {tag!r} is not one of {', '.join(NEWS_TAGS)}")
+        problems.extend(lint_summary_link(key, it))
     if problems:
         raise SystemExit('  BUILD FAILED news:\n    ' + '\n    '.join(problems))
 
