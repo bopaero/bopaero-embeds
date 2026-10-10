@@ -187,10 +187,10 @@
      */
     var HUB_AIRCRAFT = [
       { name: 'SF50 Vision Jet', sub: 'G3 new · G2+ / G2 / G1 pre-owned',
-        site: 'https://sf50program.bopaero.com', pdf: 'bop-Aero-SF50-Ownership-Program-Options.pdf',
+        site: 'https://sf50program.bopaero.com', pdf: 'bop-Aero-SF50-Ownership-Program-Options.pdf', expo: 'bop-Aero-SF50-Expo-1-Pager.pdf',
         global: 'SF50Costing', repo: 'bopaero/sf50Program', editor: 'https://sf50-costing.compilotrc.workers.dev/' },
       { name: 'SR22T G7+', sub: 'New G7+ GTS · bridge aircraft 2022 G6 GTS',
-        site: 'https://sr22tprogram.bopaero.com', pdf: 'bop-Aero-SR22T-Ownership-Program.pdf',
+        site: 'https://sr22tprogram.bopaero.com', pdf: 'bop-Aero-SR22T-Ownership-Program.pdf', expo: 'bop-Aero-SR22T-Expo-1-Pager.pdf',
         global: 'SR22TCosting', repo: 'bopaero/sr22tProgram', editor: 'https://sf50-costing.compilotrc.workers.dev/sr22t/' }
     ];
 
@@ -237,7 +237,8 @@
         card.innerHTML = '<h3>' + esc(a.name) + '</h3><p class="hub-sub">' + esc(a.sub) + '</p><div class="hub-body">Loading the published costing…</div>' +
           '<div class="hub-actions"><a class="hub-btn" target="_blank" rel="noopener" href="' + a.editor + '">Open editor</a>' +
           '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/">Document</a>' +
-          '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.pdf + '">PDF</a></div>';
+          '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.pdf + '">PDF</a>' +
+          '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.expo + '">Expo 1-pager</a></div>';
         cards.appendChild(card);
         var body = card.querySelector('.hub-body');
 
