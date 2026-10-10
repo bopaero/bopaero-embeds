@@ -55,6 +55,18 @@ JS-only redirects that do not resolve server-side, so they must not sit on the l
   summary never say "bop aero" are now summarised, not notified — and deliberately NOT
   recorded as seen, so the same story can still become an issue if our name appears in
   it later.
+- **`git diff` cannot see a file git has never tracked.** The workflow committed
+  `data/press-seen.json` only when `git diff --quiet` reported a change, which it never
+  does for a brand-new file. So the file was never committed, every run started with an
+  empty memory, and the first real mention (AIN, 2026-10-01) opened a new issue every
+  day: #3-#10. Fixed 2026-10-10 by staging first and comparing `--cached`; the file is
+  now seeded with that mention. The record step also runs after a failed watch step.
+- **One refused feed request must not fail the run.** Runs on 2026-10-06 and 2026-10-10
+  died in the watch step within five seconds; the others that week passed. The logs
+  were not readable when this was written, so the cause is inferred, not confirmed: a
+  single request to Google News turned away from a shared runner address. `fetch()` now
+  retries (5s, 20s, 60s) before failing, and every failure writes its reason as an
+  `::error::` annotation, so the next one says why on the run page and in the email.
 - **Google's `<description>` is usually just the headline again.** Using it as a summary
   puts the title on the page twice. Drafts now leave it blank with a prompt.
 - **A teaser must not render the full post.** The first homepage mock rendered the

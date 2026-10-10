@@ -31,11 +31,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: python3 tools/press_watch.py
       - name: Record what has been seen
+        # Runs even when the step above failed: an issue opened before the failure
+        # must still be recorded, or it is opened again tomorrow.
+        if: ${{ !cancelled() }}
         run: |
-          if ! git diff --quiet -- data/press-seen.json; then
+          # Staged first, then compared. A plain `git diff` ignores a file git has
+          # never tracked, so the first press-seen.json was never committed and the
+          # same mention opened a new issue every day (issues #3-#10).
+          git add data/press-seen.json
+          if ! git diff --cached --quiet -- data/press-seen.json; then
             git config user.name  "press-watch"
             git config user.email "raymond@bopaero.com"
-            git add data/press-seen.json
             git commit -m "press watch: record reviewed mentions"
             git pull --rebase
             git push

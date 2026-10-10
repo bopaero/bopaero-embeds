@@ -16,7 +16,8 @@ Nothing here publishes. A hit becomes a GitHub issue; adding the `publish` label
 is what turns it into a post (see press_publish.py).
 """
 import html as htmllib
-import json, os, re, subprocess, sys, urllib.parse, urllib.request
+import http.client
+import json, os, re, subprocess, sys, time, urllib.parse, urllib.request
 from datetime import datetime, timezone, timedelta
 from xml.etree import ElementTree as ET
 
@@ -38,6 +39,10 @@ QUERIES = [
 # Must return results. If it does not, the pipeline is broken, not the news quiet.
 CONTROL_QUERY = '"Cirrus Aircraft"'
 RETENTION_DAYS = 365
+# Seconds to wait before each retry of a failed feed request. Google News turns away
+# GitHub's shared runner addresses now and then, and one refused request used to fail
+# the whole run (2026-10-06 and 2026-10-10, both dead inside five seconds).
+RETRY_WAITS = (5, 20, 60)
 
 
 def clean(text):
@@ -48,9 +53,20 @@ def fetch(query):
     url = ('https://news.google.com/rss/search?q=' + urllib.parse.quote(query) +
            '&hl=en-US&gl=US&ceid=US:en')
     req = urllib.request.Request(url, headers={'User-Agent': 'bopaero-press-watch/1.0'})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        raw = r.read()
-    root = ET.fromstring(raw)
+    for attempt in range(len(RETRY_WAITS) + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                raw = r.read()
+            # Parsed inside the retry: a block page arrives as HTML with a 200.
+            root = ET.fromstring(raw)
+            break
+        except (OSError, http.client.HTTPException, ET.ParseError) as e:
+            if attempt == len(RETRY_WAITS):
+                sys.exit('FEED UNREACHABLE: %s failed %d times, last with %s: %s. '
+                         'Nothing was checked - treat today as unknown, not as quiet.'
+                         % (query, attempt + 1, type(e).__name__, e))
+            print('  retry %d for %s after %s: %s' % (attempt + 1, query, type(e).__name__, e))
+            time.sleep(RETRY_WAITS[attempt])
     out = []
     for it in root.findall('.//item'):
         src = it.find('source')
@@ -237,5 +253,21 @@ def main():
                     f.write('- %s (%s)\n' % (it['title'], it['source'] or '?'))
 
 
+def annotate(msg):
+    """Put the reason on the run page and in the annotations list. Without this a
+    failure reads only as "exit code 1" and the cause is a log download away."""
+    if os.environ.get('GITHUB_ACTIONS'):
+        print('::error title=press watch::' +
+              msg.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A'))
+
+
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if isinstance(e.code, str):
+            annotate(e.code)
+        raise
+    except Exception as e:
+        annotate('%s: %s' % (type(e).__name__, e))
+        raise
