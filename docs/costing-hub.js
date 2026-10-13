@@ -190,7 +190,7 @@
         site: 'https://sf50program.bopaero.com', pdf: 'bop-Aero-SF50-Ownership-Program-Options.pdf', expo: 'bop-Aero-SF50-Expo-1-Pager.pdf',
         global: 'SF50Costing', repo: 'bopaero/sf50Program', editor: 'https://sf50-costing.compilotrc.workers.dev/' },
       { name: 'SR22T G7+', sub: 'New G7+ GTS · bridge aircraft 2022 G6 GTS',
-        site: 'https://sr22tprogram.bopaero.com', pdf: 'bop-Aero-SR22T-Ownership-Program.pdf', expo: 'bop-Aero-SR22T-Expo-1-Pager.pdf',
+        site: 'https://sr22tprogram.bopaero.com', pdf: 'bop-Aero-SR22T-Ownership-Program.pdf', expo: 'bop-Aero-SR22T-Expo-1-Pager.pdf', financial: 'bop-Aero-SR22T-Financial-Detail-Sheet.pdf',
         global: 'SR22TCosting', repo: 'bopaero/sr22tProgram', editor: 'https://sf50-costing.compilotrc.workers.dev/sr22t/' }
     ];
 
@@ -238,7 +238,8 @@
           '<div class="hub-actions"><a class="hub-btn" target="_blank" rel="noopener" href="' + a.editor + '">Open editor</a>' +
           '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/">Document</a>' +
           '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.pdf + '">PDF</a>' +
-          '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.expo + '">Expo 1-pager</a></div>';
+          '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.expo + '">Expo 1-pager</a>' +
+          (a.financial ? '<a class="hub-link" target="_blank" rel="noopener" href="' + a.site + '/' + a.financial + '">Financial Detail Sheet</a>' : '') + '</div>';
         cards.appendChild(card);
         var body = card.querySelector('.hub-body');
 
