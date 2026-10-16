@@ -70,6 +70,20 @@ export function validate(body) {
   return { lead };
 }
 
+/* A visitor who already sent the form on another device (cookies are per device)
+   gives just their email (Raymond 2026-10-16). Returns { lead } or { error }. */
+export function validateReturning(body) {
+  if (!body || typeof body !== 'object') return { error: 'Please enter your email.' };
+  const lead = {
+    email: clean(body.email, MAX.email).toLowerCase(),
+    tool: TOOLS[body.tool] ? body.tool : '',
+    page: clean(body.page, MAX.page),
+  };
+  if (!EMAIL.test(lead.email)) return { error: 'Please enter a valid email address.' };
+  if (!lead.tool) return { error: 'Unknown tool.' };
+  return { lead };
+}
+
 export function splitName(full) {
   const parts = full.split(' ');
   if (parts.length === 1) return { firstName: parts[0], lastName: '' };
@@ -158,6 +172,22 @@ export async function fileLead(env, lead) {
   return { contactId, newContact: !!up.new, opportunityId: made.opportunity && made.opportunity.id, newOpportunity: true };
 }
 
+/* Returning visitor: unlock only if LeadConnector already has a contact with this
+   email. Nothing is created, so a mistyped or unknown email adds no empty contact;
+   the visitor is sent to the full form instead. Needs the token's contacts.readonly
+   scope (GET /contacts/search/duplicate, checked against the docs 2026-10-16).
+   Returns { found: false } or { found: true, contactId }. */
+export async function findReturning(env, lead) {
+  const q = new URLSearchParams({ locationId: env.LC_LOCATION_ID, email: lead.email });
+  const r = await lc(env, 'GET', '/contacts/search/duplicate?' + q);
+  const c = r && r.contact;
+  // Only an exact email match counts: the duplicate rule may also match on phone
+  if (!c || !c.id || String(c.email || '').toLowerCase() !== lead.email) return { found: false };
+  // Mark the extra tool on the contact (merged, never replacing its tags)
+  await lc(env, 'POST', `/contacts/${encodeURIComponent(c.id)}/tags`, { tags: ['calculator-lead', 'tool-' + TOOLS[lead.tool]] });
+  return { found: true, contactId: c.id };
+}
+
 function cors(origin) {
   return {
     'Access-Control-Allow-Origin': origin,
@@ -197,11 +227,24 @@ export default {
     // Honeypot: a field people never see. Bots fill it; pretend it worked.
     if (body && typeof body.website === 'string' && body.website.trim()) return json(200, { ok: true }, origin);
 
-    const { lead, error } = validate(body);
+    const returning = !!(body && body.returning === true);
+    const { lead, error } = returning ? validateReturning(body) : validate(body);
     if (error) return json(400, { error }, origin);
     if (!env.LC_TOKEN || !env.LC_LOCATION_ID || !env.LC_PIPELINE_ID) {
       console.error('bopaero-leads: LeadConnector is not configured');
       return json(503, { error: 'unavailable' }, origin);
+    }
+    if (returning) {
+      try {
+        const r = await findReturning(env, lead);
+        console.log(`returning tool=${lead.tool} found=${r.found}`);
+        if (!r.found) return json(404, { found: false, error: 'We don’t have that email yet. Please fill in the form.' }, origin);
+        return json(200, { ok: true }, origin);
+      } catch (e) {
+        // e.g. 401/403 until the token has contacts.readonly: the visitor uses the full form
+        console.error('bopaero-leads: returning lookup ' + e.message);
+        return json(502, { error: 'unavailable' }, origin);
+      }
     }
     try {
       const r = await fileLead(env, lead);

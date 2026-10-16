@@ -74,6 +74,11 @@
 .bop-embed .bop-lead-submit:hover { background: var(--bop-orange-hover); border-color: var(--bop-orange-hover); }
 .bop-embed .bop-lead-submit:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
 .bop-embed .bop-lead-submit:disabled { opacity: .7; cursor: progress; }
+/* "Already signed up on another device?" - a text link, not a second button */
+.bop-embed .bop-lead-switch { align-self: center; margin: -2px 0 0; padding: 4px 6px; border: 0; background: none;
+  font-family: var(--bop-font-body); font-size: 14px; color: var(--bop-text); text-decoration: underline; cursor: pointer; }
+.bop-embed .bop-lead-switch:focus-visible { outline: 2px solid var(--bop-orange); outline-offset: 2px; }
+.bop-embed .bop-lead label[hidden] { display: none; }
 .bop-embed .bop-lead-fine { margin: 0; font-family: var(--bop-font-body); font-size: 12.5px; line-height: 1.4; color: var(--bop-text-muted); }
 .bop-embed .bop-lead-fine a { color: var(--bop-text); }
 /* Off-screen, not display:none - some bots skip fields that are display:none. */

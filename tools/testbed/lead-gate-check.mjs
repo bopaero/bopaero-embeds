@@ -75,5 +75,53 @@ for (const view of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'phon
   is('no console errors', b.consoleErrors, []);
   await b.close();
 }
+// Returning visitor: signed up on another device, so this device has no cookie
+for (const view of [{ name: 'desktop', width: 1280, height: 900 }, { name: 'phone', width: 390, height: 844, mobile: true }]) {
+  console.log(`\n${view.name} · returning visitor`);
+  const b = await launch(view);
+  await b.goto(BASE + '/tools/testbed/lead-gate.html');
+  const R = '[data-embed="aircraft-calc"]';
+  const visible = (sel) => `(function(){ var e = document.querySelector('${R} ' + ${JSON.stringify(sel)}); return !!e && e.offsetParent !== null; })()`;
+  is('switch link offered', await b.eval(`document.querySelector('${R} .bop-lead-switch').textContent`), 'Already signed up on another device?');
+  await b.click(`${R} .bop-lead-switch`);
+  await b.sleep(150);
+  is('email-only: name hidden', await b.eval(visible('input[name=name]')), false);
+  is('email-only: phone/company/program hidden', await b.eval(`[...document.querySelectorAll('${R} .bop-lead [data-full]')].every(function(l){ return l.offsetParent === null; })`), true);
+  is('email-only: email shown', await b.eval(visible('input[name=email]')), true);
+  is('email-only: button says Continue', await b.eval(`document.querySelector('${R} .bop-lead-submit').textContent`), 'Continue');
+  await b.screenshot(`${OUT}/lead-gate-${view.name}-4-returning.png`, `${R} .bop-lead-panel`);
+
+  // unknown email: back to the full form, email kept, nothing unlocked
+  await b.type(`${R} .bop-lead input[name=email]`, 'new@example.com');
+  await b.click(`${R} .bop-lead-submit`);
+  await b.sleep(800);
+  is('unknown: full form back', await b.eval(visible('input[name=name]')), true);
+  is('unknown: email kept', await b.eval(`document.querySelector('${R} .bop-lead input[name=email]').value`), 'new@example.com');
+  is('unknown: message', await b.eval(`document.querySelector('${R} .bop-lead-error').textContent`), 'We don’t have that email yet. Please fill in the form.');
+  is('unknown: still locked, no cookie', [await b.eval(`document.querySelector('${R} details').classList.contains('lead-locked')`), await b.eval(`document.cookie.includes('bopaero_lead')`)], [true, false]);
+  await b.screenshot(`${OUT}/lead-gate-${view.name}-5-not-found.png`, `${R} .bop-lead-panel`);
+
+  // lookup unavailable: full form back with a message
+  await b.click(`${R} .bop-lead-switch`);
+  await b.type(`${R} .bop-lead input[name=email]`, 'down@example.com');
+  await b.click(`${R} .bop-lead-submit`);
+  await b.sleep(800);
+  is('lookup down: full form + message', [await b.eval(visible('input[name=name]')), await b.eval(`/couldn.t check/.test(document.querySelector('${R} .bop-lead-error').textContent)`)], [true, true]);
+
+  // known email: unlocks with no name
+  await b.click(`${R} .bop-lead-switch`);
+  await b.type(`${R} .bop-lead input[name=email]`, 'known@example.com');
+  await b.click(`${R} .bop-lead-submit`);
+  await b.sleep(1200);
+  is('known: unlocked', await b.eval(`document.querySelector('${R} details').classList.contains('lead-locked')`), false);
+  const sent = await (await fetch(BASE + '/mock/leads')).json();
+  const last = sent[sent.length - 1];
+  is('known: sent email only', [last.returning, last.email, last.name, last.tool], [true, 'known@example.com', undefined, 'aircraft-calc']);
+  const ck = (await b.cookies()).find((c) => c.name === 'bopaero_lead');
+  is('known: cookie set', ck && ck.value, '1');
+  is('no console errors', b.consoleErrors, []);
+  await b.close();
+}
+
 console.log(`\n${pass} passed, ${fail} failed   screenshots: ${OUT}/lead-gate-*.png`);
 process.exit(fail ? 1 : 0);

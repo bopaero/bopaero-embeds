@@ -1,7 +1,7 @@
 /* Runs with: node workers/leads.test.mjs   (or: bash workers/test.sh)
    LeadConnector is mocked: fetch is replaced, every call is recorded, and the
    assertions check exactly what would have been sent. Nothing leaves the machine. */
-import worker, { validate, originAllowed, splitName, rateLimited, _resetRate } from './leads.js';
+import worker, { validate, validateReturning, originAllowed, splitName, rateLimited, _resetRate } from './leads.js';
 
 let pass = 0, fail = 0;
 const is = (label, got, want) => {
@@ -12,7 +12,7 @@ const is = (label, got, want) => {
 
 const ENV = { LC_TOKEN: 'tok', LC_LOCATION_ID: 'loc1', LC_PIPELINE_ID: 'pipe1', LC_STAGE_ID: 'stage1' };
 let calls = [];
-function mockLC({ existingOpp = false, upsertStatus = 200, isNew = true } = {}) {
+function mockLC({ existingOpp = false, upsertStatus = 200, isNew = true, dup = null, dupStatus = 200 } = {}) {
   calls = [];
   globalThis.fetch = async (url, init) => {
     const u = new URL(url);
@@ -22,6 +22,7 @@ function mockLC({ existingOpp = false, upsertStatus = 200, isNew = true } = {}) 
     if (u.pathname === '/contacts/upsert') return upsertStatus === 200
       ? reply(200, { new: isNew, contact: { id: 'c123', email: 'echo@example.com' } })
       : reply(upsertStatus, { message: 'nope', email: 'echo@example.com' });
+    if (u.pathname === '/contacts/search/duplicate') return dupStatus === 200 ? reply(200, { contact: dup }) : reply(dupStatus, { message: 'scope' });
     if (u.pathname === '/contacts/c123/tags') return reply(201, { tags: [] });
     if (u.pathname === '/opportunities/search') return reply(200, { opportunities: existingOpp ? [{ id: 'o-old' }] : [] });
     if (u.pathname === '/opportunities/') return reply(201, { opportunity: { id: 'o-new' } });
@@ -125,6 +126,38 @@ for (let i = 0; i < 9; i++) limited = rateLimited('9.9.9.9', 1000 + i);
 is('9th try in 10 min is limited', limited, true);
 is('other IPs unaffected', rateLimited('8.8.8.8', 1000), false);
 is('window expires', rateLimited('9.9.9.9', 1000 + 11 * 60 * 1000), false);
+
+// returning visitor (signed up on another device): email only, nothing created
+_resetRate();
+const ret = { returning: true, email: ' Jane@Example.com ', tool: 'tripcalc', page: '/' };
+is('returning: email required', validateReturning({ ...ret, email: 'x' }).error, 'Please enter a valid email address.');
+is('returning: no name needed', validateReturning(ret).lead, { email: 'jane@example.com', tool: 'tripcalc', page: '/' });
+is('returning: unknown tool refused', validateReturning({ ...ret, tool: 'x' }).error, 'Unknown tool.');
+mockLC({ dup: { id: 'c123', email: 'jane@example.com' } });
+res = await worker.fetch(post(ret, 'https://tripcalc.bopaero.com', '7.7.7.1'), ENV);
+is('returning: known email unlocks', [res.status, await res.json()], [200, { ok: true }]);
+is('returning: looked up by location + normalised email', calls[0].query, { locationId: 'loc1', email: 'jane@example.com' });
+is('returning: tool tag merged, nothing else written', calls.map((c) => c.method + ' ' + c.path), ['GET /contacts/search/duplicate', 'POST /contacts/c123/tags']);
+is('returning: tags', calls[1].body, { tags: ['calculator-lead', 'tool-tripcalc'] });
+mockLC({ dup: null });
+res = await worker.fetch(post(ret, 'https://tripcalc.bopaero.com', '7.7.7.2'), ENV);
+let rj = await res.json();
+is('returning: unknown email → 404 + message, no writes', [res.status, rj.found, calls.length], [404, false, 1]);
+is('returning: message for the visitor', rj.error, 'We don’t have that email yet. Please fill in the form.');
+mockLC({ dup: { id: 'c999', email: 'someone.else@example.com' } });
+res = await worker.fetch(post(ret, 'https://bopaero.com', '7.7.7.3'), ENV);
+is('returning: a phone-rule match on another email does not count', [res.status, calls.length], [404, 1]);
+mockLC({ dupStatus: 403 });
+const errs2 = []; const oe = console.error; console.error = (m) => errs2.push(String(m));
+res = await worker.fetch(post(ret, 'https://bopaero.com', '7.7.7.4'), ENV);
+console.error = oe;
+is('returning: missing scope → 502, never unlocks', [res.status, (await res.json()).ok], [502, undefined]);
+is('returning: error log carries no email', errs2.some((m) => /example\.com/.test(m)), false);
+mockLC({ dup: { id: 'c123', email: 'jane@example.com' } });
+res = await worker.fetch(post({ ...ret, returning: 'yes' }, 'https://bopaero.com', '7.7.7.5'), ENV);
+is('returning must be literally true (else the full form rules apply)', res.status, 400);
+res = await worker.fetch(post({ ...ret, website: 'spam' }, 'https://bopaero.com', '7.7.7.6'), ENV);
+is('returning: honeypot still fakes success without a lookup', [res.status, calls.length], [200, 0]);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

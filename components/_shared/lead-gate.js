@@ -13,6 +13,12 @@
    The cookie holds no personal data: just bopaero_lead=1. The privacy policy
    already covers cookies "for analytics and functionality".
 
+   Returning visitors (Raymond 2026-10-16): cookies are per device, so someone who
+   sent the form on their desktop meets it again on their phone. "Already signed up
+   on another device?" switches the form to email only; the Worker unlocks only if
+   LeadConnector already has that email, otherwise the full form comes back with
+   the email kept.
+
    No silent unlock: if the Worker cannot be reached the visitor sees an error and
    can retry. Raymond wants the lead; a gate that opens on failure collects none.
    ========================================================================== */
@@ -69,20 +75,21 @@
       '<form class="bop-lead" novalidate>' +
         '<h3 class="bop-lead-title">' + esc(opts.title || 'See your results') + '</h3>' +
         '<p class="bop-lead-intro">' + esc(opts.intro || 'Tell us where to reach you and your results appear right here.') + '</p>' +
-        '<label for="' + id('name') + '"><span>Name <span class="bop-lead-req">(required)</span></span>' +
+        '<label data-full for="' + id('name') + '"><span>Name <span class="bop-lead-req">(required)</span></span>' +
           '<input id="' + id('name') + '" name="name" type="text" autocomplete="name" maxlength="100" required></label>' +
         '<label for="' + id('email') + '"><span>Email <span class="bop-lead-req">(required)</span></span>' +
           '<input id="' + id('email') + '" name="email" type="email" autocomplete="email" inputmode="email" maxlength="254" required></label>' +
-        '<label for="' + id('phone') + '">Phone' +
+        '<label data-full for="' + id('phone') + '">Phone' +
           '<input id="' + id('phone') + '" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="32"></label>' +
-        '<label for="' + id('company') + '">Company' +
+        '<label data-full for="' + id('company') + '">Company' +
           '<input id="' + id('company') + '" name="company" type="text" autocomplete="organization" maxlength="120"></label>' +
-        '<label for="' + id('program') + '">Desired program' +
+        '<label data-full for="' + id('program') + '">Desired program' +
           '<select id="' + id('program') + '" name="program">' + options + '</select></label>' +
         /* Honeypot: hidden from people and from screen readers; bots fill it in. */
         '<div class="bop-lead-hp" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>' +
         '<p class="bop-lead-error" role="alert" hidden></p>' +
         '<button type="submit" class="bop-lead-submit">Show my results</button>' +
+        '<button type="button" class="bop-lead-switch">Already signed up on another device?</button>' +
         '<p class="bop-lead-fine">We’ll only use this to follow up about bop Aero programs. ' +
           '<a href="https://bopaero.com/privacy-policy" target="_blank" rel="noopener">Privacy policy</a></p>' +
       '</form>';
@@ -90,6 +97,24 @@
     var form = host.querySelector('form');
     var err = form.querySelector('.bop-lead-error');
     var btn = form.querySelector('.bop-lead-submit');
+    var sw = form.querySelector('.bop-lead-switch');
+    var intro = form.querySelector('.bop-lead-intro');
+    var introText = intro.textContent;
+    var SUBMIT = 'Show my results', CONTINUE = 'Continue';
+    var returning = false;
+    /* Email-only mode for a visitor who already sent the form elsewhere */
+    function setReturning(on) {
+      returning = on;
+      form.querySelectorAll('[data-full]').forEach(function (l) { l.hidden = on; });
+      intro.textContent = on ? 'Enter the email you used before and your results appear right here.' : introText;
+      sw.textContent = on ? 'New here? Use the full form' : 'Already signed up on another device?';
+      btn.textContent = on ? CONTINUE : SUBMIT;
+      err.hidden = true;
+    }
+    sw.addEventListener('click', function () {
+      setReturning(!returning);
+      (returning ? form.elements.email : form.elements.name).focus();
+    });
     function fail(msg, field) {
       err.textContent = msg; err.hidden = false;
       if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); }
@@ -100,15 +125,16 @@
       form.querySelectorAll('[aria-invalid]').forEach(function (f) { f.removeAttribute('aria-invalid'); });
       var f = form.elements;
       var name = f.name.value.trim(), email = f.email.value.trim();
-      if (!name) return fail('Please enter your name.', f.name);
+      if (!returning && !name) return fail('Please enter your name.', f.name);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail('Please enter a valid email address.', f.email);
-      var body = {
-        name: name, email: email,
-        phone: f.phone.value.trim(), company: f.company.value.trim(), program: f.program.value,
-        website: f.website.value,
-        tool: opts.tool, page: location.pathname
-      };
-      btn.disabled = true; btn.textContent = 'Sending…';
+      var wasReturning = returning;
+      var body = wasReturning
+        ? { returning: true, email: email, website: f.website.value, tool: opts.tool, page: location.pathname }
+        : { name: name, email: email,
+            phone: f.phone.value.trim(), company: f.company.value.trim(), program: f.program.value,
+            website: f.website.value,
+            tool: opts.tool, page: location.pathname };
+      btn.disabled = true; btn.textContent = wasReturning ? 'Checking…' : 'Sending…';
       fetch(LEAD_ENDPOINT, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
       }).then(function (r) {
@@ -116,7 +142,16 @@
       }).then(function (res) {
         if (res.ok && res.j.ok) {
           rememberLead();
-          if (opts.onUnlock) opts.onUnlock({ program: body.program });
+          if (opts.onUnlock) opts.onUnlock({ program: body.program || '', returning: wasReturning });
+          return;
+        }
+        /* Email not on file, or the lookup is unavailable: back to the full form,
+           email kept, so the visitor can still get in */
+        if (wasReturning && res.status !== 400 && res.status !== 429) {
+          setReturning(false);
+          fail(res.status === 404 && res.j.error ? res.j.error
+            : 'We couldn’t check that email just now. Please fill in the form.');
+          f.name.focus();
           return;
         }
         /* 400/429 carry a message meant for the visitor; anything else is ours */
@@ -126,7 +161,7 @@
       }).catch(function () {
         fail('Sorry, we couldn’t reach our server. Please check your connection and try again.');
       }).then(function () {
-        btn.disabled = false; btn.textContent = 'Show my results';
+        btn.disabled = false; btn.textContent = returning ? CONTINUE : SUBMIT;
       });
     });
     return form;
