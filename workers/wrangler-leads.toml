@@ -1,0 +1,20 @@
+# Calculator lead gate -> LeadConnector. Separate from telemetry on purpose:
+# telemetry is anonymous by design, this one handles contact details.
+# Deploy:  npx wrangler deploy -c wrangler-leads.toml   (see README.md, "leads worker")
+name = "bopaero-leads"
+main = "leads.js"
+compatibility_date = "2026-01-01"
+preview_urls = false
+
+# Not secret: IDs that say WHERE leads go. Fill in before the first deploy
+# (list them with the API once the token exists - see README.md).
+[vars]
+LC_LOCATION_ID = ""
+LC_PIPELINE_ID = ""
+LC_STAGE_ID = ""
+LC_API_VERSION = "v3"
+
+# LC_TOKEN (LeadConnector Private Integration token) is a SECRET, never in this file:
+#   pbpaste | npx wrangler secret put LC_TOKEN -c wrangler-leads.toml
+# Pipe it - `wrangler secret put` reports success on an EMPTY value when run
+# non-interactively. Then: npx wrangler secret list -c wrangler-leads.toml

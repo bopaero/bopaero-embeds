@@ -635,6 +635,36 @@ function initCalculator(root, spec) {
     if (yearsEl.value && hoursEl.value) calculate();
   });
 
+  /* ── lead gate ─────────────────────────────────────────────────────────
+     Raymond 2026-10-16: results show after a short contact form, once per
+     visitor (components/_shared/lead-gate.js). The inputs stay usable; the
+     results card is replaced by the form until it is sent. A visitor who has
+     already sent it - here, on another calculator, or in TripCalc - never sees it. */
+  (function mountLeadGate() {
+    var gate = window.__bopLeadGate;
+    var out = q('.output-section');
+    if (!gate || !out || gate.hasLead()) return;
+    root.classList.add('lead-locked');
+    var panel = document.createElement('div');
+    panel.className = 'bop-lead-panel';
+    out.parentNode.insertBefore(panel, out);
+    var preselect = spec.id === 'sr22t' ? 'sr22t'
+      : spec.id === 'sf50' ? (currentKey && currentKey !== 'G3' ? 'sf50-preowned' : 'sf50-g3') : '';
+    gate.renderForm(panel, {
+      tool: 'aircraft-calc',
+      program: preselect,
+      title: 'See your results',
+      intro: 'Enter your details to see your ' + (spec.id === 'sr22t' ? 'SR22T' : 'SF50') +
+             ' ownership costs. You’ll only need to do this once.',
+      onUnlock: function () {
+        root.classList.remove('lead-locked');
+        panel.parentNode.removeChild(panel);
+        if (yearsEl.value && hoursEl.value) calculate();
+        try { out.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+      }
+    });
+  })();
+
   renderPicker();
   q('#clear-calculator').addEventListener('click', clearData);
 

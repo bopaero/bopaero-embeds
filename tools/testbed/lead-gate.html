@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>lead gate testbed</title>
+<style>body{font:14px system-ui;margin:0;padding:12px;background:#003767}h2{color:#fff;margin:10px 0}</style>
+</head><body>
+<h2>aircraft-calc · SF50 (lead gate)</h2>
+<div data-embed="aircraft-calc" data-aircraft="sf50"></div>
+<!-- The form posts to the local mock (tools/testbed/lead_mock.py) instead of the
+     Worker. The override is honoured on localhost / 127.0.0.1 only. -->
+<script>window.__bopLeadEndpoint = '/mock/lead';</script>
+<script>document.write('<scr'+'ipt src="/docs/aircraft-calc.js?nc='+Date.now()+'" defer></scr'+'ipt>');</script>
+</body></html>

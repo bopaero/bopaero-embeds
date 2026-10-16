@@ -355,6 +355,17 @@ def build(name):
                      encoding='utf-8').read()
     js = telemetry + '\n' + js
 
+    # Opt-in shared modules (component.json "shared": ["lead-gate"]): the module's JS
+    # goes after the collector and before the component, its CSS after the
+    # component's. Components that do not list one build byte-for-byte as before.
+    for mod in meta.get('shared', []):
+        base = os.path.join(ROOT, 'components', '_shared', mod)
+        mjs = open(base + '.js', encoding='utf-8').read()
+        idx = js.index(telemetry) + len(telemetry)
+        js = js[:idx] + '\n' + mjs + js[idx:]
+        if os.path.exists(base + '.css'):
+            css = css + '\n' + open(base + '.css', encoding='utf-8').read()
+
     body = '\n'.join('  ' + l if l.strip() else l for l in js.splitlines())
 
     ddir = os.path.join(ROOT, meta['dataDir']) if meta.get('dataDir') else os.path.join(cdir, 'data')

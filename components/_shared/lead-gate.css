@@ -1,0 +1,86 @@
+/* ── lead gate (components/_shared/lead-gate.js) ────────────────────────────
+   Sits where the results would be, on the same navy card surface, so it reads
+   as the next step of the calculator rather than a pop-up in front of it. */
+.bop-embed .bop-lead-panel {
+  background: var(--bop-surface);
+  border: 1px solid var(--bop-line);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.3);
+  padding: 18px 16px 14px;
+}
+.bop-embed .bop-lead { position: relative; display: flex; flex-direction: column; gap: 12px; margin: 0; }
+.bop-embed .bop-lead-title {
+  margin: 0;
+  font-family: var(--bop-font-head);
+  letter-spacing: var(--bop-head-ls);
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--bop-text);
+}
+.bop-embed .bop-lead-intro { margin: 0; font-family: var(--bop-font-body); font-size: 15px; line-height: 1.45; color: var(--bop-text-muted); }
+.bop-embed .bop-lead label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--bop-font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--bop-label);
+}
+.bop-embed .bop-lead-req { font-weight: 400; color: var(--bop-text-muted); font-size: 13px; }
+.bop-embed .bop-lead input,
+.bop-embed .bop-lead select {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 11px 12px;
+  font-family: var(--bop-font-body);
+  font-size: 16px;               /* 16px stops iOS zooming into the field */
+  text-align: left;
+  color: var(--bop-ink);
+  background: var(--bop-card);
+  border: 1px solid var(--bop-line);
+  border-radius: 6px;
+}
+.bop-embed .bop-lead select { appearance: none; cursor: pointer; }
+.bop-embed .bop-lead input:focus-visible,
+.bop-embed .bop-lead select:focus-visible { outline: 2px solid var(--bop-orange); outline-offset: 2px; }
+.bop-embed .bop-lead [aria-invalid="true"] { border-color: var(--bop-warn-edge); box-shadow: 0 0 0 2px var(--bop-warn-edge); }
+.bop-embed .bop-lead-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-family: var(--bop-font-body);
+  font-size: 15px;
+  color: var(--bop-warn-text);
+  background: var(--bop-warn-bg);
+  border-left: 4px solid var(--bop-warn-edge);
+}
+.bop-embed .bop-lead-error[hidden] { display: none; }
+.bop-embed .bop-lead-submit {
+  align-self: stretch;
+  margin-top: 4px;
+  padding: 14px 26px;
+  border: 2px solid var(--bop-orange);
+  border-radius: var(--bop-radius-pill);
+  background: var(--bop-orange);
+  color: var(--bop-orange-ink);
+  font-family: var(--bop-font-body);
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.bop-embed .bop-lead-submit:hover { background: var(--bop-orange-hover); border-color: var(--bop-orange-hover); }
+.bop-embed .bop-lead-submit:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.bop-embed .bop-lead-submit:disabled { opacity: .7; cursor: progress; }
+.bop-embed .bop-lead-fine { margin: 0; font-family: var(--bop-font-body); font-size: 12.5px; line-height: 1.4; color: var(--bop-text-muted); }
+.bop-embed .bop-lead-fine a { color: var(--bop-text); }
+/* Off-screen, not display:none - some bots skip fields that are display:none. */
+.bop-embed .bop-lead-hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+/* While locked, results are not shown at all - not blurred, not readable in the DOM's
+   layout. (The figures are public on the program pages anyway; the per-hour result
+   for the visitor's own inputs is what the form unlocks.) */
+.bop-embed.lead-locked .output-section { display: none; }
+/* One column at every width: the form lives in the calculator's own column, which
+   is narrow on desktop too (it shares the row with the image panel). */

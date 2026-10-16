@@ -16,5 +16,6 @@
       "sr22t-pilots-v-1"
     ]
   },
-  "dataDir": "data/aircraft"
+  "dataDir": "data/aircraft",
+  "shared": ["lead-gate"]
 }
