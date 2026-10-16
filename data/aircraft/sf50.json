@@ -3,7 +3,7 @@
   "summaryTitle": "Cirrus SF50 Vision Jet Shared Ownership Cost Calculator",
   "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
   "sharePositionLabel": "Ownership Costs (per share)",
-  "totalShares": 9,
+  "totalShares": 8,
   "programCost": 542793.75,
   "annualProgramFee": 136278.5,
   "fuel": {
@@ -32,7 +32,7 @@
   ],
   "availableShares": 8,
   "_dataVerified": "2026-10-02: programCost / annualProgramFee / shares / taxRate now come from the SF50 costing (G3: capital per share incl. est. tax, Annual Program Fee per owner) - Raymond chose the tax-included figure so the calculator matches the program document. Previously $544,375 (tax excluded) / $136,178.438.",
-  "addendumHtml": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. The Future Value Reserve is designed to support a five-year replacement cycle, replacing the aircraft with another new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the Future Value Reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>",
+  "addendumHtml": "<p>*{{availableShares}} shares available for purchase{{remainingClause}}. Each share is {{unitsPerShare}} of {{totalUnits}} ownership units ({{shareEquity}}); bop Aero retains 1 unit ({{bopEquity}}). Unit counts are distinct from the number of legal owners; ownership terms are subject to final legal review. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. The Future Value Reserve is designed to support a five-year replacement cycle, replacing the aircraft with another new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the Future Value Reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>",
   "inputNote": "Usage is unlimited. For scheduling purposes, each share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time.",
   "map": {
     "cities": [
@@ -109,7 +109,7 @@
       "heading": "2026 Cirrus SF50 G3 Vision Jet Shared Ownership Program",
       "programCost": 542793.75,
       "annualProgramFee": 136278.5,
-      "totalShares": 9,
+      "totalShares": 8,
       "availableShares": 8,
       "sharesRemaining": 8,
       "approx": false,
@@ -125,7 +125,9 @@
         }
       },
       "schedulingHours": 175,
-      "schedulingDays": 35
+      "schedulingDays": 35,
+      "unitsPerShare": 2,
+      "totalUnits": 17
     },
     {
       "key": "G2+",
@@ -134,7 +136,7 @@
       "heading": "Cirrus SF50 G2+ Vision Jet — Four-Share Later-Generation Pre-Owned Program",
       "programCost": 929100,
       "annualProgramFee": 194802,
-      "totalShares": 5,
+      "totalShares": 4,
       "availableShares": 4,
       "sharesRemaining": 4,
       "approx": true,
@@ -151,7 +153,9 @@
         }
       },
       "schedulingHours": 350,
-      "schedulingDays": 70
+      "schedulingDays": 70,
+      "unitsPerShare": 4,
+      "totalUnits": 17
     },
     {
       "key": "G2",
@@ -160,7 +164,7 @@
       "heading": "Cirrus SF50 G2 Vision Jet — Four-Share High-Access Program",
       "programCost": 820350,
       "annualProgramFee": 194802,
-      "totalShares": 5,
+      "totalShares": 4,
       "availableShares": 4,
       "sharesRemaining": 4,
       "approx": true,
@@ -179,7 +183,9 @@
         }
       },
       "schedulingHours": 350,
-      "schedulingDays": 70
+      "schedulingDays": 70,
+      "unitsPerShare": 4,
+      "totalUnits": 17
     },
     {
       "key": "G1",
@@ -188,7 +194,7 @@
       "heading": "Cirrus SF50 G1 Vision Jet — Two-Share Near-Exclusive Program",
       "programCost": 1216200,
       "annualProgramFee": 362104,
-      "totalShares": 3,
+      "totalShares": 2,
       "availableShares": 2,
       "sharesRemaining": 2,
       "approx": true,
@@ -206,16 +212,20 @@
         }
       },
       "schedulingHours": 700,
-      "schedulingDays": 140
+      "schedulingDays": 140,
+      "unitsPerShare": 7,
+      "totalUnits": 15
     }
   ],
   "defaultProgram": "G3",
   "addenda": {
-    "new": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. The Future Value Reserve is designed to support a five-year replacement cycle, replacing the aircraft with another new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the Future Value Reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>",
-    "preowned": "<p>*{{totalShares}} total shared ownership positions, {{availableShares}} available for purchase{{remainingClause}}. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Pre-owned program figures (~) are illustrative planning values, finalized from the selected aircraft, tax jurisdiction, JetStream status, connectivity configuration and transaction-specific costs. The refresh reserve is designed to support the gap between the net resale proceeds of the existing aircraft and the cost of acquiring a newer pre-owned replacement. {{programNote}} The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the refresh reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>"
+    "new": "<p>*{{availableShares}} shares available for purchase{{remainingClause}}. Each share is {{unitsPerShare}} of {{totalUnits}} ownership units ({{shareEquity}}); bop Aero retains 1 unit ({{bopEquity}}). Unit counts are distinct from the number of legal owners; ownership terms are subject to final legal review. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. The Future Value Reserve is designed to support a five-year replacement cycle, replacing the aircraft with another new aircraft. The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the Future Value Reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>",
+    "preowned": "<p>*{{availableShares}} shares available for purchase{{remainingClause}}. Each share is {{unitsPerShare}} of {{totalUnits}} ownership units ({{shareEquity}}); bop Aero retains 1 unit ({{bopEquity}}). Unit counts are distinct from the number of legal owners; ownership terms are subject to final legal review. The Program Cost <span data-positions>purchases one position</span>. Each share includes unlimited usage. For scheduling purposes, a share may reserve up to {{schedulingHours}} flight hours or {{schedulingDays}} days at one time. Pre-owned program figures (~) are illustrative planning values, finalized from the selected aircraft, tax jurisdiction, JetStream status, connectivity configuration and transaction-specific costs. The refresh reserve is designed to support the gap between the net resale proceeds of the existing aircraft and the cost of acquiring a newer pre-owned replacement. {{programNote}} The Program Cost includes estimated sales tax of {{taxRate}} of the aircraft price, which varies by jurisdiction.</p>\n <p>**The Annual Program Fee includes the bop Aero management fee, the refresh reserve, estimated aircraft maintenance, and fixed costs including insurance and storage.</p>\n <p id=\"fuel-note\">***{{fuelLabel}} national avg × {{gph}} gph + oil.</p>\n <p>****Estimated cost per hour does not include operational costs such as fuel or a pilot (if applicable). Year 1 includes the Program Cost and Annual Program Fee; additional years include the Annual Program Fee only. Estimated cost per hour does not factor the eventual sale of the ownership share, which may reduce the owner’s realized net cost.</p>"
   },
   "featureLabels": {
     "connectivity": "In-flight connectivity",
     "safeReturn": "Garmin Safe Return emergency autoland"
-  }
+  },
+  "unitsPerShare": 2,
+  "totalUnits": 17
 }

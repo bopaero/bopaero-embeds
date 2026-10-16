@@ -31,7 +31,7 @@ function initCalculator(root, spec) {
      A costing-driven aircraft with no `programs` is treated as one program;
      an aircraft with neither (SR22T) skips all of this. */
   var PROGRAM_FIELDS = ['heading', 'programCost', 'annualProgramFee', 'totalShares',
-                        'availableShares', 'sharesRemaining', 'approx', 'programNote', 'features', 'maxHours'];
+                        'availableShares', 'sharesRemaining', 'unitsPerShare', 'totalUnits', 'approx', 'programNote', 'features', 'maxHours'];
   var programs = Array.isArray(spec.programs) && spec.programs.length ? spec.programs : null;
   if (!programs && spec.costing) {
     var only = { key: spec.costing.program };
@@ -92,6 +92,18 @@ function initCalculator(root, spec) {
       ? spec.sharesRemaining : spec.availableShares;
   }
 
+  function hasUnits() { return typeof spec.unitsPerShare === 'number' && typeof spec.totalUnits === 'number'; }
+  function pct(x) { return (x * 100).toFixed(2) + '%'; }
+  function renderUnits() {
+    var shareRow = q('[data-units="share"]'), bopRow = q('[data-units="bop"]');
+    if (!shareRow || !bopRow) return;
+    var on = hasUnits();
+    shareRow.hidden = bopRow.hidden = !on;
+    if (!on) return;
+    q('#share-units').innerText = spec.unitsPerShare + ' of ' + spec.totalUnits + ' units (' + pct(spec.unitsPerShare / spec.totalUnits) + ')';
+    q('#bop-units').innerText = '1 of ' + spec.totalUnits + ' units (' + pct(1 / spec.totalUnits) + ')';
+  }
+
   function fill(text) {
     if (!text) return text;
     var map = {
@@ -101,6 +113,12 @@ function initCalculator(root, spec) {
       /* Reads redundant while nothing has sold ("8 available for purchase, 8
          currently remaining"), so the clause disappears until it carries news.
          Computed, never prose, so it cannot drift from the numbers above. */
+      /* Ownership units (Raymond 2026-10-16): each share holds unitsPerShare of
+         totalUnits; bop Aero retains one unit. */
+      unitsPerShare: spec.unitsPerShare,
+      totalUnits: spec.totalUnits,
+      shareEquity: hasUnits() ? pct(spec.unitsPerShare / spec.totalUnits) : undefined,
+      bopEquity: hasUnits() ? pct(1 / spec.totalUnits) : undefined,
       remainingClause: (remaining() === spec.availableShares
         ? '' : ', ' + remaining() + ' currently remaining'),
       maxHours: spec.usage && spec.usage.maxHours,
@@ -226,6 +244,7 @@ function initCalculator(root, spec) {
   if (sharesRow && typeof spec.availableShares === 'number' && typeof spec.totalShares === 'number') {
     q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
     sharesRow.hidden = false;
+    renderUnits();
   }
 
   /* ── usage model: show only the rows this program uses ─────────────── */
@@ -283,8 +302,11 @@ function initCalculator(root, spec) {
     programs.forEach(function (pr) {
       var c = d.byKey[pr.key];
       if (!c) { console.warn('[bopaero:aircraft-calc] ' + spec.id + ' program ' + pr.key + ' is not in the costing'); return; }
+      /* totalShares counts only what can be bought ("8 of 8"); bop Aero's retained
+         unit is shown separately (ownership units, 2026-10-16). */
       var next = { programCost: c.capPerShare, annualProgramFee: c.annualFee,
-                   totalShares: c.interests, availableShares: c.shares, approx: c.approx, features: c.features };
+                   totalShares: c.shares, availableShares: c.shares, approx: c.approx, features: c.features };
+      if (typeof c.unitsPerShare === 'number') { next.unitsPerShare = c.unitsPerShare; next.totalUnits = c.totalUnits; }
       /* Shares remaining and scheduling are in the costing since v2026-10-04.1 */
       ['sharesRemaining', 'schedulingHours', 'schedulingDays', 'maxHours'].forEach(function (k) { if (typeof c[k] === 'number') next[k] = c[k]; });
       Object.keys(next).forEach(function (k) {
@@ -343,6 +365,7 @@ function initCalculator(root, spec) {
     renderShareFigures();
     renderFeatures();
     if (sharesRow && !sharesRow.hidden) q('#shares-available').innerText = remaining() + ' of ' + spec.totalShares;
+    renderUnits();
     renderPicker();
     if (yearsEl && hoursEl && yearsEl.value && hoursEl.value) calculate();
   }

@@ -26,7 +26,7 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEASE_FIELDS = ('leaseMonthly', 'leaseIncludedHours', 'leaseExtraHourRate', 'leaseHourlyRate')
-FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'sharesRemaining',
+FIELDS = ('programCost', 'annualProgramFee', 'totalShares', 'availableShares', 'sharesRemaining', 'unitsPerShare', 'totalUnits',
           'schedulingHours', 'schedulingDays', 'maxHours', 'approx', 'features')
 
 NODE = r"""
@@ -37,7 +37,8 @@ if (problems.length) { console.error('costing invalid: ' + problems.join('; '));
 const d = C.derive(costing);
 const programs = {};
 for (const p of d.programs) programs[p.key] = { programCost: p.capPerShare, annualProgramFee: p.annualFee,
-                                                totalShares: p.interests, availableShares: p.shares, approx: p.approx,
+                                                totalShares: p.shares, availableShares: p.shares, approx: p.approx,
+                                                unitsPerShare: p.unitsPerShare, totalUnits: p.totalUnits,
                                                 features: p.features || null, sharesRemaining: p.sharesRemaining,
                                                 schedulingHours: p.schedulingHours, schedulingDays: p.schedulingDays,
                                                 maxHours: p.maxHours };
