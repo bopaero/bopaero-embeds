@@ -9,9 +9,9 @@ preview_urls = false
 # Not secret: IDs that say WHERE leads go. Fill in before the first deploy
 # (list them with the API once the token exists - see README.md).
 [vars]
-LC_LOCATION_ID = ""
-LC_PIPELINE_ID = ""
-LC_STAGE_ID = ""
+LC_LOCATION_ID = "nLUgMWigE8clvznzsfio"
+LC_PIPELINE_ID = "n8d3A9iHK9YCANDaLnI6"
+LC_STAGE_ID = "f9c12864-fd09-42a0-a0ea-8ba75c5db968"
 LC_API_VERSION = "v3"
 
 # LC_TOKEN (LeadConnector Private Integration token) is a SECRET, never in this file:
