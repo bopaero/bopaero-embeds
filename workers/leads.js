@@ -182,7 +182,11 @@ export async function findReturning(env, lead) {
   const r = await lc(env, 'GET', '/contacts/search/duplicate?' + q);
   const c = r && r.contact;
   // Only an exact email match counts: the duplicate rule may also match on phone
-  if (!c || !c.id || String(c.email || '').toLowerCase() !== lead.email) return { found: false };
+  if (!c || !c.id || String(c.email || '').toLowerCase() !== lead.email) {
+    // Shape only, never values: shows whether LeadConnector answered with no match or another format
+    console.log('returning no match: reply keys=' + Object.keys(r || {}).join(',') + ' contactKeys=' + (c ? Object.keys(c).join(',') : '-'));
+    return { found: false };
+  }
   // Mark the extra tool on the contact (merged, never replacing its tags)
   await lc(env, 'POST', `/contacts/${encodeURIComponent(c.id)}/tags`, { tags: ['calculator-lead', 'tool-' + TOOLS[lead.tool]] });
   return { found: true, contactId: c.id };
