@@ -9,10 +9,10 @@
 var HUB_AIRCRAFT = [
   { name: 'SF50 Vision Jet', sub: 'G3 new · G2+ / G2 / G1 pre-owned',
     site: 'https://sf50program.bopaero.com', pdf: 'bop-Aero-SF50-Ownership-Program-Options.pdf', expo: 'bop-Aero-SF50-Expo-1-Pager.pdf',
-    global: 'SF50Costing', repo: 'bopaero/sf50Program', editor: 'https://sf50-costing.compilotrc.workers.dev/' },
+    global: 'SF50Costing', repo: 'bopaero/sf50Program', editor: 'https://bopaero-admin.compilotrc.workers.dev/sf50/' },
   { name: 'SR22T G7+', sub: 'New G7+ GTS · bridge aircraft 2022 G6 GTS',
     site: 'https://sr22tprogram.bopaero.com', pdf: 'bop-Aero-SR22T-Ownership-Program.pdf', expo: 'bop-Aero-SR22T-Expo-1-Pager.pdf', financial: 'bop-Aero-SR22T-Financial-Detail-Sheet.pdf',
-    global: 'SR22TCosting', repo: 'bopaero/sr22tProgram', editor: 'https://sf50-costing.compilotrc.workers.dev/sr22t/' }
+    global: 'SR22TCosting', repo: 'bopaero/sr22tProgram', editor: 'https://bopaero-admin.compilotrc.workers.dev/sr22t/' }
 ];
 
 function initCostingHub(root) {
