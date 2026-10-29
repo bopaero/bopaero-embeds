@@ -1,0 +1,11 @@
+<!doctype html><meta charset="utf-8"><title>form_reached harness</title>
+<!-- A page shaped like a program page: content, the LeadConnector enquiry form,
+     then a footer carrying the "Stay in the loop" signup (same kind of iframe).
+     sendBeacon is stubbed so nothing reaches the live Worker. -->
+<style>body{margin:0;font:14px system-ui}.pad{height:2400px;background:linear-gradient(#123,#456)}iframe{display:block;width:100%;height:900px;border:0}</style>
+<script>navigator.sendBeacon = function () { return true; };</script>
+<div class="pad"></div>
+<iframe id="enquiry" src="about:blank#/widget/form/enquiry"></iframe>
+<div class="pad"></div>
+<footer><iframe id="signup" src="about:blank#/widget/form/signup"></iframe></footer>
+<script src="/components/_shared/telemetry.js"></script>

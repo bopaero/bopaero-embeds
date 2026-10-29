@@ -92,7 +92,8 @@
 
      WHAT IT COLLECTS: how far down a page a visit scrolls, where clicks land as a
      coarse grid position, which named control was clicked, and a handful of
-     calculator milestones. Plus page path and whether the viewport is phone-sized.
+     calculator milestones, and whether the enquiry form came into view. Plus page
+     path and whether the viewport is phone-sized.
 
      WHAT IT DOES NOT COLLECT, BY DESIGN: no cookies, no visitor or session id, no
      fingerprint, no form values, no keystrokes, no session replay. Two visits are
@@ -142,6 +143,25 @@
       }
     }
 
+    /* ── enquiry form ──────────────────────────────────────────────────────
+       The enquiry form is a LeadConnector iframe placed in the Squarespace page,
+       not one of our embeds, so we can only see that it came into view - never
+       what is typed into it. The footer's "Stay in the loop" signup is the same
+       kind of iframe, so anything inside <footer> is not the enquiry form.
+       Counted once per visit, once part of it is in the middle half of the screen. */
+    var formSeen = false;
+    function formReached() {
+      if (formSeen) return;
+      var frames = document.querySelectorAll('iframe[src*="/widget/form/"]');
+      for (var i = 0; i < frames.length; i++) {
+        if (frames[i].closest('footer')) continue;
+        var r = frames[i].getBoundingClientRect();
+        if (r.height && r.top < window.innerHeight * 0.75 && r.bottom > window.innerHeight * 0.25) {
+          formSeen = true; push('form_reached'); return;
+        }
+      }
+    }
+
     /* ── clicks ────────────────────────────────────────────────────────────
        Position is binned to a 20x40 grid of the DOCUMENT, not exact pixels, so
        the report can draw density without the data describing a precise pointer
@@ -175,7 +195,7 @@
     function flush() {
       if (sent || !events.length) return;
       sent = true;
-      scrollDepth();          /* final depth before we stop measuring */
+      scrollDepth(); formReached();   /* final state before we stop measuring */
       var payload = { v: 1, ctx: ctx(), events: events };
       if (DEBUG) console.log('[bop:telemetry] FLUSH', JSON.stringify(payload));
       if (!ENDPOINT) return;                    // nothing configured: collect, never send
@@ -192,14 +212,14 @@
     }
 
     try {
-      window.addEventListener('scroll', scrollDepth, { passive: true });
+      window.addEventListener('scroll', function () { scrollDepth(); formReached(); }, { passive: true });
       /* A low-frequency sampler as well as the scroll listener. Scroll events are
          throttled or suppressed entirely in some contexts - background tabs, some
          webviews, and any automated driver - and depth would then silently never
          record. Sampling is cheap, catches programmatic scrolling too, and stops
          as soon as every milestone is seen or the page is on its way out. */
       var sampler = setInterval(function () {
-        scrollDepth();
+        scrollDepth(); formReached();
         if (seenScroll[100]) clearInterval(sampler);
       }, 1000);
       document.addEventListener('click', onClick, true);

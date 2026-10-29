@@ -6,6 +6,24 @@ carrying the stub updates within ~10 minutes. No pasting.
 
 ---
 
+## v2026-10-29.1 — telemetry counts visits that reach the enquiry form
+
+The first real report (6 weeks to 2026-10-29) could not show the step that produces
+leads: `form_reached` was in the Worker's accepted metrics since day one, but nothing
+sent it. Now the collector counts it once per visit when the LeadConnector enquiry
+form (`iframe[src*="/widget/form/"]`) is in the middle half of the screen.
+
+- **The footer's "Stay in the loop" signup is the same kind of iframe** (form
+  `cZxUaLZWt1WN9nJB2o4t`, inside `<footer>`, on locations/news/leasing). Anything in
+  `<footer>` is skipped, or every visit reaching the bottom of those pages would count
+  as an enquiry. Program forms: SF50 `rLWiCc182cQhotFVh2fD`, SR22T `Bzl2PdCd3Uy1ICuwV8y9`.
+- Visibility only. The iframe is cross-origin; nothing typed into it is or can be seen.
+- Check: `bash tools/testbed/form-reached-check.sh` (desktop + phone, headless Chrome).
+  Proven to fail with the footer rule removed.
+- `python3 tools/build.py` with no arguments does NOT rebuild `news` (collection
+  component) - build it by name when the shared collector changes.
+- Counts start 2026-10-29; earlier report windows have no form figures.
+
 ## Unreleased — /news, press watcher, scheduled publishing
 
 ### /news, run from the repo
