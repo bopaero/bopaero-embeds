@@ -1,0 +1,27 @@
+<!-- Employee resources (bopaero.com/internal-login). Links are rendered from
+     HUB_GROUPS in component.js so a new tool is a one-line edit. -->
+<div class="bop-embed bop-ih">
+  <h2 class="ih-title">Company Resources</h2>
+  <p class="ih-lede">Everything the team uses day to day. Each link opens in a new tab.</p>
+  <div class="ih-groups"></div>
+
+  <section class="ih-utm" aria-labelledby="ih-utm-h">
+    <h3 id="ih-utm-h">UTM Link Generator</h3>
+    <p class="ih-sub">Tag a link so its visits show up by campaign in analytics. The link updates as you type.</p>
+    <div class="ih-form">
+      <label class="ih-wide">Base URL<input name="url" type="url" inputmode="url" placeholder="https://bopaero.com/" autocomplete="off"></label>
+      <label>Source <span class="ih-key">utm_source</span><input name="utm_source" placeholder="facebook, newsletter" autocomplete="off"></label>
+      <label>Medium <span class="ih-key">utm_medium</span><input name="utm_medium" placeholder="social, email, print" autocomplete="off"></label>
+      <label>Campaign <span class="ih-key">utm_campaign</span><input name="utm_campaign" placeholder="sf50-launch" autocomplete="off"></label>
+      <label>Term <span class="ih-key">utm_term · optional</span><input name="utm_term" autocomplete="off"></label>
+      <label>Content <span class="ih-key">utm_content · optional</span><input name="utm_content" autocomplete="off"></label>
+    </div>
+    <div class="ih-out">
+      <output class="ih-url" aria-live="polite"></output>
+      <div class="ih-out-actions">
+        <button type="button" class="ih-copy" disabled>Copy link</button>
+        <button type="button" class="ih-clear">Clear</button>
+      </div>
+    </div>
+  </section>
+</div>

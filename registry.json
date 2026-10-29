@@ -277,6 +277,12 @@
         "win-a-day-at-the-masters-sweepstakes"
       ]
     },
+    "internal-hub": {
+      "mode": "loader",
+      "description": "Employee resources on bopaero.com/internal-login (Squarespace password): links to programs / SF50 / SR22T program sites, TripCalc, Site Calculators, plus the UTM link generator.",
+      "pages": [],
+      "_private": "Its page is behind a Squarespace password, so only the bundle is health-checked (a page fetch sees the password form)."
+    },
     "costing-hub": {
       "mode": "loader",
       "description": "Private costing dashboard for Raymond's password-protected page: per aircraft the live published costing (version, date, note, per-program Program Cost / Annual Fee / remaining), latest market check, document + PDF links, Open editor. Read-only; editors stay behind Cloudflare Access.",

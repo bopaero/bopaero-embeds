@@ -1,0 +1,7 @@
+{
+  "name": "internal-hub",
+  "mode": "loader",
+  "entry": "initInternalHub",
+  "description": "Employee resources page (bopaero.com/internal-login, Squarespace password): quick links to the program sites (programs / SF50 / SR22T), TripCalc and the site calculators, plus the UTM link generator.",
+  "pages": []
+}
