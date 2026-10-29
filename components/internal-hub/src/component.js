@@ -22,11 +22,43 @@ var HUB_GROUPS = [
   ] }
 ];
 
+/* Raymond's editors on the bopaero-admin Worker. Hidden from the team: the group
+ * renders only on a browser that has opened the page once with ?admin (?admin=off
+ * forgets it). That is tidiness, NOT security - this bundle is public. The lock is
+ * the Worker's Cloudflare Access policy. */
+var HUB_ADMIN = { title: 'Admin', links: [
+  { name: 'Admin Home', url: 'https://bopaero-admin.compilotrc.workers.dev/',
+    desc: 'Index of every editor and internal report.' },
+  { name: 'SF50 Costing Editor', url: 'https://bopaero-admin.compilotrc.workers.dev/sf50/',
+    desc: 'Edit and publish the SF50 program costing.' },
+  { name: 'SR22T Costing Editor', url: 'https://bopaero-admin.compilotrc.workers.dev/sr22t/',
+    desc: 'Edit and publish the SR22T costing and bridge aircraft.' },
+  { name: 'Comparison Editor', url: 'https://bopaero-admin.compilotrc.workers.dev/comparison/',
+    desc: 'Aircraft data behind the 6-Seat Comparison.' },
+  { name: 'Founder’s Circle Summary', url: 'https://bopaero-admin.compilotrc.workers.dev/founders',
+    desc: 'Economic and marketing summary built from both costings.' },
+  { name: 'Planning Guide', url: 'https://bopaero-admin.compilotrc.workers.dev/planning',
+    desc: 'Aircraft cost comparison planning guide.' }
+] };
+var ADMIN_KEY = 'bopaero-internal-hub-admin';
+
 function initInternalHub(root) {
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  root.querySelector('.ih-groups').innerHTML = HUB_GROUPS.map(function (g) {
-    return '<section class="ih-group"><h3>' + esc(g.title) + '</h3><div class="ih-cards">' +
+  // Storage can throw (private mode, blocked site data); then it simply stays hidden.
+  var showAdmin = false;
+  try {
+    var q = new URLSearchParams(location.search).get('admin');
+    if (q === 'off') localStorage.removeItem(ADMIN_KEY);
+    else if (q !== null) localStorage.setItem(ADMIN_KEY, '1');
+    showAdmin = localStorage.getItem(ADMIN_KEY) === '1';
+  } catch (e) {}
+
+  var groups = showAdmin ? HUB_GROUPS.concat([HUB_ADMIN]) : HUB_GROUPS;
+  root.querySelector('.ih-groups').innerHTML = groups.map(function (g) {
+    var admin = g === HUB_ADMIN;
+    return '<section class="ih-group' + (admin ? ' ih-admin' : '') + '"><h3>' + esc(g.title) +
+      (admin ? ' <span class="ih-only">Only you see this · Cloudflare login</span>' : '') + '</h3><div class="ih-cards">' +
       g.links.map(function (l) {
         return '<a class="ih-card" target="_blank" rel="noopener" href="' + esc(l.url) + '">' +
           '<span class="ih-name">' + esc(l.name) + '</span>' +

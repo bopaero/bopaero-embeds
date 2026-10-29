@@ -17,6 +17,9 @@
 .bop-ih .ih-desc { font-size: 14px; color: #4a4f55; line-height: 1.4; }
 .bop-ih .ih-host { font-size: 12px; color: #80868d; margin-top: auto; padding-top: 6px; overflow-wrap: anywhere; }
 
+.bop-ih .ih-admin a.ih-card { border-top-color: var(--bop-navy, #003767); background: #f6f8fb; }
+.bop-ih .ih-only { font-family: var(--bop-font-body); font-size: 12px; font-weight: 400; letter-spacing: 0; color: #6b6b70; margin-left: 8px; }
+
 .bop-ih .ih-utm { background: var(--bop-navy, #003767); color: #fff; border-radius: 10px; padding: 22px 22px 24px; margin-top: 8px; }
 .bop-ih .ih-utm h3 { color: #fff; }
 .bop-ih .ih-sub { color: var(--bop-text-muted, #C3D2E2); font-size: 14px; margin: -6px 0 16px; }
