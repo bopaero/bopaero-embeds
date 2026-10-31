@@ -287,7 +287,7 @@
       "mode": "loader",
       "description": "Private costing dashboard for Raymond's password-protected page: per aircraft the live published costing (version, date, note, per-program Program Cost / Annual Fee / remaining), latest market check, document + PDF links, Open editor. Read-only; editors stay behind Cloudflare Access.",
       "pages": [],
-      "_private": "Its page is behind a Squarespace password, so only the bundle is health-checked (a page fetch sees the password form). Its telemetry arrives under that page's path."
+      "_private": "2026-10-31: no longer on its own page - /site-calculators had NO password. internal-hub loads it inside the admin-only section of /internal-login. Only the bundle is health-checked."
     },
     "lease-rates": {
       "mode": "loader",

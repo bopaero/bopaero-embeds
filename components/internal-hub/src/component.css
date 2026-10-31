@@ -18,6 +18,8 @@
 .bop-ih .ih-host { font-size: 12px; color: #80868d; margin-top: auto; padding-top: 6px; overflow-wrap: anywhere; }
 
 .bop-ih .ih-admin a.ih-card { border-top-color: var(--bop-navy, #003767); background: #f6f8fb; }
+.bop-ih .ih-dash { margin-top: 20px; }
+.bop-ih .ih-dash h4 { font-family: var(--bop-font-head); letter-spacing: var(--bop-head-ls); color: var(--bop-navy, #003767); font-size: 17px; margin: 0 0 12px; }
 .bop-ih .ih-only { font-family: var(--bop-font-body); font-size: 12px; font-weight: 400; letter-spacing: 0; color: #6b6b70; margin-left: 8px; }
 
 .bop-ih .ih-utm { background: var(--bop-navy, #003767); color: #fff; border-radius: 10px; padding: 22px 22px 24px; margin-top: 8px; }

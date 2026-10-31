@@ -16,9 +16,7 @@ var HUB_GROUPS = [
   ] },
   { title: 'Tools', links: [
     { name: 'TripCalc®', url: 'https://tripcalc.bopaero.com/',
-      desc: 'Flight planning: compare a trip by Cirrus against driving and the airlines.' },
-    { name: 'Site Calculators', url: 'https://bopaero.com/site-calculators',
-      desc: 'The cost calculators embedded on bopaero.com, all on one page.' }
+      desc: 'Flight planning: compare a trip by Cirrus against driving and the airlines.' }
   ] }
 ];
 
@@ -66,6 +64,23 @@ function initInternalHub(root) {
           '<span class="ih-host">' + esc(l.url.replace(/^https:\/\//, '').replace(/\/$/, '')) + '</span></a>';
       }).join('') + '</div></section>';
   }).join('');
+
+  /* The costing dashboard moved here from bopaero.com/site-calculators (2026-10-31): a
+   * Squarespace password covers only its own page, and that one had none. It mounts only
+   * for the admin view, so the team never sees unpublished pricing. */
+  if (showAdmin) {
+    var adminSec = root.querySelector('.ih-admin');
+    var dash = document.createElement('div');
+    dash.className = 'ih-dash';
+    dash.innerHTML = '<h4>Costing dashboard</h4><div id="costing-hub-mount"></div>';
+    adminSec.appendChild(dash);
+    if (!document.querySelector('script[src*="costing-hub.js"]')) {
+      var sc = document.createElement('script');
+      sc.src = 'https://embeds.bopaero.com/costing-hub.js';
+      sc.async = true;
+      document.body.appendChild(sc);
+    }
+  }
 
   /* ── UTM generator ───────────────────────────────────────────────────── */
   var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
