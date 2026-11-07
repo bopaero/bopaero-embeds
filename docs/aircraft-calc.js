@@ -254,7 +254,7 @@
 "sharePositionLabel": "Ownership Cost (per share)",
 "totalShares": 14,
 "programCost": 114147.85714285714,
-"annualProgramFee": 36402.642857142855,
+"annualProgramFee": 35103.42857142857,
 "taxRate": 0.078,
 "fuel": {
 "label": "100LL",
