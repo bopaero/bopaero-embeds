@@ -43,6 +43,8 @@
 .bop-ih .ih-copy:hover:not(:disabled) { background: var(--bop-orange-hover, #e05a00); }
 .bop-ih .ih-copy:disabled { opacity: .45; cursor: default; }
 .bop-ih .ih-clear { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.5); }
+.bop-ih .ih-admin-foot { margin: 14px 0 0; text-align: right; font-size: 12px; line-height: 1.4; }
+.bop-ih .ih-admin-foot a { color: #6b6b70; text-decoration: underline; }
 @media (max-width: 520px) {
   .bop-ih .ih-utm { padding: 18px 14px; }
   .bop-ih .ih-out-actions { width: 100%; }

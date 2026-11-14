@@ -22,7 +22,9 @@ var HUB_GROUPS = [
 
 /* Raymond's editors on the bopaero-admin Worker. Hidden from the team: the group
  * renders only on a browser that has opened the page once with ?admin (?admin=off
- * forgets it). That is tidiness, NOT security - this bundle is public. The lock is
+ * forgets it). The "Admin sign-in" link at the foot gets there through the Worker's
+ * /hub-admin, which only redirects back with ?admin after the Cloudflare login
+ * (2026-11-14). That is tidiness, NOT security - this bundle is public. The lock is
  * the Worker's Cloudflare Access policy. */
 var HUB_ADMIN = { title: 'Admin', links: [
   { name: 'Admin Home', url: 'https://bopaero-admin.compilotrc.workers.dev/',
@@ -31,6 +33,8 @@ var HUB_ADMIN = { title: 'Admin', links: [
     desc: 'Edit and publish the SF50 program costing.' },
   { name: 'SR22T Costing Editor', url: 'https://bopaero-admin.compilotrc.workers.dev/sr22t/',
     desc: 'Edit and publish the SR22T costing and bridge aircraft.' },
+  { name: 'Aircraft Costing Workbench', url: 'https://bopaero-admin.compilotrc.workers.dev/models/',
+    desc: 'Cost out any aircraft under our program model and compare it against another.' },
   { name: 'Comparison Editor', url: 'https://bopaero-admin.compilotrc.workers.dev/comparison/',
     desc: 'Aircraft data behind the 6-Seat Comparison.' },
   { name: 'Founder’s Circle Summary', url: 'https://bopaero-admin.compilotrc.workers.dev/founders',
@@ -39,6 +43,7 @@ var HUB_ADMIN = { title: 'Admin', links: [
     desc: 'Aircraft cost comparison planning guide.' }
 ] };
 var ADMIN_KEY = 'bopaero-internal-hub-admin';
+var ADMIN_SIGNIN = 'https://bopaero-admin.compilotrc.workers.dev/hub-admin';
 
 function initInternalHub(root) {
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -64,6 +69,11 @@ function initInternalHub(root) {
           '<span class="ih-host">' + esc(l.url.replace(/^https:\/\//, '').replace(/\/$/, '')) + '</span></a>';
       }).join('') + '</div></section>';
   }).join('');
+
+  var foot = root.querySelector('.ih-admin-foot');
+  foot.innerHTML = showAdmin
+    ? '<a href="?admin=off">Hide the admin view on this device</a>'
+    : '<a href="' + ADMIN_SIGNIN + '">Admin sign-in</a>';
 
   /* The costing dashboard moved here from bopaero.com/site-calculators (2026-10-31): a
    * Squarespace password covers only its own page, and that one had none. It mounts only
